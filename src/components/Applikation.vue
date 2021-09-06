@@ -1,55 +1,27 @@
 <template>
   <div class="applikation-container">
-    <div>Headers</div>
-    <h1>Jeg er en h1</h1>
-    <h2>Jeg er en h2</h2>
-    <h3>Jeg er en h3</h3>
-    <h4>Jeg er en h4</h4>
-    <h5>Jeg er en h5</h5>
-    <hr>
-    Tid lige nu: {{currentTime}}
-    <hr>
-    Dynamisk komponent:
-    <dynamic-component text="Jeg er en dynamisk komponent"></dynamic-component>
-    <hr>
-    <a href="http://www.google.com" target="_blank">Link til Google</a>
-    <hr>
-    Datepicker
-    <div class="date-picker mb-305" :data-default-date="date">
-      <input class="form-input" :value="date" required type="text" />
-    </div>
-    <hr>
-    <div>Response fra axios</div>
-    <div class="spinner" v-if="loadingResponse" aria-label="Henter indhold" />
-    {{response}}
-    <hr>
-    <button class="button button-primary">Jeg er en knap</button>
-    <hr>
-    <div class="row">
-      <div class="col-md-6 col-xs-12">
-        Eksempel på grid: Venstre kolonne
-      </div>
-      <div class="col-md-6 col-xs-12">
-        Eksempel på grid: Højre kolonne
-      </div>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-header">
-        <h3 class="header-title">Eksempel på card-komponenten</h3>
-      </div>
-      <div class="card-text">
-        <p>Du kan bruge cards til at gruppere funktionalitet, der adskiller
-          sig fra sidens øvrige indhold. Cards kan placeres i et <a
-            href="#">grid</a>, således at de står side om
-          side.</p>
-      </div>
-
-      <div class="card-footer card-action">
-
-        <div class="action-links">
-          <a href="#">Gå til komponent</a>
+    <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
+    <div v-else class="row">
+      <div class="col-lg-9">
+        <p class="h6">Test</p>
+        <h1>Hvordan er presset på din forretningsmodel?</h1>
+        <p class="font-lead">
+          Svar på en række udsagn om din virksomhed inden for 6 områder og få en indikation af, hvordan presset er på din forretningsmodel.
+        </p>
+        <div class="form-group">
+          <fieldset>
+            <legend class="h5">Vælg din virksomheds branche og start testen</legend>
+            <ul class="nobullet-list">
+              <li v-for="(industry, index) of industries" :key="index">
+                <input :id="`radio-${index}`" type="radio" name="radio" :value="industry" class="form-radio radio-large" />
+                <label :id="`form-label-radio-${index}`" :for="`radio-${index}`" class="">{{ industry }} </label>
+              </li>
+            </ul>
+          </fieldset>
         </div>
+      </div>
+      <div class="col-lg-9">
+        <button class="button button-primary">Start testen</button>
       </div>
     </div>
   </div>
@@ -58,45 +30,98 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
-import { DateTime } from 'luxon';
-import * as DKFDS from "dkfds";
-
-var dynamicComponent = {
-  template: '<div>{{text}}</div>',
-  props: ['text'],
-};
+import SimpleForm from 'vue-simpleform';
+import VueApexCharts from 'vue-apexcharts';
 
 @Component({
   name: 'Applikation',
   components: {
-    dynamicComponent
+    SimpleForm,
+    apexchart: VueApexCharts
   }
 })
 export default class Applikation extends Vue {
-  private currentTime = '';
-  private response = {};
+  response = {};
   private error = {};
-  private loadingResponse = false;
-  private date = '';
+  isLoading = false;
+  currentStep = 1;
+  industries = [
+    'Industri',
+    'Bygge og anlæg',
+    'Handel',
+    'Transport',
+    'Videnservice',
+    'Kommunikation og reklame',
+    'Operationel service',
+    'Oplevelseserhverv',
+    'Andet (angiv hvilket)'
+  ];
 
   mounted() {
-    this.currentTime = DateTime.local().toISO();
-    this.loadingResponse = true;
+    this.isLoading = true;
     this.callExternalApi();
-
-    DKFDS.datePicker.on(document.body);
-    this.date = DateTime.local().toFormat('yyyy-MM-dd');
   }
 
   private async callExternalApi() {
-    axios.get('https://httpbin.org/get').then((rsp: any) => {
-      this.response = rsp;
-      this.loadingResponse = false;
-    }).catch((error: any) => {
-      this.error = error;
+    const data = JSON.stringify({
+      answers: {
+        value1: 10,
+        value2: 8,
+        value3: 8,
+        value4: 7,
+        customers1: 3,
+        customers2: 5,
+        customers3: 5,
+        customer4: 10,
+        sales1: 8,
+        sales2: 10,
+        sales3: 9,
+        sales4: 9,
+        resources1: 10,
+        resources2: 10,
+        resources3: 7,
+        resources4: 7,
+        valuecustomer1: 9,
+        valuecustomer2: 8,
+        valuecustomer3: 6,
+        valuecustomer4: 9,
+        customersales1: 9,
+        customersales2: 9,
+        customersales3: 9,
+        customersales4: 9,
+        salesresources1: 9,
+        salesresources2: 10,
+        salesresources3: 10,
+        salesresources4: 10,
+        resourcesvalue1: 9,
+        resourcesvalue2: 8,
+        resourcesvalue3: 7,
+        resourcesvalue4: 6
+      },
+      industry: 'Industri'
     });
+    console.log(data);
+    axios
+      .post('http://128.199.7.8/api/suggestions', data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((rsp: any) => {
+        console.log(rsp.data);
+        this.isLoading = false;
+
+        if (!rsp.data.error) {
+          this.isLoading = false;
+          this.response = rsp.data;
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+        this.isLoading = false;
+        this.error = 'Noget gik galt. Prøv venligst igen.';
+      });
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
