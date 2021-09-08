@@ -93,6 +93,7 @@ export default class Applikation extends Vue {
     'Andet (angiv hvilket)'
   ];
 
+  apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
   defaultOptions = ['1 = meget enig', '2', '3', '4', '5', '6', '7', '8', '9', '10 = meget enig'];
   defaultDescription = 'Angiv hvor enig du er i de enkelte udsagn, hvor 10= meget enig og 1= meget uenig.';
   sections = [
@@ -422,7 +423,7 @@ export default class Applikation extends Vue {
     });
     console.log(data);
     axios
-      .post('http://128.199.7.8/api/suggestions', data, {
+      .post(this.apiBaseUrl + '/suggestions', data, {
         headers: {
           'Content-Type': 'application/json'
         }
