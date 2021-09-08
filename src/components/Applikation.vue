@@ -1,63 +1,104 @@
 <template>
   <div class="applikation-container">
-    <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
-    <div v-else class="row">
-      <div class="col-lg-9">
-        <!-- Frontpage start -->
-        <template v-if="currentSection === 'frontpage'">
-          <p class="h6">Digitalt værktøj</p>
-          <h1>Test og styrk din virksomheds forretningsmodel</h1>
-          <p class="font-lead">
-            Et overblik over din virksomheds forretningsmodel, kan hjælpe dig med at få en indikation af om der er et behov for at justere eller
-            efterse hele eller dele af forretningsmodellen.
-          </p>
-          <p>
-            <button class="button button-primary" @click.prevent="currentSection = 'test1'">
-              Tag testen: Vurder presset på din forretningsmodel
-            </button>
-          </p>
-          <p>
-            <button class="button button-primary" @click.prevent="currentSection = 'test2'">
-              Tag testen: Få forbedringer til din forretningsmodel
-            </button>
-          </p>
-        </template>
-        <!-- Frontpage end -->
+    <div class="row">
+      <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
 
-        <!-- test 1 + 2 loop -->
-        <div v-for="(section, sectionIndex) of sections" :key="sectionIndex">
-          <template v-if="currentSection === section.id">
-            <p class="h6">Test</p>
-
-            <h2 class="h1">{{ section.headline }}</h2>
-            <p class="font-lead">
-              {{ section.description }}
-            </p>
-            <div v-for="(step, stepIndex) of section.steps" :key="stepIndex" class="form-group">
-              <fieldset v-if="stepIndex === currentStep">
-                <h3 class="h2">{{ step.headline }}</h3>
-                <p>{{ step.description }}</p>
-                <div v-for="(question, questionIndex) of step.questions" :key="questionIndex">
-                  <legend class="h5">{{ question.label }}</legend>
-                  <ul class="nobullet-list">
-                    <li v-for="(option, index) of question.options" :key="index">
-                      <input :id="`radio-${questionIndex}-${index}`" type="radio" :name="questionIndex" :value="option" class="form-radio" />
-                      <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`">{{ option }} </label>
-                    </li>
-                  </ul>
-                </div>
-                <p>
-                  <button class="button button-primary" @click.prevent="currentStep++">{{ currentStep === 0 ? 'Start testen' : 'Næste' }}</button>
-                </p>
-                <p>
-                  <button v-if="currentStep > 0" class="back-link" @click.prevent="currentStep--">Forrige</button>
-                </p>
-              </fieldset>
+      <!-- Frontpage start -->
+      <template v-else-if="currentSection === 'frontpage'">
+        <div class="col-12 align-text-center">
+          <h1>
+            Test og styrk din virksomheds forretningsmodel
+            <div class="h2 m-4">med diagnoseværktøj i to dele</div>
+            <p class="font-lead" style="max-width: none">Vælg en af af de to tests nedenfor</p>
+            <div class="row" style="justify-content: center">
+              <div class="m-2">
+                <button class="button button-primary" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
+              </div>
+              <div class="m-2">
+                <button class="button button-primary" @click.prevent="currentSection = 'test2'">Få forbedringer til din forretningsmodel</button>
+              </div>
             </div>
-          </template>
+          </h1>
         </div>
-        <!-- test 1 end -->
+        <div class="col-12 bg-normal mt-9">
+          <div class="row">
+            <div class="col-6 p-7">
+              <h2 class="mt-4">Hvorfor teste din forretningsmodel?</h2>
+              <p>
+                Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder i markedet, der gør det
+                relevant at styrke eller justere forretningsmodelen. Formålet med de to test ser at give dig en indikation af, om der kan være behov
+                for at efterse hele eller dele af din virksomheds forretningsmodel.
+              </p>
+              <h2>Hvem kan tage testen?</h2>
+              <p>
+                De to tests er målrettet små og mellemstore virksomheder. Den kan besvares af ledelsen eller medarbejdere, og kan med fordel besvares
+                af flere fra samme virksomhed, så svarene eventuelt kan sammenlignes internt.
+              </p>
+              <p>
+                Testene baserer sig på besvarelser fra en stor undersøgelse blandt mindre og mellemstore virksomheder, der succesfuldt har forandret
+                eller styrket deres forretningsmodel.
+              </p>
+            </div>
+            <div class="col-6 p-7">
+              <div class="card">
+                <div class="card-header px-7">
+                  <h2>Sådan fungerer testen</h2>
+                </div>
+                <div class="card-text px-7">
+                  <p>
+                    Testen baserer sig på en større undersøgelse blandt små og mellemstore virksomheder, der succesfuldt har forandret eller styrket
+                    hele eller dele af forretningen. Den viser, at drivkræfterne bag forretningsmodeludvikling typisk falder inden for seks
+                    hovedområder:
+                  </p>
+                  <ul>
+                    <li v-for="(theme, index) of sections[0].steps" :key="index">{{ theme.headline }}</li>
+                  </ul>
+                  <p>
+                    Derfor beder vi dig i den første test om at stilling til en række udsagn knyttet til disse hovedområder. I den anden test beder vi
+                    dig om at tage stilling til de fire dele i forretningsmodellen – 1) virksomhedens værditilbud, 2) kunder, 3) Salg 4) og
+                    kommunikation, Ressourcer, partnere og processer, samt samspillet mellem dem
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <!-- Frontpage end -->
+
+      <!-- test 1 + 2 loop -->
+      <div v-for="(section, sectionIndex) of sections" v-else :key="sectionIndex" class="col-lg-9">
+        <template v-if="currentSection === section.id">
+          <p class="h6">Test</p>
+
+          <h2 class="h1">{{ section.headline }}</h2>
+          <p class="font-lead">
+            {{ section.description }}
+          </p>
+          <div v-for="(step, stepIndex) of section.steps" :key="stepIndex" class="form-group">
+            <fieldset v-if="stepIndex === currentStep">
+              <h3 class="h2">{{ step.headline }}</h3>
+              <p>{{ step.description }}</p>
+              <div v-for="(question, questionIndex) of step.questions" :key="questionIndex">
+                <legend class="h5">{{ question.label }}</legend>
+                <ul class="nobullet-list">
+                  <li v-for="(option, index) of question.options" :key="index">
+                    <input :id="`radio-${questionIndex}-${index}`" type="radio" :name="questionIndex" :value="option" class="form-radio" />
+                    <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`">{{ option }} </label>
+                  </li>
+                </ul>
+              </div>
+              <p>
+                <button class="button button-primary" @click.prevent="currentStep++">{{ currentStep === 0 ? 'Start testen' : 'Næste' }}</button>
+              </p>
+              <p>
+                <button v-if="currentStep > 0" class="back-link" @click.prevent="currentStep--">Forrige</button>
+              </p>
+            </fieldset>
+          </div>
+        </template>
       </div>
+      <!-- test 1 end -->
     </div>
   </div>
 </template>
@@ -453,5 +494,10 @@ html {
 .back-link {
   border: none;
   background: none;
+}
+
+.card {
+  box-shadow: none;
+  border-color: #d7dadf;
 }
 </style>
