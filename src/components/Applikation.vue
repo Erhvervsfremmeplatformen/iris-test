@@ -145,29 +145,79 @@
                   <p>{{ step.description }}</p>
                   <div v-for="(question, questionIndex) of step.questions" :key="questionIndex">
                     <legend class="h5">{{ question.label }}</legend>
-                    <ul class="nobullet-list">
+                    <ul class="nobullet-list" v-if="question.type === 'radio'">
                       <li v-for="(option, index) of question.options" :key="index">
                         <input
                           :id="`radio-${questionIndex}-${index}`"
                           type="radio"
                           :name="question.name"
-                          :value="option"
+                          :value="option.value ? option.value : index + 1"
                           class="form-radio"
                           :checked="values[question.name] === index + 1"
                           required
                           v-on="{ input, blur }"
                         />
-                        <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`">{{ option }} </label>
+                        <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`">{{ option.label }} </label>
                       </li>
                     </ul>
+                    <div v-else class="form-range">
+                      <input
+                        :id="`range-${questionIndex}`"
+                        type="range"
+                        :name="question.name"
+                        :value="values[question.name]"
+                        :max="question.options.length"
+                        min="1"
+                        required
+                        v-on="{ input, blur }"
+                      />
+                      <div class="sliderOptions">
+                        <div
+                          v-for="(option, optionIndex) in question.options"
+                          :key="option.label"
+                          :class="['sliderOptions_item', optionIndex + 1 == values[question.name] ? 'selected' : '']"
+                        >
+                          {{ option.label }}
+                        </div>
+                      </div>
+                      <!-- <label :id="`form-label-range-${questionIndex}`" :for="`range-${questionIndex}`">{{ option.label }} </label> -->
+                    </div>
                   </div>
-                  <button class="button button-primary d-block mt-7" @click.prevent="currentStep++">
+                  <button
+                    class="button button-primary d-block mt-7"
+                    @click.prevent="currentStep + 1 === section.steps.length ? handleSubmit() : currentStep++"
+                  >
                     {{ currentStep === 0 ? 'Start testen' : currentStep + 1 === section.steps.length ? 'Se resultat' : 'Næste' }}
                   </button>
                   <button v-if="currentStep > 0" class="back-link d-block mt-3" @click.prevent="currentStep--">Forrige</button>
                 </fieldset>
-
-                <div v-if="currentStep === section.steps.length - 1">Resultater</div>
+              </div>
+              <div v-if="currentStep === section.steps.length">
+                <div class="row">
+                  <div class="col">
+                    <h2 class="h4">Pres for forreningsmodellen fordelt på områder</h2>
+                    <apexchart
+                      v-if="response"
+                      height="500px"
+                      type="radar"
+                      :options="radarOptions"
+                      :series="[
+                        {
+                          name: 'Din virksomhed',
+                          data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean)
+                        },
+                        {
+                          name: 'Branchen',
+                          data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
+                        },
+                        {
+                          name: 'Alle virksomheder',
+                          data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
+                        }
+                      ]"
+                    ></apexchart>
+                  </div>
+                </div>
               </div>
             </template>
           </SimpleForm>
@@ -193,25 +243,36 @@ import * as DKFDS from 'dkfds';
   }
 })
 export default class Applikation extends Vue {
-  response = {};
+  response = {} as any;
   private error = {};
   isLoading = false;
-  currentStep = 0;
-  currentSection = 'frontpage'; // initial value frontpage - possible values
-  industries = [
-    'Industri',
-    'Bygge og anlæg',
-    'Handel',
-    'Transport',
-    'Videnservice',
-    'Kommunikation og reklame',
-    'Operationel service',
-    'Oplevelseserhverv',
-    'Andet (angiv hvilket)'
-  ];
+  currentStep = 0; // initial value 1
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
-  defaultOptions = ['1 = meget enig', '2', '3', '4', '5', '6', '7', '8', '9', '10 = meget enig'];
+  defaultOptions = [
+    { label: '1' },
+    { label: '2' },
+    { label: '3' },
+    { label: '4' },
+    { label: '5' },
+    { label: '6' },
+    { label: '7' },
+    { label: '8' },
+    { label: '9' },
+    { label: '10' }
+  ];
+  industries = [
+    { label: 'Industri', value: 'Industri' },
+    { label: 'Bygge og anlæg', value: 'Bygge og anlæg' },
+    { label: 'Handel', value: 'Handel' },
+    { label: 'Transport', value: 'Transport' },
+    { label: 'Videnservice', value: 'Videnservice' },
+    { label: 'Kommunikation og reklame', value: 'Kommunikation og reklame' },
+    { label: 'Operationel service', value: 'Operationel service' },
+    { label: 'Oplevelseserhverv', value: 'Oplevelseserhverv' },
+    { label: 'Andet (angiv hvilket)', value: 'Andet (angiv hvilket)' }
+  ];
   defaultDescription = 'Angiv hvor enig du er i de enkelte udsagn, hvor 10= meget enig og 1= meget uenig.';
   sections = [
     {
@@ -224,18 +285,9 @@ export default class Applikation extends Vue {
           questions: [
             {
               name: 'industry',
+              type: 'radio',
               label: 'Vælg din virksomheds branche og start testen',
-              options: [
-                'Industri',
-                'Bygge og anlæg',
-                'Handel',
-                'Transport',
-                'Videnservice',
-                'Kommunikation og reklame',
-                'Operationel service',
-                'Oplevelseserhverv',
-                'Andet (angiv hvilket)'
-              ]
+              options: this.industries
             }
           ]
         },
@@ -378,17 +430,8 @@ export default class Applikation extends Vue {
             {
               name: 'industry',
               label: 'Vælg din virksomheds branche og start testen',
-              options: [
-                'Industri',
-                'Bygge og anlæg',
-                'Handel',
-                'Transport',
-                'Videnservice',
-                'Kommunikation og reklame',
-                'Operationel service',
-                'Oplevelseserhverv',
-                'Andet (angiv hvilket)'
-              ]
+              type: 'radio',
+              options: this.industries
             }
           ]
         },
@@ -565,16 +608,9 @@ export default class Applikation extends Vue {
     }
   ];
 
-  // get thisStep() {
-  //   if (this.currentSection === 'frontpage') {
-  //     return null;
-  //   }
-  //   const partIndex = parseInt(this.currentSection.replace('test', ''), 10);
-  //   return this.sections[partIndex][this.currentStep];
-  // }
-
-  values = [];
+  values = [] as any;
   initialValues = {
+    industry: 'Industri',
     internal1: 0,
     internal2: 0,
     internal3: 0,
@@ -606,7 +642,7 @@ export default class Applikation extends Vue {
     customers1: 0,
     customers2: 0,
     customers3: 0,
-    customer4: 0,
+    customers4: 0,
     sales1: 0,
     sales2: 0,
     sales3: 0,
@@ -633,70 +669,133 @@ export default class Applikation extends Vue {
     resourcesvalue4: 0
   };
 
+  get radarOptions() {
+    if (!this.response) {
+      return null;
+    }
+
+    const chartColors = {
+      textColor: '#1A1A1A'
+    };
+
+    const categories = this.response.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
+    return {
+      chart: {
+        id: 'radar',
+        // foreColor: this.chartColors.textColor,
+        // fontFamily: 'Helvetica Neue, Helvetica, sans-serif',
+        fontFamily: 'IBMPlexSans, system',
+        offsetY: -25,
+        toolbar: {
+          show: false
+        }
+      },
+      stroke: {
+        width: 1
+        // colors: [this.chartColors.blueSolid, this.chartColors.orangeSolid, this.chartColors.greenSolid]
+      },
+      plotOptions: {
+        radar: {
+          size: 150,
+          polygons: {
+            strokeColor: '#e8e8e8',
+            fill: {
+              colors: ['#fff']
+            }
+          }
+        }
+      },
+      xaxis: {
+        categories: categories,
+        labels: {
+          style: {
+            colors: Array(categories.length).fill(chartColors.textColor),
+            fontSize: 13
+          }
+        }
+      },
+      yaxis: {
+        min: 0,
+        max: 10,
+        tickAmount: 5,
+        labels: {
+          offsetX: 8,
+          style: {
+            colors: Array(categories.length).fill(chartColors.textColor),
+            fontSize: 12
+          }
+        }
+      },
+      markers: {
+        size: 4,
+        hover: {
+          size: 7
+        }
+      },
+      legend: {
+        fontSize: '14px',
+        itemMargin: {
+          horizontal: 8,
+          vertical: 8
+        },
+        offsetY: -50
+        // markers: {
+        //   width: 20,
+        //   height: 20,
+        //   radius: 5,
+        //   strokeWidth: 1,
+        //   strokeColor: [this.chartColors.blueSolid, this.chartColors.orangeSolid, this.chartColors.greenSolid]
+        // }
+      }
+    };
+  }
+
   @Watch('currentStep')
   @Watch('currentSection')
   onStepChanged(value: string, oldValue: string) {
     // updated
     window.scrollTo(0, 0);
+    this.validate(this.values);
     // this.maxStep = this.maxStep > this.currentStep ? this.maxStep : this.currentStep;
     // this.error = '';
     // this.errorHeading = '';
   }
 
   mounted() {
-    this.isLoading = true;
     DKFDS.init();
+    // this.isLoading = true;
     // new DKFDS.Dropdown(document.getElementById('overflow-button'));
-    this.callExternalApi();
+    // this.callExternalApi();
   }
 
-  private async callExternalApi() {
+  private async callExternalApi() {}
+
+  handleSubmit({ values, errors, setSubmitting, setSubmitted }: any) {
+    console.log('submit');
+    console.log(values);
+    console.log(this.values);
+    this.isLoading = true;
+    const answers = {};
+    Object.entries(this.values)
+      .filter(([key, value]) => key !== 'industry')
+      .forEach(([key, value]) => {
+        answers[key] = parseInt(value, 10);
+      });
+    console.log(answers);
     const data = JSON.stringify({
-      answers: {
-        value1: 10,
-        value2: 8,
-        value3: 8,
-        value4: 7,
-        customers1: 3,
-        customers2: 5,
-        customers3: 5,
-        customer4: 10,
-        sales1: 8,
-        sales2: 10,
-        sales3: 9,
-        sales4: 9,
-        resources1: 10,
-        resources2: 10,
-        resources3: 7,
-        resources4: 7,
-        valuecustomer1: 9,
-        valuecustomer2: 8,
-        valuecustomer3: 6,
-        valuecustomer4: 9,
-        customersales1: 9,
-        customersales2: 9,
-        customersales3: 9,
-        customersales4: 9,
-        salesresources1: 9,
-        salesresources2: 10,
-        salesresources3: 10,
-        salesresources4: 10,
-        resourcesvalue1: 9,
-        resourcesvalue2: 8,
-        resourcesvalue3: 7,
-        resourcesvalue4: 6
-      },
-      industry: 'Industri'
+      answers: answers,
+      industry: this.values.industry
     });
     console.log(data);
     axios
-      .post(this.apiBaseUrl + '/suggestions', data, {
+      .post(this.apiBaseUrl + '/feedback/' + this.currentSection.replace('test', ''), data, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       .then((rsp: any) => {
         console.log(rsp.data);
+        this.currentStep++;
         this.isLoading = false;
 
         if (!rsp.data.error) {
@@ -709,10 +808,6 @@ export default class Applikation extends Vue {
         this.isLoading = false;
         this.error = 'Noget gik galt. Prøv venligst igen.';
       });
-  }
-
-  handleSubmit({ values, errors, setSubmitting, setSubmitted }: any) {
-    this.isLoading = true;
   }
 
   validate(values: any) {
@@ -750,6 +845,40 @@ img {
 
   .card {
     flex-grow: 1;
+  }
+}
+
+.form-range {
+  max-width: 66ch;
+  margin-top: 1rem;
+}
+
+.sliderOptions {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+
+  &_item {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 1px;
+    white-space: nowrap;
+    position: relative;
+    font-size: 12px;
+    // margin-top: 12px;
+
+    // &:before {
+    //   content: '';
+    //   width: 1px;
+    //   height: 24px;
+    //   display: block;
+    //   position: absolute;
+    //   visibility: visible;
+    //   z-index: 0;
+    //   top: -28px;
+    //   background: #747474;
+    // }
   }
 }
 </style>
