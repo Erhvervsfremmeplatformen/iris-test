@@ -247,7 +247,7 @@ export default class Applikation extends Vue {
   private error = {};
   isLoading = false;
   currentStep = 0; // initial value 1
-  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
   defaultOptions = [
