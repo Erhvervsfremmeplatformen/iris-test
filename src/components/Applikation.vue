@@ -197,7 +197,7 @@ export default class Applikation extends Vue {
   private error = {};
   isLoading = false;
   currentStep = 0;
-  currentSection = 'test2'; // initial value frontpage - possible values
+  currentSection = 'frontpage'; // initial value frontpage - possible values
   industries = [
     'Industri',
     'Bygge og anlæg',
