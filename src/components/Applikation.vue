@@ -5,7 +5,7 @@
 
       <!-- Frontpage start -->
       <template v-else-if="currentSection === 'frontpage'">
-        <div class="col-12 align-text-center">
+        <div class="col-12 align-text-center pt-7">
           <h1>
             Test og styrk din virksomheds forretningsmodel
             <div class="h2 m-4">med diagnoseværktøj i to dele</div>
@@ -41,7 +41,7 @@
                 </p>
               </div>
               <div class="col-6 mb-7">
-                <div class="card">
+                <div class="card card-border">
                   <div class="card-header px-7">
                     <h2>Sådan fungerer testen</h2>
                   </div>
@@ -63,11 +63,11 @@
                 </div>
               </div>
               <div class="col-6 mb-7">
-                <div class="d-flex flex-column bg-alternative">
-                  <img class="p-5" src="/img/test1.png" alt="billede" />
+                <div class="d-flex flex-column">
                   <div class="card card-align-height w-percent-100">
-                    <div class="card-text">
-                      <h3>Vurder presset på din forretningsmodel</h3>
+                    <figure class="figure p-5 bg-alternative" v-html="imgs[0]"></figure>
+                    <div class="card-text card-border">
+                      <button class="card-link h3" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
                       <p>
                         Der er flere ting der spiller ind, når en forretningsmodel kommer under pres. Tag testen og få en indikation af, om der kan
                         være behov for at efterse hele eller dele af din forretningsmodel.
@@ -77,11 +77,11 @@
                 </div>
               </div>
               <div class="col-6 mb-7">
-                <div class="d-flex flex-column bg-alternative">
-                  <img class="p-5" src="/img/test2.png" alt="billede" />
+                <div class="d-flex flex-column">
                   <div class="card card-align-height w-percent-100">
-                    <div class="card-text">
-                      <h3>Juster din forretningsmodel</h3>
+                    <figure class="figure p-5 bg-alternative" v-html="imgs[1]"></figure>
+                    <div class="card-text card-border">
+                      <button class="card-link h3" @click.prevent="currentSection = 'test2'">Juster din forretningsmodel</button>
                       <p>
                         For at udvikle en god forretningsmodel kræver det balance i modellens fire elementer, samt samspillet mellem dem. Tag testen
                         og få inspiration til hvordan din forretningsmodel kan justeres eller forbedres.
@@ -102,8 +102,8 @@
           <SimpleForm :value="initialValues" :validate="validate" @submit="handleSubmit">
             <template slot-scope="{ values, input, blur, validate, setValue, handleSubmit }">
               <div class="row">
-                <div class="col-lg-9">
-                  <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }} {{ sectionIndex + 1 }}</p>
+                <div class="col-lg-9 mb-7">
+                  <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                   <h2 class="h1">{{ section.headline }}</h2>
                   <p v-if="section.description" class="font-lead">
@@ -347,10 +347,12 @@ export default class Applikation extends Vue {
   private error = {};
   isLoading = false;
   currentStep = 0; // initial value 0
-  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  imgs = [] as any;
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
   defaultOptions = [
+    { label: '0' },
     { label: '1' },
     { label: '2' },
     { label: '3' },
@@ -371,7 +373,7 @@ export default class Applikation extends Vue {
     { label: 'Kommunikation og reklame', value: 'Kommunikation og reklame' },
     { label: 'Operationel service', value: 'Operationel service' },
     { label: 'Oplevelseserhverv', value: 'Oplevelseserhverv' },
-    { label: 'Andet (angiv hvilket)', value: 'Andet (angiv hvilket)' }
+    { label: 'Andet', value: 'Andet' }
   ];
   defaultDescription = 'Angiv hvor enig du er i de enkelte udsagn, hvor 10= meget enig og 1= meget uenig.';
   sections = [
@@ -918,16 +920,16 @@ export default class Applikation extends Vue {
     // updated
     window.scrollTo(0, 0);
     this.validate(this.values);
+    DKFDS.init();
     // this.maxStep = this.maxStep > this.currentStep ? this.maxStep : this.currentStep;
     // this.error = '';
     // this.errorHeading = '';
   }
 
   mounted() {
-    DKFDS.init();
     // this.isLoading = true;
     // new DKFDS.Dropdown(document.getElementById('overflow-button'));
-    // this.callExternalApi();
+    this.getImages();
   }
 
   updated() {
@@ -935,14 +937,45 @@ export default class Applikation extends Vue {
       document.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           event.stopImmediatePropagation();
-          console.log('enter');
           document.getElementById('primaryButton')?.click();
         }
       });
     }
   }
 
-  private async callExternalApi() {}
+  private async getImages() {
+    this.isLoading = true;
+
+    Promise.all([axios.get(this.apiBaseUrl + '/img/part1'), axios.get(this.apiBaseUrl + '/img/part2')]).then(responses => {
+      const [url1rest, url2resp] = responses;
+      this.imgs = [url1rest.data, url2resp.data];
+      console.log(this.imgs);
+      this.isLoading = false;
+
+      // do something
+    });
+
+    // axios
+    //   .get(this.apiBaseUrl + '/img/', {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   })
+    //   .then((rsp: any) => {
+    //     console.log(rsp.data);
+    //     this.isLoading = false;
+
+    //     if (!rsp.data.error) {
+    //       this.isLoading = false;
+    //       this.imgs = rsp.data;
+    //     }
+    //   })
+    //   .catch((error: any) => {
+    //     console.log(error);
+    //     this.isLoading = false;
+    //     this.error = 'Noget gik galt. Prøv venligst igen.';
+    //   });
+  }
 
   handleSubmit({ values, errors, setSubmitting, setSubmitted }: any) {
     console.log('submit');
@@ -1005,13 +1038,34 @@ html {
 
 .card {
   box-shadow: none;
-  border-color: #d7dadf;
+  border-color: transparent;
 
   &-blue {
     border: none;
 
-    & >>> * {
+    & >>> *:not(.button) {
       background-color: #e7efff;
+    }
+  }
+
+  &-border {
+    border: 1px solid #d7dadf;
+  }
+
+  &-link {
+    appearance: none;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    padding: 0;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
     }
   }
 }
@@ -1049,6 +1103,10 @@ img {
     white-space: nowrap;
     position: relative;
     font-size: 12px;
+
+    &:nth-of-type(1) {
+      visibility: hidden;
+    }
     // margin-top: 12px;
 
     // &:before {
@@ -1073,5 +1131,21 @@ img {
 
 .applikation-container >>> svg {
   // overflow: visible !important;
+}
+
+.icon-svg {
+  height: 1.6rem;
+  width: 1.6rem;
+}
+
+.figure {
+  margin: 0;
+  & >>> svg {
+    width: auto;
+    max-height: 400px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
 }
 </style>
