@@ -184,15 +184,17 @@
                             type="range"
                             :name="question.name"
                             :value="values[question.name]"
-                            :max="question.options.length"
+                            :max="question.options.length - 1"
                             :autofocus="questionIndex === 0"
-                            min="1"
+                            min="0"
+                            :v-model="myValues[question.name]"
                             required
-                            :aria-valuemax="question.options.length"
-                            aria-valuemin="1"
+                            :aria-valuemax="question.options.length - 1"
+                            aria-valuemin="0"
                             :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
                             aria-role="slider"
                             :aria-valuenow="values[question.name]"
+                            :class="`slider-${values[question.name]}`"
                             v-on="{ input, blur }"
                           />
                           <div class="sliderOptions">
@@ -242,15 +244,15 @@
                             :series="[
                               {
                                 name: 'Din virksomhed',
-                                data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean)
+                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_answers)
                               },
                               {
                                 name: 'Branchen',
-                                data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
+                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
                               },
                               {
                                 name: 'Alle virksomheder',
-                                data: response.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
+                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
                               }
                             ]"
                           ></apexchart>
@@ -264,7 +266,12 @@
                             :series="[
                               {
                                 name: 'Presset på forretningsmodellen',
-                                data: [45, 58, 22]
+                                data: [
+                                  parseInt(response.scores[0].score_own),
+                                  parseInt(response.scores[0].mean_score_industry),
+                                  parseInt(response.scores[0].mean_score_all)
+                                  //16.56, 17, 20.3
+                                ]
                               }
                             ]"
                           ></apexchart>
@@ -346,8 +353,8 @@ export default class Applikation extends Vue {
   response = {} as any;
   private error = {};
   isLoading = false;
-  currentStep = 0; // initial value 0
-  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentStep = 3; // initial value 0
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
@@ -718,13 +725,12 @@ export default class Applikation extends Vue {
     }
   ];
 
-  values = [] as any;
+  myValues = [] as any;
   initialValues = {
     industry: 'Industri',
     internal1: 0,
     internal2: 0,
     internal3: 0,
-    internal4: 0,
     market1: 0,
     market2: 0,
     market3: 0,
@@ -732,51 +738,39 @@ export default class Applikation extends Vue {
     technology1: 0,
     technology2: 0,
     technology3: 0,
-    technology4: 0,
     supplychain1: 0,
     supplychain2: 0,
     supplychain3: 0,
-    supplychain4: 0,
     sustainability1: 0,
     sustainability2: 0,
     sustainability3: 0,
-    sustainability4: 0,
     unsecurity1: 0,
     unsecurity2: 0,
     unsecurity3: 0,
-    unsecurity4: 0,
     value1: 0,
     value2: 0,
     value3: 0,
-    value4: 0,
     customers1: 0,
     customers2: 0,
     customers3: 0,
-    customers4: 0,
     sales1: 0,
     sales2: 0,
     sales3: 0,
-    sales4: 0,
     resources1: 0,
     resources2: 0,
     resources3: 0,
-    resources4: 0,
     valuecustomer1: 0,
     valuecustomer2: 0,
     valuecustomer3: 0,
-    valuecustomer4: 0,
     customersales1: 0,
     customersales2: 0,
     customersales3: 0,
-    customersales4: 0,
     salesresources1: 0,
     salesresources2: 0,
     salesresources3: 0,
-    salesresources4: 0,
     resourcesvalue1: 0,
     resourcesvalue2: 0,
-    resourcesvalue3: 0,
-    resourcesvalue4: 0
+    resourcesvalue3: 0
   };
 
   get radarOptions() {
@@ -788,7 +782,7 @@ export default class Applikation extends Vue {
       textColor: '#1A1A1A'
     };
 
-    const categories = this.response.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
+    const categories = this.response.category_means.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
     return {
       chart: {
         id: 'radar',
@@ -868,7 +862,7 @@ export default class Applikation extends Vue {
       textColor: '#1A1A1A'
     };
 
-    const categories = this.response.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
+    const categories = this.response.category_means.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
     return {
       chart: {
         id: 'bar',
@@ -919,8 +913,8 @@ export default class Applikation extends Vue {
   onStepChanged(value: string, oldValue: string) {
     // updated
     window.scrollTo(0, 0);
-    this.validate(this.values);
-    DKFDS.init();
+    this.validate(this.myValues);
+    // DKFDS.init();
     // this.maxStep = this.maxStep > this.currentStep ? this.maxStep : this.currentStep;
     // this.error = '';
     // this.errorHeading = '';
@@ -929,6 +923,7 @@ export default class Applikation extends Vue {
   mounted() {
     // this.isLoading = true;
     // new DKFDS.Dropdown(document.getElementById('overflow-button'));
+    DKFDS.init();
     this.getImages();
   }
 
@@ -949,10 +944,7 @@ export default class Applikation extends Vue {
     Promise.all([axios.get(this.apiBaseUrl + '/img/part1'), axios.get(this.apiBaseUrl + '/img/part2')]).then(responses => {
       const [url1rest, url2resp] = responses;
       this.imgs = [url1rest.data, url2resp.data];
-      console.log(this.imgs);
       this.isLoading = false;
-
-      // do something
     });
 
     // axios
@@ -980,10 +972,10 @@ export default class Applikation extends Vue {
   handleSubmit({ values, errors, setSubmitting, setSubmitted }: any) {
     console.log('submit');
     console.log(values);
-    console.log(this.values);
+    console.log(this.myValues);
     this.isLoading = true;
     const answers = {} as any;
-    Object.entries(this.values)
+    Object.entries(this.myValues)
       .filter(([key, value]) => key !== 'industry')
       .forEach(([key, value]) => {
         answers[key] = parseInt(value as string, 10);
@@ -991,7 +983,7 @@ export default class Applikation extends Vue {
     console.log(answers);
     const data = JSON.stringify({
       answers: answers,
-      industry: this.values.industry
+      industry: this.myValues.industry
     });
     console.log(data);
     axios
@@ -1018,8 +1010,10 @@ export default class Applikation extends Vue {
   }
 
   validate(values: any) {
-    this.values = values;
-    // console.log(values);
+    console.log('validerer');
+    console.log(values);
+    this.myValues = values;
+
     return {
       email: 'Email is invalid'
     };
@@ -1087,13 +1081,62 @@ img {
 .form-range {
   max-width: 66ch;
   margin-top: 1rem;
+
+  input[type='range'] {
+    padding: 12px 0;
+    background: transparent;
+    height: 8px;
+
+    &::-moz-range-track {
+      border: none;
+      height: 8px;
+      border-radius: 8px;
+    }
+    &::-webkit-slider-runnable-track {
+      height: 8px;
+      border: none;
+      border-radius: 8px;
+    }
+    &::-webkit-slider-thumb {
+      border: 1px solid #dcdcdc;
+      box-shadow: 0px 2px 5px rgba(60, 66, 87, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.12);
+    }
+    &::-moz-range-thumb {
+      border: 1px solid #dcdcdc;
+      box-shadow: 0px 2px 5px rgba(60, 66, 87, 0.08), 0px 1px 1px rgba(0, 0, 0, 0.12);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .slider-0 {
+    &::-moz-range-track {
+      background: #bfbfbf;
+    }
+    &::-webkit-slider-runnable-track {
+      background: #bfbfbf;
+    }
+  }
+
+  @for $i from 1 through 10 {
+    .slider-#{$i} {
+      &::-moz-range-track {
+        background: linear-gradient(to right, #0052ff 0%, #0052ff $i * 10%, #bfbfbf $i * 10%);
+      }
+      &::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #0052ff 0%, #0052ff $i * 10%, #bfbfbf $i * 10%);
+      }
+    }
+  }
 }
 
 .sliderOptions {
   display: flex;
   justify-content: space-between;
   position: relative;
-  margin: 0 12px;
+  margin: 20px 12px 0;
 
   &_item {
     display: flex;
@@ -1102,24 +1145,51 @@ img {
     width: 1px;
     white-space: nowrap;
     position: relative;
-    font-size: 12px;
+    font-size: 13px;
+    color: #454545;
 
     &:nth-of-type(1) {
       visibility: hidden;
+      @include media-breakpoint-up(sm) {
+        &:before {
+          content: 'Meget uenig';
+          visibility: visible;
+          font-weight: bold;
+          white-space: normal;
+          margin-left: 24px;
+          margin-top: -18px;
+        }
+      }
+    }
+
+    @include media-breakpoint-up(sm) {
+      &:nth-of-type(11) {
+        &:after {
+          position: absolute;
+          content: 'Meget enig';
+          visibility: visible;
+          font-weight: bold;
+          white-space: normal;
+          // margin-left: 24px;
+          transform: translateX(calc(100% + 24px));
+          text-align: right;
+          margin-top: -18px;
+        }
+      }
     }
     // margin-top: 12px;
 
-    // &:before {
-    //   content: '';
-    //   width: 1px;
-    //   height: 24px;
-    //   display: block;
-    //   position: absolute;
-    //   visibility: visible;
-    //   z-index: 0;
-    //   top: -28px;
-    //   background: #747474;
-    // }
+    &:not(:nth-of-type(1)):before {
+      content: '';
+      width: 1px;
+      height: 8px;
+      display: block;
+      position: absolute;
+      visibility: visible;
+      z-index: 0;
+      top: -16px;
+      background: #999999;
+    }
   }
 }
 
