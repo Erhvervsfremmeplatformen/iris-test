@@ -178,7 +178,6 @@
                         </li>
                       </ul>
                       <div v-else class="form-range">
-                        {{ values[question.name] }}
                         <input
                           :id="`range-${questionIndex}`"
                           type="range"
@@ -188,6 +187,8 @@
                           required
                           :aria-valuemax="question.options.length - 1"
                           aria-valuemin="0"
+                          :value="values[question.name]"
+                          :name="question.name"
                           :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
                           aria-role="slider"
                           :aria-valuenow="values[question.name]"
@@ -295,7 +296,7 @@
                   </div>
                 </div>
 
-                <div class="row" v-if="currentSection === 'test1'">
+                <div v-if="currentSection === 'test1'" class="row">
                   <div class="col-6 mt-7">
                     <div class="card card-blue">
                       <div class="card-header pt-7 px-7">
@@ -346,7 +347,7 @@ export default class Applikation extends Vue {
   response = {} as any;
   private error = {};
   isLoading = false;
-  currentStep = 1; // initial value 0
+  currentStep = 0; // initial value 0
   currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
 
