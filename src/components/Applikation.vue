@@ -1,351 +1,344 @@
 <template>
   <div class="applikation-container">
-    <div class="row">
-      <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
+    <form @submit.prevent="handleSubmit">
+      <div class="row">
+        <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
 
-      <!-- Frontpage start -->
-      <template v-else-if="currentSection === 'frontpage'">
-        <div class="col-12 align-text-center pt-7">
-          <h1>
-            Test og styrk din virksomheds forretningsmodel
-            <div class="h2 m-4">med diagnoseværktøj i to dele</div>
-            <p class="font-lead" style="max-width: none">Vælg en af af de to tests nedenfor</p>
-            <div class="row" style="justify-content: center">
-              <div class="m-2">
-                <button class="button button-primary" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
-              </div>
-              <div class="m-2">
-                <button class="button button-primary" @click.prevent="currentSection = 'test2'">Få forbedringer til din forretningsmodel</button>
-              </div>
-            </div>
-          </h1>
-        </div>
-        <div class="bg-normal full-width mt-9 p-7">
-          <div class="container">
-            <div class="row">
-              <div class="col-6 mb-7">
-                <h2 class="mt-4">Hvorfor teste din forretningsmodel?</h2>
-                <p>
-                  Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder i markedet, der gør det
-                  relevant at styrke eller justere forretningsmodelen. Formålet med de to test ser at give dig en indikation af, om der kan være behov
-                  for at efterse hele eller dele af din virksomheds forretningsmodel.
-                </p>
-                <h2>Hvem kan tage testen?</h2>
-                <p>
-                  De to tests er målrettet små og mellemstore virksomheder. Den kan besvares af ledelsen eller medarbejdere, og kan med fordel
-                  besvares af flere fra samme virksomhed, så svarene eventuelt kan sammenlignes internt.
-                </p>
-                <p>
-                  Testene baserer sig på besvarelser fra en stor undersøgelse blandt mindre og mellemstore virksomheder, der succesfuldt har forandret
-                  eller styrket deres forretningsmodel.
-                </p>
-              </div>
-              <div class="col-6 mb-7">
-                <div class="card card-border">
-                  <div class="card-header px-7">
-                    <h2>Sådan fungerer testen</h2>
-                  </div>
-                  <div class="card-text px-7">
-                    <p>
-                      Testen baserer sig på en større undersøgelse blandt små og mellemstore virksomheder, der succesfuldt har forandret eller styrket
-                      hele eller dele af forretningen. Den viser, at drivkræfterne bag forretningsmodeludvikling typisk falder inden for seks
-                      hovedområder:
-                    </p>
-                    <ul>
-                      <li v-for="(theme, index) of sections[0].steps" :key="index">{{ theme.headline }}</li>
-                    </ul>
-                    <p>
-                      Derfor beder vi dig i den første test om at stilling til en række udsagn knyttet til disse hovedområder. I den anden test beder
-                      vi dig om at tage stilling til de fire dele i forretningsmodellen – 1) virksomhedens værditilbud, 2) kunder, 3) Salg 4) og
-                      kommunikation, Ressourcer, partnere og processer, samt samspillet mellem dem
-                    </p>
-                  </div>
+        <!-- Frontpage start -->
+        <template v-else-if="currentSection === 'frontpage'">
+          <div class="col-12 align-text-center pt-7">
+            <h1>
+              Test og styrk din virksomheds forretningsmodel
+              <div class="h2 m-4">med diagnoseværktøj i to dele</div>
+              <p class="font-lead" style="max-width: none">Vælg en af af de to tests nedenfor</p>
+              <div class="row" style="justify-content: center">
+                <div class="m-2">
+                  <button class="button button-primary" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
+                </div>
+                <div class="m-2">
+                  <button class="button button-primary" @click.prevent="currentSection = 'test2'">Få forbedringer til din forretningsmodel</button>
                 </div>
               </div>
-              <div class="col-6 mb-7">
-                <div class="d-flex flex-column">
-                  <div class="card card-align-height w-percent-100">
-                    <figure class="figure p-5 bg-alternative" v-html="imgs[0]"></figure>
-                    <div class="card-text card-border">
-                      <button class="card-link h3" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
+            </h1>
+          </div>
+          <div class="bg-normal full-width mt-9 p-7">
+            <div class="container">
+              <div class="row">
+                <div class="col-6 mb-7">
+                  <h2 class="mt-4">Hvorfor teste din forretningsmodel?</h2>
+                  <p>
+                    Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder i markedet, der gør
+                    det relevant at styrke eller justere forretningsmodelen. Formålet med de to test ser at give dig en indikation af, om der kan være
+                    behov for at efterse hele eller dele af din virksomheds forretningsmodel.
+                  </p>
+                  <h2>Hvem kan tage testen?</h2>
+                  <p>
+                    De to tests er målrettet små og mellemstore virksomheder. Den kan besvares af ledelsen eller medarbejdere, og kan med fordel
+                    besvares af flere fra samme virksomhed, så svarene eventuelt kan sammenlignes internt.
+                  </p>
+                  <p>
+                    Testene baserer sig på besvarelser fra en stor undersøgelse blandt mindre og mellemstore virksomheder, der succesfuldt har
+                    forandret eller styrket deres forretningsmodel.
+                  </p>
+                </div>
+                <div class="col-6 mb-7">
+                  <div class="card card-border">
+                    <div class="card-header px-7">
+                      <h2>Sådan fungerer testen</h2>
+                    </div>
+                    <div class="card-text px-7">
                       <p>
-                        Der er flere ting der spiller ind, når en forretningsmodel kommer under pres. Tag testen og få en indikation af, om der kan
-                        være behov for at efterse hele eller dele af din forretningsmodel.
+                        Testen baserer sig på en større undersøgelse blandt små og mellemstore virksomheder, der succesfuldt har forandret eller
+                        styrket hele eller dele af forretningen. Den viser, at drivkræfterne bag forretningsmodeludvikling typisk falder inden for
+                        seks hovedområder:
+                      </p>
+                      <ul>
+                        <li v-for="(theme, index) of sections[0].steps" :key="index">{{ theme.headline }}</li>
+                      </ul>
+                      <p>
+                        Derfor beder vi dig i den første test om at stilling til en række udsagn knyttet til disse hovedområder. I den anden test
+                        beder vi dig om at tage stilling til de fire dele i forretningsmodellen – 1) virksomhedens værditilbud, 2) kunder, 3) Salg 4)
+                        og kommunikation, Ressourcer, partnere og processer, samt samspillet mellem dem
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-6 mb-7">
-                <div class="d-flex flex-column">
-                  <div class="card card-align-height w-percent-100">
-                    <figure class="figure p-5 bg-alternative" v-html="imgs[1]"></figure>
-                    <div class="card-text card-border">
-                      <button class="card-link h3" @click.prevent="currentSection = 'test2'">Juster din forretningsmodel</button>
-                      <p>
-                        For at udvikle en god forretningsmodel kræver det balance i modellens fire elementer, samt samspillet mellem dem. Tag testen
-                        og få inspiration til hvordan din forretningsmodel kan justeres eller forbedres.
-                      </p>
+                <div class="col-6 mb-7">
+                  <div class="d-flex flex-column">
+                    <div class="card card-align-height w-percent-100">
+                      <figure class="figure p-5 bg-alternative" v-html="imgs[0]"></figure>
+                      <div class="card-text card-border">
+                        <button class="card-link h3" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
+                        <p>
+                          Der er flere ting der spiller ind, når en forretningsmodel kommer under pres. Tag testen og få en indikation af, om der kan
+                          være behov for at efterse hele eller dele af din forretningsmodel.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 mb-7">
+                  <div class="d-flex flex-column">
+                    <div class="card card-align-height w-percent-100">
+                      <figure class="figure p-5 bg-alternative" v-html="imgs[1]"></figure>
+                      <div class="card-text card-border">
+                        <button class="card-link h3" @click.prevent="currentSection = 'test2'">Juster din forretningsmodel</button>
+                        <p>
+                          For at udvikle en god forretningsmodel kræver det balance i modellens fire elementer, samt samspillet mellem dem. Tag testen
+                          og få inspiration til hvordan din forretningsmodel kan justeres eller forbedres.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
-      <!-- Frontpage end -->
+        </template>
+        <!-- Frontpage end -->
 
-      <!-- test 1 + 2 loop -->
-      <div v-for="(section, sectionIndex) of sections" v-else :key="sectionIndex" class="col-lg-12">
-        <template v-if="currentSection === section.id">
-          <SimpleForm :value="initialValues" :validate="validate" @submit="handleSubmit">
-            <template slot-scope="{ values, input, blur, validate, setValue, handleSubmit }">
-              <div class="row">
-                <div class="col-lg-9 mb-7">
-                  <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
+        <!-- test 1 + 2 loop -->
+        <div v-for="(section, sectionIndex) of sections" v-else :key="sectionIndex" class="col-lg-12">
+          <template v-if="currentSection === section.id">
+            <div class="row">
+              <div class="col-lg-9 mb-7">
+                <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
-                  <h2 class="h1">{{ section.headline }}</h2>
-                  <p v-if="section.description" class="font-lead">
-                    {{ currentStep === section.steps.length ? section.resultIntro : section.description }}
-                  </p>
+                <h2 class="h1">{{ section.headline }}</h2>
+                <p v-if="section.description" class="font-lead">
+                  {{ currentStep === section.steps.length ? section.resultIntro : section.description }}
+                </p>
 
+                <button
+                  v-if="currentStep === section.steps.length && currentSection === 'test1'"
+                  class="button button-primary"
+                  @click.prevent="
+                    currentSection = 'test2';
+                    currentStep = 1;
+                  "
+                >
+                  Tag testen: Få forbedringer til din forretningsmodel
+                </button>
+
+                <div v-if="currentStep > 0 && currentStep < section.steps.length" class="overflow-menu overflow-menu--open-right">
                   <button
-                    v-if="currentStep === section.steps.length && currentSection === 'test1'"
-                    class="button button-primary"
-                    @click.prevent="
-                      currentSection = 'test2';
-                      currentStep = 1;
-                    "
+                    class="button-overflow-menu js-dropdown"
+                    data-js-target="overflow5"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    id="overflow-button"
                   >
-                    Tag testen: Få forbedringer til din forretningsmodel
+                    Trin {{ currentStep }} af {{ section.steps.length - 1 }}
+                    <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
                   </button>
-
-                  <div v-if="currentStep > 0 && currentStep < section.steps.length" class="overflow-menu overflow-menu--open-right">
-                    <button
-                      class="button-overflow-menu js-dropdown"
-                      data-js-target="overflow5"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      id="overflow-button"
-                    >
-                      Trin {{ currentStep }} af {{ section.steps.length - 1 }}
-                      <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
-                    </button>
-                    <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
-                      <nav>
-                        <ul class="overflow-list sidenav-list" role="menu">
-                          <li role="none">
-                            <a href="#" role="menuitem">
-                              1. Trin 1 <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
-                              <span class="sidenav-icon">
-                                <svg class="icon-svg" aria-hidden="true" focusable="false" tabindex="-1"><use xlink:href="#done"></use></svg>
-                              </span>
-                            </a>
-                          </li>
-                          <li role="none" class="active current">
-                            <a href="#" role="menuitem" aria-current="page"> 2. Trin 2 (valgt) </a>
-                          </li>
-                          <li role="none">
-                            <a href="#" role="menuitem"> 3. Trin 3 </a>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
-                  </div>
-
-                  <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
-                    <fieldset v-if="stepIndex === currentStep" class="form-group">
-                      <h3 class="h2 mt-0">{{ step.headline }}</h3>
-                      <p>{{ step.description }}</p>
-                      <div v-for="(question, questionIndex) of step.questions" :key="questionIndex" class="mb-7">
-                        <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
-                        <ul v-if="question.type === 'radio'" class="nobullet-list">
-                          <li v-for="(option, index) of question.options" :key="index">
-                            <input
-                              :id="`radio-${questionIndex}-${index}`"
-                              type="radio"
-                              :autofocus="questionIndex === 0"
-                              :name="question.name"
-                              :value="option.value ? option.value : index + 1"
-                              class="form-radio radio-large"
-                              :checked="values[question.name] === index + 1"
-                              required
-                              v-on="{ input, blur }"
-                            />
-                            <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`"
-                              >{{ option.label }}
-                            </label>
-                          </li>
-                        </ul>
-                        <div v-else class="form-range">
-                          <input
-                            :id="`range-${questionIndex}`"
-                            type="range"
-                            :name="question.name"
-                            :value="values[question.name]"
-                            :max="question.options.length - 1"
-                            :autofocus="questionIndex === 0"
-                            min="0"
-                            :v-model="myValues[question.name]"
-                            required
-                            :aria-valuemax="question.options.length - 1"
-                            aria-valuemin="0"
-                            :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
-                            aria-role="slider"
-                            :aria-valuenow="values[question.name]"
-                            :class="`slider-${values[question.name]}`"
-                            v-on="{ input, blur }"
-                          />
-                          <div class="sliderOptions">
-                            <div
-                              v-for="(option, optionIndex) in question.options"
-                              :key="option.label"
-                              :class="['sliderOptions_item', optionIndex + 1 == values[question.name] ? 'selected' : '']"
-                            >
-                              {{ option.label }}
-                            </div>
-                          </div>
-                          <!-- <label :id="`form-label-range-${questionIndex}`" :for="`range-${questionIndex}`">{{ option.label }} </label> -->
-                        </div>
-                      </div>
-                      <button
-                        id="primaryButton"
-                        class="button button-primary d-block mt-7"
-                        @click="currentStep + 1 === section.steps.length ? handleSubmit() : currentStep++"
-                      >
-                        {{ currentStep === 0 ? 'Start testen' : currentStep + 1 === section.steps.length ? 'Se resultat' : 'Næste' }}
-                      </button>
-                      <button v-if="currentStep > 0" class="back-link d-block mt-3" @click.prevent="currentStep--">Forrige</button>
-                    </fieldset>
+                  <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
+                    <nav>
+                      <ul class="overflow-list sidenav-list" role="menu">
+                        <li role="none">
+                          <a href="#" role="menuitem">
+                            1. Trin 1 <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
+                            <span class="sidenav-icon">
+                              <svg class="icon-svg" aria-hidden="true" focusable="false" tabindex="-1"><use xlink:href="#done"></use></svg>
+                            </span>
+                          </a>
+                        </li>
+                        <li role="none" class="active current">
+                          <a href="#" role="menuitem" aria-current="page"> 2. Trin 2 (valgt) </a>
+                        </li>
+                        <li role="none">
+                          <a href="#" role="menuitem"> 3. Trin 3 </a>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
 
-                <!-- Results start -->
-                <div v-if="currentStep === section.steps.length" class="col-12">
-                  <div class="bg-normal full-width mt-3 p-7">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-12">
-                          <h2>Dit resultat</h2>
-                          <button class="button button-secondary">
-                            <svg class="icon-svg" focusable="false" aria-hidden="true">
-                              <use xlink:href="#download"></use></svg
-                            >Download resultatet som PDF
-                          </button>
-                        </div>
-                        <div class="col-lg-6">
-                          <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
-                          <apexchart
-                            v-if="response"
-                            type="radar"
-                            :options="radarOptions"
-                            height="400px"
-                            :series="[
-                              {
-                                name: 'Din virksomhed',
-                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_answers)
-                              },
-                              {
-                                name: 'Branchen',
-                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
-                              },
-                              {
-                                name: 'Alle virksomheder',
-                                data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
-                              }
-                            ]"
-                          ></apexchart>
-                        </div>
-                        <div class="col-lg-6">
-                          <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
-                          <apexchart
-                            v-if="response && currentSection === 'test1'"
-                            type="bar"
-                            :options="columnOptions"
-                            :series="[
-                              {
-                                name: 'Presset på forretningsmodellen',
-                                data: [
-                                  parseInt(response.scores[0].score_own),
-                                  parseInt(response.scores[0].mean_score_industry),
-                                  parseInt(response.scores[0].mean_score_all)
-                                  //16.56, 17, 20.3
-                                ]
-                              }
-                            ]"
-                          ></apexchart>
-                          <div v-else>
-                            <p
-                              v-for="link of [
-                                'Segmentering af jeres kunder i grupper efter forskellige behov og betydning for jeres indtjening',
-                                'Bedre udnyttelse af ny teknologi i jeres værditilbud',
-                                'Udvikling af flere betalingsmodeller for jeres løsninger',
-                                'Digitalt salg og markedsføring'
-                              ]"
-                              :key="link"
-                            >
-                              <a :href="link"
-                                >{{ link }}
-                                <svg class="icon-svg" focusable="false" aria-hidden="true">
-                                  <use xlink:href="#open-in-new"></use>
-                                </svg>
-                              </a>
-                            </p>
+                <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
+                  <fieldset v-if="stepIndex === currentStep" class="form-group">
+                    <h3 class="h2 mt-0">{{ step.headline }}</h3>
+                    <p>{{ step.description }}</p>
+                    <div v-for="(question, questionIndex) of step.questions" :key="questionIndex" class="mb-7">
+                      <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
+                      <ul v-if="question.type === 'radio'" class="nobullet-list">
+                        <li v-for="(option, index) of question.options" :key="index">
+                          <input
+                            :id="`radio-${questionIndex}-${index}`"
+                            type="radio"
+                            :autofocus="questionIndex === 0"
+                            :name="question.name"
+                            :value="option.value ? option.value : index + 1"
+                            class="form-radio radio-large"
+                            :checked="values[question.name] === index + 1"
+                            required
+                            @input="updateValue(question.name, $event.target.value)"
+                          />
+                          <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`"
+                            >{{ option.label }}
+                          </label>
+                        </li>
+                      </ul>
+                      <div v-else class="form-range">
+                        {{ values[question.name] }}
+                        <input
+                          :id="`range-${questionIndex}`"
+                          type="range"
+                          :max="question.options.length - 1"
+                          :autofocus="questionIndex === 0"
+                          min="0"
+                          required
+                          :aria-valuemax="question.options.length - 1"
+                          aria-valuemin="0"
+                          :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
+                          aria-role="slider"
+                          :aria-valuenow="values[question.name]"
+                          :class="`slider-${values[question.name]}`"
+                          @input="updateValue(question.name, parseInt($event.target.value))"
+                        />
+                        <div class="sliderOptions">
+                          <div
+                            v-for="(option, optionIndex) in question.options"
+                            :key="option.label"
+                            :class="['sliderOptions_item', optionIndex + 1 == values[question.name] ? 'selected' : '']"
+                          >
+                            {{ option.label }}
                           </div>
                         </div>
+                        <!-- <label :id="`form-label-range-${questionIndex}`" :for="`range-${questionIndex}`">{{ option.label }} </label> -->
                       </div>
                     </div>
-                  </div>
-
-                  <div class="row" v-if="currentSection === 'test1'">
-                    <div class="col-6 mt-7">
-                      <div class="card card-blue">
-                        <div class="card-header pt-7 px-7">
-                          <h2>Behov for at justere i din forretningsmodel?</h2>
-                        </div>
-                        <div class="card-text px-7">
-                          <p>Få inspiration til hvordan du kan styrke eller justere din forretningsmodel.</p>
-                        </div>
-                        <div class="card-footer pb-7 px-7">
-                          <button
-                            v-if="currentStep === section.steps.length && currentSection === 'test1'"
-                            class="button button-primary"
-                            @click.prevent="
-                              currentSection = 'test2';
-                              currentStep = 1;
-                            "
-                          >
-                            Tag testen: Få forbedringer til din forretningsmodel
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button v-if="currentStep > 0" class="back-link d-block mt-5" @click.prevent="currentStep = 0">Tag testen igen</button>
+                    <button
+                      id="primaryButton"
+                      class="button button-primary d-block mt-7"
+                      @click="currentStep + 1 === section.steps.length ? false : currentStep++"
+                    >
+                      {{ currentStep === 0 ? 'Start testen' : currentStep + 1 === section.steps.length ? 'Se resultat' : 'Næste' }}
+                    </button>
+                    <button v-if="currentStep > 0" class="back-link d-block mt-3" @click.prevent="currentStep--">Forrige</button>
+                  </fieldset>
                 </div>
               </div>
-            </template>
-          </SimpleForm>
-        </template>
+
+              <!-- Results start -->
+              <div v-if="currentStep === section.steps.length" class="col-12">
+                <div class="bg-normal full-width mt-3 p-7">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-12">
+                        <h2>Dit resultat</h2>
+                        <button class="button button-secondary">
+                          <svg class="icon-svg" focusable="false" aria-hidden="true">
+                            <use xlink:href="#download"></use></svg
+                          >Download resultatet som PDF
+                        </button>
+                      </div>
+                      <div class="col-lg-6">
+                        <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
+                        <apexchart
+                          v-if="response"
+                          type="radar"
+                          :options="radarOptions"
+                          height="400px"
+                          :series="[
+                            {
+                              name: 'Din virksomhed',
+                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_answers)
+                            },
+                            {
+                              name: 'Branchen',
+                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
+                            },
+                            {
+                              name: 'Alle virksomheder',
+                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
+                            }
+                          ]"
+                        ></apexchart>
+                      </div>
+                      <div class="col-lg-6">
+                        <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
+                        <apexchart
+                          v-if="response && currentSection === 'test1'"
+                          type="bar"
+                          :options="columnOptions"
+                          :series="[
+                            {
+                              name: 'Presset på forretningsmodellen',
+                              data: [
+                                parseInt(response.scores[0].score_own),
+                                parseInt(response.scores[0].mean_score_industry),
+                                parseInt(response.scores[0].mean_score_all)
+                                //16.56, 17, 20.3
+                              ]
+                            }
+                          ]"
+                        ></apexchart>
+                        <div v-else>
+                          <p
+                            v-for="link of [
+                              'Segmentering af jeres kunder i grupper efter forskellige behov og betydning for jeres indtjening',
+                              'Bedre udnyttelse af ny teknologi i jeres værditilbud',
+                              'Udvikling af flere betalingsmodeller for jeres løsninger',
+                              'Digitalt salg og markedsføring'
+                            ]"
+                            :key="link"
+                          >
+                            <a :href="link"
+                              >{{ link }}
+                              <svg class="icon-svg" focusable="false" aria-hidden="true">
+                                <use xlink:href="#open-in-new"></use>
+                              </svg>
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" v-if="currentSection === 'test1'">
+                  <div class="col-6 mt-7">
+                    <div class="card card-blue">
+                      <div class="card-header pt-7 px-7">
+                        <h2>Behov for at justere i din forretningsmodel?</h2>
+                      </div>
+                      <div class="card-text px-7">
+                        <p>Få inspiration til hvordan du kan styrke eller justere din forretningsmodel.</p>
+                      </div>
+                      <div class="card-footer pb-7 px-7">
+                        <button
+                          v-if="currentStep === section.steps.length && currentSection === 'test1'"
+                          class="button button-primary"
+                          @click.prevent="
+                            currentSection = 'test2';
+                            currentStep = 1;
+                          "
+                        >
+                          Tag testen: Få forbedringer til din forretningsmodel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button v-if="currentStep > 0" class="back-link d-block mt-5" @click.prevent="currentStep = 0">Tag testen igen</button>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
-      <!-- test 1 end -->
-    </div>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Watch, Vue } from 'vue-property-decorator';
 import axios from 'axios';
-import SimpleForm from 'vue-simpleform';
 import VueApexCharts from 'vue-apexcharts';
 import * as DKFDS from 'dkfds';
 
 @Component({
   name: 'Applikation',
   components: {
-    SimpleForm,
     apexchart: VueApexCharts
   }
 })
@@ -353,8 +346,8 @@ export default class Applikation extends Vue {
   response = {} as any;
   private error = {};
   isLoading = false;
-  currentStep = 3; // initial value 0
-  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentStep = 1; // initial value 0
+  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
@@ -725,8 +718,8 @@ export default class Applikation extends Vue {
     }
   ];
 
-  myValues = [] as any;
-  initialValues = {
+  // values = [] as any;
+  values = {
     industry: 'Industri',
     internal1: 0,
     internal2: 0,
@@ -913,7 +906,7 @@ export default class Applikation extends Vue {
   onStepChanged(value: string, oldValue: string) {
     // updated
     window.scrollTo(0, 0);
-    this.validate(this.myValues);
+    this.validate(this.values);
     // DKFDS.init();
     // this.maxStep = this.maxStep > this.currentStep ? this.maxStep : this.currentStep;
     // this.error = '';
@@ -969,21 +962,24 @@ export default class Applikation extends Vue {
     //   });
   }
 
-  handleSubmit({ values, errors, setSubmitting, setSubmitted }: any) {
+  updateValue(key, value) {
+    this.$emit('input', (this.values[key] = value));
+  }
+
+  handleSubmit() {
     console.log('submit');
-    console.log(values);
-    console.log(this.myValues);
+    console.log(this.values);
     this.isLoading = true;
     const answers = {} as any;
-    Object.entries(this.myValues)
+    Object.entries(this.values)
       .filter(([key, value]) => key !== 'industry')
       .forEach(([key, value]) => {
-        answers[key] = parseInt(value as string, 10);
+        answers[key] = value;
       });
     console.log(answers);
     const data = JSON.stringify({
       answers: answers,
-      industry: this.myValues.industry
+      industry: this.values.industry
     });
     console.log(data);
     axios
@@ -1009,10 +1005,9 @@ export default class Applikation extends Vue {
       });
   }
 
-  validate(values: any) {
+  validate() {
     console.log('validerer');
-    console.log(values);
-    this.myValues = values;
+    console.log(this.values);
 
     return {
       email: 'Email is invalid'
