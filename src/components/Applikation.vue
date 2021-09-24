@@ -102,6 +102,16 @@
           <template v-if="currentSection === section.id">
             <div class="row">
               <div class="col-lg-9 mb-7">
+                <div v-if="Object.keys(errors).length > 0" role="alert" aria-atomic="true" class="alert alert-error mt-0 mb-8">
+                  <div class="alert-body">
+                    <p class="alert-heading">Svar på alle udsagn, for at gå videre</p>
+                    <ul v-for="(error, errorIndex) of errors" :key="errorIndex" class="alert-text nobullet-list">
+                      <li>
+                        <a class="function-link" :href="error.errorAnchorHref">{{ error.errorSummary }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                 <h2 class="h1">{{ section.headline }}</h2>
@@ -154,11 +164,20 @@
                 </div>
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
-                  <fieldset v-if="stepIndex === currentStep" class="form-group">
+                  <fieldset v-if="stepIndex === currentStep">
                     <h3 class="h2 mt-0">{{ step.headline }}</h3>
                     <p>{{ step.description }}</p>
-                    <div v-for="(question, questionIndex) of step.questions" :key="questionIndex" class="mb-7">
+                    <div
+                      v-for="(question, questionIndex) of step.questions"
+                      :id="`form-group-${stepIndex}-${questionIndex}`"
+                      :key="questionIndex"
+                      :class="['form-group', 'mb-7', errors[question.name] ? 'form-error' : '']"
+                    >
                       <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
+                      <span v-if="errors[question.name]" class="form-error-message">
+                        <span class="sr-only">Fejl:</span> {{ errors[question.name].errorMessage }}
+                      </span>
+
                       <ul v-if="question.type === 'radio'" class="nobullet-list">
                         <li v-for="(option, index) of question.options" :key="index">
                           <input
@@ -210,7 +229,7 @@
                     <button
                       id="primaryButton"
                       class="button button-primary d-block mt-7"
-                      @click="currentStep + 1 === section.steps.length ? false : currentStep++"
+                      @click.prevent="currentStep + 1 === section.steps.length ? handleSubmit() : goToNextStep()"
                     >
                       {{ currentStep === 0 ? 'Start testen' : currentStep + 1 === section.steps.length ? 'Se resultat' : 'Næste' }}
                     </button>
@@ -346,10 +365,12 @@ import * as DKFDS from 'dkfds';
 export default class Applikation extends Vue {
   response = {} as any;
   private error = {};
+  errors = {} as any;
   isLoading = false;
   currentStep = 0; // initial value 0
-  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
+  sessionId = this.generateId(32);
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
   defaultOptions = [
@@ -721,7 +742,7 @@ export default class Applikation extends Vue {
 
   // values = [] as any;
   values = {
-    industry: 'Industri',
+    industry: '',
     internal1: 0,
     internal2: 0,
     internal3: 0,
@@ -904,14 +925,21 @@ export default class Applikation extends Vue {
 
   @Watch('currentStep')
   @Watch('currentSection')
+  @Watch('errors')
   onStepChanged(value: string, oldValue: string) {
-    // updated
     window.scrollTo(0, 0);
-    this.validate(this.values);
     // DKFDS.init();
-    // this.maxStep = this.maxStep > this.currentStep ? this.maxStep : this.currentStep;
-    // this.error = '';
-    // this.errorHeading = '';
+  }
+
+  generateId(length: number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
   }
 
   mounted() {
@@ -967,6 +995,12 @@ export default class Applikation extends Vue {
     this.$emit('input', (this.values[key] = value));
   }
 
+  goToNextStep() {
+    if (this.validate()) {
+      this.currentStep++;
+    }
+  }
+
   handleSubmit() {
     console.log('submit');
     console.log(this.values);
@@ -980,7 +1014,8 @@ export default class Applikation extends Vue {
     console.log(answers);
     const data = JSON.stringify({
       answers: answers,
-      industry: this.values.industry
+      industry: this.values.industry,
+      sessionID: this.sessionId
     });
     console.log(data);
     axios
@@ -1007,12 +1042,30 @@ export default class Applikation extends Vue {
   }
 
   validate() {
-    console.log('validerer');
+    this.errors = {};
     console.log(this.values);
+    this.sections
+      .find((section: any) => section.id === this.currentSection)
+      .steps[this.currentStep].questions.forEach((question: any, index: any) => {
+        console.log(this.values[question.name]);
+        if (this.values[question.name] === 0) {
+          this.errors[question.name] = {
+            errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
+            errorMessage: 'Angiv hvor enig du er i dette udsagn. Vælg 1, hvis spørsmålet ikke er relevant for din virksomhed. ',
+            errorAnchorHref: `#form-group-${this.currentStep}-${index}`
+          };
+        }
+        if (this.values[question.name] === '') {
+          this.errors[question.name] = {
+            errorSummary: 'Vælg din virksomheds branche',
+            errorMessage: 'Vælg din virksomheds branche for at starte testen',
+            errorAnchorHref: `#form-group-${this.currentStep}-${index}`
+          };
+        }
+      });
 
-    return {
-      email: 'Email is invalid'
-    };
+    console.log(this.errors);
+    return Object.keys(this.errors).length === 0;
   }
 }
 </script>
