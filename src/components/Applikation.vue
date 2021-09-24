@@ -368,7 +368,7 @@ export default class Applikation extends Vue {
   errors = {} as any;
   isLoading = false;
   currentStep = 0; // initial value 0
-  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
 
@@ -1015,7 +1015,8 @@ export default class Applikation extends Vue {
     const data = JSON.stringify({
       answers: answers,
       industry: this.values.industry,
-      sessionID: this.sessionId
+      sessionID: this.sessionId,
+      time: Date()
     });
     console.log(data);
     axios
