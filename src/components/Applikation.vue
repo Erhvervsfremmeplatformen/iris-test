@@ -101,7 +101,7 @@
         <div v-for="(section, sectionIndex) of sections" v-else :key="sectionIndex" class="col-lg-12">
           <template v-if="currentSection === section.id">
             <div class="row">
-              <div class="col-lg-9 mb-7">
+              <div class="col-lg-9 mb-0">
                 <div v-if="Object.keys(errors).length > 0" role="alert" aria-atomic="true" class="alert alert-error mt-0 mb-8">
                   <div class="alert-body">
                     <p class="alert-heading">Svar på alle udsagn, for at gå videre</p>
@@ -115,16 +115,21 @@
                 <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                 <h2 class="h1">{{ section.headline }}</h2>
-                <p v-if="section.description" class="font-lead">
-                  {{ currentStep === section.steps.length ? section.resultIntro : section.description }}
+                <p
+                  v-if="(section.description || section.resultIntro) && (currentStep === section.steps.length || currentStep === 0)"
+                  class="font-lead"
+                >
+                  {{ currentStep === section.steps.length ? section.resultIntro : currentStep === 0 ? section.description : '' }}
                 </p>
-
+              </div>
+              <div class="col-lg-7 mb-7">
                 <button
                   v-if="currentStep === section.steps.length && currentSection === 'test1'"
                   class="button button-primary"
                   @click.prevent="
                     currentSection = 'test2';
-                    currentStep = 1;
+                    currentStep = 0;
+                    skipIndustrySelect = true;
                   "
                 >
                   Tag testen: Få forbedringer til din forretningsmodel
@@ -165,7 +170,7 @@
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
                   <fieldset v-if="stepIndex === currentStep">
-                    <h3 class="h2 mt-0">{{ step.headline }}</h3>
+                    <h3 v-if="step.headline" class="h2 mt-0">{{ step.headline }}</h3>
                     <p>{{ step.description }}</p>
                     <div
                       v-for="(question, questionIndex) of step.questions"
@@ -173,69 +178,79 @@
                       :key="questionIndex"
                       :class="['form-group', 'mb-7', errors[question.name] ? 'form-error' : '']"
                     >
-                      <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
-                      <span v-if="errors[question.name]" class="form-error-message">
-                        <span class="sr-only">Fejl:</span> {{ errors[question.name].errorMessage }}
-                      </span>
-
-                      <ul v-if="question.type === 'radio'" class="nobullet-list">
-                        <li v-for="(option, index) of question.options" :key="index">
+                      <div v-if="currentStep > 0 || currentSection === 'test1' || (currentStep === 0 && !skipIndustrySelect)">
+                        <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
+                        <span v-if="errors[question.name]" class="form-error-message">
+                          <span class="sr-only">Fejl:</span> {{ errors[question.name].errorMessage }}
+                        </span>
+                        <ul v-if="question.type === 'radio'" class="nobullet-list">
+                          <li v-for="(option, index) of question.options" :key="index">
+                            <input
+                              :id="`radio-${questionIndex}-${index}`"
+                              type="radio"
+                              :autofocus="questionIndex === 0"
+                              :name="question.name"
+                              :value="option.value"
+                              class="form-radio radio-large"
+                              :checked="values[question.name] === option.value"
+                              required
+                              @input="updateValue(question.name, $event.target.value)"
+                            />
+                            <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`"
+                              >{{ option.label }}
+                            </label>
+                          </li>
+                        </ul>
+                        <div v-else class="form-range">
                           <input
-                            :id="`radio-${questionIndex}-${index}`"
-                            type="radio"
+                            :id="`range-${questionIndex}`"
+                            type="range"
+                            :max="question.options.length - 1"
                             :autofocus="questionIndex === 0"
-                            :name="question.name"
-                            :value="option.value ? option.value : index + 1"
-                            class="form-radio radio-large"
-                            :checked="values[question.name] === index + 1"
+                            min="0"
                             required
-                            @input="updateValue(question.name, $event.target.value)"
+                            :aria-valuemax="question.options.length - 1"
+                            aria-valuemin="0"
+                            :value="values[question.name]"
+                            :name="question.name"
+                            :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
+                            aria-role="slider"
+                            :aria-valuenow="values[question.name]"
+                            :class="`slider-${values[question.name]}`"
+                            @input="updateValue(question.name, parseInt($event.target.value))"
                           />
-                          <label :id="`form-label-radio-${questionIndex}-${index}`" :for="`radio-${questionIndex}-${index}`"
-                            >{{ option.label }}
-                          </label>
-                        </li>
-                      </ul>
-                      <div v-else class="form-range">
-                        <input
-                          :id="`range-${questionIndex}`"
-                          type="range"
-                          :max="question.options.length - 1"
-                          :autofocus="questionIndex === 0"
-                          min="0"
-                          required
-                          :aria-valuemax="question.options.length - 1"
-                          aria-valuemin="0"
-                          :value="values[question.name]"
-                          :name="question.name"
-                          :aria-labelledby="`label-${stepIndex}-${questionIndex}`"
-                          aria-role="slider"
-                          :aria-valuenow="values[question.name]"
-                          :class="`slider-${values[question.name]}`"
-                          @input="updateValue(question.name, parseInt($event.target.value))"
-                        />
-                        <div class="sliderOptions">
-                          <div
-                            v-for="(option, optionIndex) in question.options"
-                            :key="option.label"
-                            :class="['sliderOptions_item', optionIndex + 1 == values[question.name] ? 'selected' : '']"
-                          >
-                            {{ option.label }}
+                          <div class="sliderOptions">
+                            <div
+                              v-for="(option, optionIndex) in question.options"
+                              :key="option.label"
+                              :class="['sliderOptions_item', optionIndex + 1 == values[question.name] ? 'selected' : '']"
+                            >
+                              {{ option.label }}
+                            </div>
                           </div>
+                          <!-- <label :id="`form-label-range-${questionIndex}`" :for="`range-${questionIndex}`">{{ option.label }} </label> -->
                         </div>
-                        <!-- <label :id="`form-label-range-${questionIndex}`" :for="`range-${questionIndex}`">{{ option.label }} </label> -->
                       </div>
                     </div>
                     <button
                       id="primaryButton"
                       class="button button-primary d-block mt-7"
-                      @click.prevent="currentStep + 1 === section.steps.length ? handleSubmit() : goToNextStep()"
+                      @click.prevent="handleSubmit()"
+                      v-if="currentStep + 1 === section.steps.length"
                     >
-                      {{ currentStep === 0 ? 'Start testen' : currentStep + 1 === section.steps.length ? 'Se resultat' : 'Næste' }}
+                      Se resultat
                     </button>
-                    <button v-if="currentStep > 0" class="back-link d-block mt-3" @click.prevent="currentStep--">Forrige</button>
+                    <button id="primaryButton" class="button button-primary d-block mt-7" @click.prevent="goToNextStep()" v-else>
+                      {{ currentStep > 0 ? 'Næste' : skipIndustrySelect ? 'Fortsæt' : 'Start testen' }}
+                    </button>
+                    <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
+                      {{ currentStep > 0 ? 'Forrige' : 'Tilbage' }}
+                    </button>
                   </fieldset>
                 </div>
+              </div>
+              <div v-if="currentStep === 0" :class="currentSection === 'test1' ? 'col-lg-5' : 'col-lg-4'">
+                <figure class="figure mt-7" v-html="currentSection === 'test1' ? imgs[0] : imgs[1]"></figure>
               </div>
 
               <!-- Results start -->
@@ -254,22 +269,28 @@
                       <div class="col-lg-6">
                         <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
                         <apexchart
-                          v-if="response"
+                          v-if="response[currentSection]"
                           type="radar"
                           :options="radarOptions"
                           height="400px"
                           :series="[
                             {
                               name: 'Din virksomhed',
-                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_answers)
+                              data: response[currentSection].category_means
+                                .filter(dataPoint => dataPoint.category)
+                                .map(dataPoint => dataPoint.mean_answers)
                             },
                             {
                               name: 'Branchen',
-                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_industry)
+                              data: response[currentSection].category_means
+                                .filter(dataPoint => dataPoint.category)
+                                .map(dataPoint => dataPoint.mean_industry)
                             },
                             {
                               name: 'Alle virksomheder',
-                              data: response.category_means.filter(dataPoint => dataPoint.category).map(dataPoint => dataPoint.mean_all)
+                              data: response[currentSection].category_means
+                                .filter(dataPoint => dataPoint.category)
+                                .map(dataPoint => dataPoint.mean_all)
                             }
                           ]"
                         ></apexchart>
@@ -277,33 +298,25 @@
                       <div class="col-lg-6">
                         <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
                         <apexchart
-                          v-if="response && currentSection === 'test1'"
+                          v-if="response[currentSection] && currentSection === 'test1'"
                           type="bar"
                           :options="columnOptions"
                           :series="[
                             {
                               name: 'Presset på forretningsmodellen',
                               data: [
-                                parseInt(response.scores[0].score_own),
-                                parseInt(response.scores[0].mean_score_industry),
-                                parseInt(response.scores[0].mean_score_all)
+                                parseInt(response[currentSection].scores[0].score_own),
+                                parseInt(response[currentSection].scores[0].mean_score_industry),
+                                parseInt(response[currentSection].scores[0].mean_score_all)
                                 //16.56, 17, 20.3
                               ]
                             }
                           ]"
                         ></apexchart>
                         <div v-else>
-                          <p
-                            v-for="link of [
-                              'Segmentering af jeres kunder i grupper efter forskellige behov og betydning for jeres indtjening',
-                              'Bedre udnyttelse af ny teknologi i jeres værditilbud',
-                              'Udvikling af flere betalingsmodeller for jeres løsninger',
-                              'Digitalt salg og markedsføring'
-                            ]"
-                            :key="link"
-                          >
-                            <a :href="link"
-                              >{{ link }}
+                          <p v-for="link of response[currentSection].suggestions.slice(0, 4)" :key="link.theme">
+                            <a :href="link.theme"
+                              >{{ link.description }}
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
                                 <use xlink:href="#open-in-new"></use>
                               </svg>
@@ -330,7 +343,8 @@
                           class="button button-primary"
                           @click.prevent="
                             currentSection = 'test2';
-                            currentStep = 1;
+                            currentStep = 0;
+                            skipIndustrySelect = true;
                           "
                         >
                           Tag testen: Få forbedringer til din forretningsmodel
@@ -368,9 +382,10 @@ export default class Applikation extends Vue {
   errors = {} as any;
   isLoading = false;
   currentStep = 0; // initial value 0
-  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
+  skipIndustrySelect = false;
 
   apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
   defaultOptions = [
@@ -402,11 +417,11 @@ export default class Applikation extends Vue {
     {
       id: 'test1',
       headline: 'Hvordan er presset på din forretningsmodel?',
-      description:
-        'Svar på en række udsagn om din virksomhed inden for 6 områder og få en indikation af, hvordan presset er på din forretningsmodel.',
       resultIntro:
         'Nedenfor finder du et overblik over hvordan presset på din virksomhed er, sammen med et gennemsnit af hvordan andre virksomheder inden for sammen branche klarer sig. Vi anbefaler at du også tager testens anden del, der viser dig, hvor din forretningsmodel potentielt kan styrkes. ',
       resultPrimaryHeadline: 'Pres for forretningsmodellen fordelt på områder',
+      description:
+        'Svar på en række udsagn om din virksomhed inden for 6 områder og få en indikation af, hvordan presset er på din forretningsmodel.',
       resultSecondaryHeadline: 'Samlet billede af presset på forretningsmodellen',
       steps: [
         {
@@ -552,6 +567,8 @@ export default class Applikation extends Vue {
       headline: 'Hvor kan din forretningsmodel forbedres?',
       description:
         'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer.',
+      descriptionAlternative:
+        'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer. Til sidst får du et samlet resultat, der både viser dig hvordan presset er på din virksomhed, samt giver dig inspiration til, hvordan din forretningsmodel kan styrkes.',
       resultIntro:
         'Nedenfor finder du et overblik over hvor der kan være potentiale for at styrke din forretningsmodel sammenlignet med branchen. Desuden finder du inspiration til hvordan din forretningsmodel potentielt kan styrkes, baseret på dine svar. ',
       resultPrimaryHeadline: 'Din forretningsmodel kan styrkes på følgende områder ',
@@ -738,7 +755,7 @@ export default class Applikation extends Vue {
         }
       ]
     }
-  ];
+  ] as any;
 
   // values = [] as any;
   values = {
@@ -797,7 +814,9 @@ export default class Applikation extends Vue {
       textColor: '#1A1A1A'
     };
 
-    const categories = this.response.category_means.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
+    const categories = this.response[this.currentSection].category_means
+      .filter((dataPoint: any) => dataPoint.category)
+      .map((dataPoint: any) => dataPoint.category);
     return {
       chart: {
         id: 'radar',
@@ -877,7 +896,9 @@ export default class Applikation extends Vue {
       textColor: '#1A1A1A'
     };
 
-    const categories = this.response.category_means.filter((dataPoint: any) => dataPoint.category).map((dataPoint: any) => dataPoint.category);
+    const categories = this.response[this.currentSection].category_means
+      .filter((dataPoint: any) => dataPoint.category)
+      .map((dataPoint: any) => dataPoint.category);
     return {
       chart: {
         id: 'bar',
@@ -968,27 +989,6 @@ export default class Applikation extends Vue {
       this.imgs = [url1rest.data, url2resp.data];
       this.isLoading = false;
     });
-
-    // axios
-    //   .get(this.apiBaseUrl + '/img/', {
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-    //   .then((rsp: any) => {
-    //     console.log(rsp.data);
-    //     this.isLoading = false;
-
-    //     if (!rsp.data.error) {
-    //       this.isLoading = false;
-    //       this.imgs = rsp.data;
-    //     }
-    //   })
-    //   .catch((error: any) => {
-    //     console.log(error);
-    //     this.isLoading = false;
-    //     this.error = 'Noget gik galt. Prøv venligst igen.';
-    //   });
   }
 
   updateValue(key, value) {
@@ -1002,8 +1002,9 @@ export default class Applikation extends Vue {
   }
 
   handleSubmit() {
-    console.log('submit');
-    console.log(this.values);
+    if (!this.validate()) {
+      return;
+    }
     this.isLoading = true;
     const answers = {} as any;
     Object.entries(this.values)
@@ -1018,21 +1019,36 @@ export default class Applikation extends Vue {
       sessionID: this.sessionId,
       time: Date()
     });
-    console.log(data);
-    axios
-      .post(this.apiBaseUrl + '/feedback/' + this.currentSection.replace('test', ''), data, {
+
+    const requests = [
+      axios.post(this.apiBaseUrl + '/feedback/' + this.currentSection.replace('test', ''), data, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
+    ];
+    if (this.currentSection === 'test2') {
+      requests.push(
+        axios.post(this.apiBaseUrl + '/suggestions', data, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      );
+    }
+    Promise.all([...requests])
       .then((rsp: any) => {
-        console.log(rsp.data);
         this.currentStep++;
         this.isLoading = false;
-
-        if (!rsp.data.error) {
+        if (!rsp[0].data.error) {
           this.isLoading = false;
-          this.response = rsp.data;
+          if (rsp.length > 1) {
+            this.response[this.currentSection] = { ...rsp[0].data, suggestions: rsp[1].data };
+          } else {
+            this.response[this.currentSection] = rsp[0].data;
+          }
+          console.log(this.response[this.currentSection]);
+          // this.response = rsp.data;
         }
       })
       .catch((error: any) => {
@@ -1048,7 +1064,6 @@ export default class Applikation extends Vue {
     this.sections
       .find((section: any) => section.id === this.currentSection)
       .steps[this.currentStep].questions.forEach((question: any, index: any) => {
-        console.log(this.values[question.name]);
         if (this.values[question.name] === 0) {
           this.errors[question.name] = {
             errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
@@ -1102,6 +1117,7 @@ html {
     background: transparent;
     font-family: inherit;
     padding: 0;
+    text-align: left;
 
     &:after {
       content: '';
@@ -1249,10 +1265,6 @@ img {
   margin-right: calc(50% - 50vw);
 }
 
-.applikation-container >>> svg {
-  // overflow: visible !important;
-}
-
 .icon-svg {
   height: 1.6rem;
   width: 1.6rem;
@@ -1263,6 +1275,7 @@ img {
   & >>> svg {
     width: auto;
     max-height: 400px;
+    max-width: 100%;
     height: auto;
     margin: 0 auto;
     display: block;
