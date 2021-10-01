@@ -380,8 +380,8 @@ export default class Applikation extends Vue {
   private error = {};
   errors = {} as any;
   isLoading = false;
-  currentStep = 6; // initial value 0
-  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentStep = 1; // initial value 0
+  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
   skipIndustrySelect = false;
