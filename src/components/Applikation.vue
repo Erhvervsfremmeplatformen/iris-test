@@ -7,24 +7,22 @@
         <!-- Frontpage start -->
         <template v-else-if="currentSection === 'frontpage'">
           <div class="col-12 align-text-center pt-7">
-            <h1>
-              Test og styrk din virksomheds forretningsmodel
-              <div class="h2 m-4">med diagnoseværktøj i to dele</div>
-              <p class="font-lead" style="max-width: none">Vælg en af af de to tests nedenfor</p>
-              <div class="row" style="justify-content: center">
-                <div class="m-2">
-                  <button class="button button-primary" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
-                </div>
-                <div class="m-2">
-                  <button class="button button-primary" @click.prevent="currentSection = 'test2'">Få forbedringer til din forretningsmodel</button>
-                </div>
+            <h1>Test og styrk din virksomheds forretningsmodel</h1>
+            <div class="h2 m-4">med diagnoseværktøj i to dele</div>
+            <p class="font-lead" style="max-width: none">Vælg en af af de to tests nedenfor</p>
+            <div class="row" style="justify-content: center">
+              <div class="m-3 m-md-2 px-4 px-md-0">
+                <button class="button button-primary" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
               </div>
-            </h1>
+              <div class="m-3 m-md-2 px-4 px-md-0">
+                <button class="button button-primary" @click.prevent="currentSection = 'test2'">Få forbedringer til din forretningsmodel</button>
+              </div>
+            </div>
           </div>
-          <div class="bg-normal full-width mt-9 p-7">
+          <div class="bg-normal full-width mt-9 p-md-7">
             <div class="container">
               <div class="row">
-                <div class="col-6 mb-7">
+                <div class="col-md-6 mb-7">
                   <h2 class="mt-4">Hvorfor teste din forretningsmodel?</h2>
                   <p>
                     Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder i markedet, der gør
@@ -41,12 +39,12 @@
                     forandret eller styrket deres forretningsmodel.
                   </p>
                 </div>
-                <div class="col-6 mb-7">
+                <div class="col-md-6 mb-7">
                   <div class="card card-border">
-                    <div class="card-header px-7">
+                    <div class="card-header px-md-7">
                       <h2>Sådan fungerer testen</h2>
                     </div>
-                    <div class="card-text px-7">
+                    <div class="card-text px-md-7">
                       <p>
                         Testen baserer sig på en større undersøgelse blandt små og mellemstore virksomheder, der succesfuldt har forandret eller
                         styrket hele eller dele af forretningen. Den viser, at drivkræfterne bag forretningsmodeludvikling typisk falder inden for
@@ -63,7 +61,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-6 mb-7">
+                <div class="col-md-6 mb-7">
                   <div class="d-flex flex-column">
                     <div class="card card-align-height w-percent-100">
                       <figure class="figure p-5 bg-alternative" v-html="imgs[0]"></figure>
@@ -77,7 +75,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-6 mb-7">
+                <div class="col-md-6 mb-7">
                   <div class="d-flex flex-column">
                     <div class="card card-align-height w-percent-100">
                       <figure class="figure p-5 bg-alternative" v-html="imgs[1]"></figure>
@@ -137,11 +135,11 @@
 
                 <div v-if="currentStep > 0 && currentStep < section.steps.length" class="overflow-menu overflow-menu--open-right">
                   <button
+                    id="overflow-button"
                     class="button-overflow-menu js-dropdown"
                     data-js-target="overflow5"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    id="overflow-button"
                   >
                     Trin {{ currentStep }} af {{ section.steps.length - 1 }}
                     <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
@@ -250,12 +248,12 @@
                 </div>
               </div>
               <div v-if="currentStep === 0" :class="currentSection === 'test1' ? 'col-lg-5' : 'col-lg-4'">
-                <figure class="figure mt-7" v-html="currentSection === 'test1' ? imgs[0] : imgs[1]"></figure>
+                <figure class="figure" v-html="currentSection === 'test1' ? imgs[0] : imgs[1]"></figure>
               </div>
 
               <!-- Results start -->
               <div v-if="currentStep === section.steps.length" class="col-12">
-                <div class="bg-normal full-width mt-3 p-7">
+                <div class="bg-normal full-width mt-3 p-md-7">
                   <div class="container">
                     <div class="row">
                       <div class="col-12">
@@ -266,13 +264,13 @@
                           >Download resultatet som PDF
                         </button>
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-xl-7">
                         <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
                         <apexchart
                           v-if="response[currentSection]"
                           type="radar"
                           :options="radarOptions"
-                          height="400px"
+                          height="400"
                           :series="[
                             {
                               name: 'Din virksomhed',
@@ -295,11 +293,12 @@
                           ]"
                         ></apexchart>
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-xl-5">
                         <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
                         <apexchart
                           v-if="response[currentSection] && currentSection === 'test1'"
                           type="bar"
+                          height="300"
                           :options="columnOptions"
                           :series="[
                             {
@@ -329,15 +328,15 @@
                 </div>
 
                 <div v-if="currentSection === 'test1'" class="row">
-                  <div class="col-6 mt-7">
+                  <div class="col-md-6 mt-7">
                     <div class="card card-blue">
-                      <div class="card-header pt-7 px-7">
+                      <div class="card-header pt-md-7 px-md-7">
                         <h2>Behov for at justere i din forretningsmodel?</h2>
                       </div>
-                      <div class="card-text px-7">
+                      <div class="card-text px-md-7">
                         <p>Få inspiration til hvordan du kan styrke eller justere din forretningsmodel.</p>
                       </div>
-                      <div class="card-footer pb-7 px-7">
+                      <div class="card-footer pb-4 px-4 pb-md-7 px-md-7">
                         <button
                           v-if="currentStep === section.steps.length && currentSection === 'test1'"
                           class="button button-primary"
@@ -381,7 +380,7 @@ export default class Applikation extends Vue {
   private error = {};
   errors = {} as any;
   isLoading = false;
-  currentStep = 0; // initial value 0
+  currentStep = 6; // initial value 0
   currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
@@ -803,7 +802,7 @@ export default class Applikation extends Vue {
     resourcesvalue1: 0,
     resourcesvalue2: 0,
     resourcesvalue3: 0
-  };
+  } as any;
 
   get radarOptions() {
     if (!this.response) {
@@ -842,12 +841,14 @@ export default class Applikation extends Vue {
           }
         }
       },
+      responsive: [{ breakpoint: 576, options: { plotOptions: { radar: { size: 150 } }, xaxis: { labels: { show: false } } } }],
       xaxis: {
         categories: categories,
         labels: {
+          show: true,
           style: {
             colors: Array(categories.length).fill(chartColors.textColor),
-            fontSize: 13
+            fontSize: 12
           }
         }
       },
@@ -991,7 +992,7 @@ export default class Applikation extends Vue {
     });
   }
 
-  updateValue(key, value) {
+  updateValue(key: string, value: any) {
     this.$emit('input', (this.values[key] = value));
   }
 
@@ -1060,10 +1061,11 @@ export default class Applikation extends Vue {
 
   validate() {
     this.errors = {};
-    console.log(this.values);
+
     this.sections
       .find((section: any) => section.id === this.currentSection)
       .steps[this.currentStep].questions.forEach((question: any, index: any) => {
+        console.log(question, index);
         if (this.values[question.name] === 0) {
           this.errors[question.name] = {
             errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
@@ -1080,8 +1082,8 @@ export default class Applikation extends Vue {
         }
       });
 
-    console.log(this.errors);
     return Object.keys(this.errors).length === 0;
+    // return true;
   }
 }
 </script>
@@ -1173,7 +1175,7 @@ img {
     }
 
     &:focus {
-      outline: none;
+      // outline: none;
     }
   }
 
