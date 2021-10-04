@@ -113,11 +113,11 @@
                 <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                 <h2 class="h1">{{ section.headline }}</h2>
-                <p
-                  v-if="(section.description || section.resultIntro) && (currentStep === section.steps.length || currentStep === 0)"
-                  class="font-lead"
-                >
-                  {{ currentStep === section.steps.length ? section.resultIntro : currentStep === 0 ? section.description : '' }}
+                <p v-if="(section.description || section.descriptionAlternative) && currentStep === 0" class="font-lead">
+                  {{ currentSection === 'test2' && values.industry !== '' ? section.descriptionAlternative : section.description }}
+                </p>
+                <p v-if="(section.description || section.resultIntro) && currentStep === section.steps.length" class="font-lead">
+                  {{ section.resultIntro }}
                 </p>
               </div>
               <div class="col-lg-7 mb-7">
@@ -271,26 +271,7 @@
                           type="radar"
                           :options="radarOptions"
                           height="400"
-                          :series="[
-                            {
-                              name: 'Din virksomhed',
-                              data: response[currentSection].category_means
-                                .filter(dataPoint => dataPoint.category)
-                                .map(dataPoint => dataPoint.mean_answers)
-                            },
-                            {
-                              name: 'Branchen',
-                              data: response[currentSection].category_means
-                                .filter(dataPoint => dataPoint.category)
-                                .map(dataPoint => dataPoint.mean_industry)
-                            },
-                            {
-                              name: 'Alle virksomheder',
-                              data: response[currentSection].category_means
-                                .filter(dataPoint => dataPoint.category)
-                                .map(dataPoint => dataPoint.mean_all)
-                            }
-                          ]"
+                          :series="radarData()"
                         ></apexchart>
                       </div>
                       <div class="col-xl-5">
@@ -299,16 +280,11 @@
                           v-if="response[currentSection] && currentSection === 'test1'"
                           type="bar"
                           height="300"
-                          :options="columnOptions"
+                          :options="columnOptions()"
                           :series="[
                             {
                               name: 'Presset på forretningsmodellen',
-                              data: [
-                                parseInt(response[currentSection].scores[0].score_own),
-                                parseInt(response[currentSection].scores[0].mean_score_industry),
-                                parseInt(response[currentSection].scores[0].mean_score_all)
-                                //16.56, 17, 20.3
-                              ]
+                              data: columnData()
                             }
                           ]"
                         ></apexchart>
@@ -380,7 +356,7 @@ export default class Applikation extends Vue {
   private error = {};
   errors = {} as any;
   isLoading = false;
-  currentStep = 1; // initial value 0
+  currentStep = 0; // initial value 0
   currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
@@ -804,6 +780,50 @@ export default class Applikation extends Vue {
     resourcesvalue3: 0
   } as any;
 
+  columnData() {
+    if (this.response[this.currentSection].scores[0].mean_score_industry) {
+      return [
+        parseInt(this.response[this.currentSection].scores[0].score_own, 10),
+        parseInt(this.response[this.currentSection].scores[0].mean_score_industry, 10),
+        parseInt(this.response[this.currentSection].scores[0].mean_score_all, 10)
+      ];
+    }
+    return [
+      parseInt(this.response[this.currentSection].scores[0].score_own, 10),
+      parseInt(this.response[this.currentSection].scores[0].mean_score_all, 10)
+    ];
+  }
+
+  radarData() {
+    const categoryMeans = this.response[this.currentSection].category_means.filter((dataPoint: any) => dataPoint.category);
+    if (this.response[this.currentSection].category_means[0].mean_industry) {
+      return [
+        {
+          name: 'Din virksomhed',
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers)
+        },
+        {
+          name: 'Branchen',
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_industry)
+        },
+        {
+          name: 'Alle virksomheder',
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all)
+        }
+      ];
+    }
+    return [
+      {
+        name: 'Din virksomhed',
+        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers)
+      },
+      {
+        name: 'Alle virksomheder',
+        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all)
+      }
+    ];
+  }
+
   get radarOptions() {
     if (!this.response) {
       return null;
@@ -819,8 +839,6 @@ export default class Applikation extends Vue {
     return {
       chart: {
         id: 'radar',
-        // foreColor: this.chartColors.textColor,
-        // fontFamily: 'Helvetica Neue, Helvetica, sans-serif',
         fontFamily: 'IBMPlexSans, system',
         toolbar: {
           show: false
@@ -828,7 +846,6 @@ export default class Applikation extends Vue {
       },
       stroke: {
         width: 1
-        // colors: [this.chartColors.blueSolid, this.chartColors.orangeSolid, this.chartColors.greenSolid]
       },
       plotOptions: {
         radar: {
@@ -876,19 +893,11 @@ export default class Applikation extends Vue {
           horizontal: 8,
           vertical: 8
         }
-        // offsetY: -25
-        // markers: {
-        //   width: 20,
-        //   height: 20,
-        //   radius: 5,
-        //   strokeWidth: 1,
-        //   strokeColor: [this.chartColors.blueSolid, this.chartColors.orangeSolid, this.chartColors.greenSolid]
-        // }
       }
     };
   }
 
-  get columnOptions() {
+  columnOptions() {
     if (!this.response) {
       return null;
     }
@@ -897,9 +906,10 @@ export default class Applikation extends Vue {
       textColor: '#1A1A1A'
     };
 
-    const categories = this.response[this.currentSection].category_means
-      .filter((dataPoint: any) => dataPoint.category)
-      .map((dataPoint: any) => dataPoint.category);
+    const categories = this.response[this.currentSection].scores[0].mean_score_industry
+      ? ['Din virksomhed', 'Branchen', 'Alle virksomheder']
+      : ['Din virksomhed', 'Alle virksomheder'];
+
     return {
       chart: {
         id: 'bar',
@@ -920,10 +930,9 @@ export default class Applikation extends Vue {
         enabled: false
       },
       xaxis: {
-        categories: ['Din virksomhed', 'Branchen', 'Alle virksomheder'],
+        categories: categories,
         labels: {
           style: {
-            // colors: Array(categories.length).fill(chartColors.textColor),
             fontSize: 13
           }
         }
@@ -1065,7 +1074,6 @@ export default class Applikation extends Vue {
     this.sections
       .find((section: any) => section.id === this.currentSection)
       .steps[this.currentStep].questions.forEach((question: any, index: any) => {
-        console.log(question, index);
         if (this.values[question.name] === 0) {
           this.errors[question.name] = {
             errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
