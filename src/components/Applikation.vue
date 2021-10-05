@@ -1,5 +1,49 @@
 <template>
   <div class="applikation-container">
+    <div v-if="Object.keys(errors).length > 0" role="alert" aria-atomic="true" class="alert alert-error mt-0 mb-8">
+      <div class="alert-body">
+        <p class="alert-heading">Svar på alle udsagn, for at gå videre</p>
+        <ul v-for="(error, errorIndex) of errors" :key="errorIndex" class="alert-text nobullet-list">
+          <li>
+            <a class="function-link" :href="error.errorAnchorHref">{{ error.errorSummary }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      v-if="currentStep > 0 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
+      class="overflow-menu overflow-menu--open-right"
+    >
+      <button id="overflow-button" class="button-overflow-menu js-dropdown" data-js-target="overflow5" aria-haspopup="true" aria-expanded="false">
+        Trin {{ currentStep }} af {{ sections[currentSection.replace('test', '') - 1].steps.length - 1 }}
+        <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#angle-arrow-down"></use></svg>
+      </button>
+      <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
+        <nav>
+          <ul class="overflow-list sidenav-list" role="menu">
+            <li
+              role="none"
+              v-for="(step, stepIndex) of sections[currentSection.replace('test', '') - 1].steps.slice(1)"
+              :key="`nav_step_${stepIndex}`"
+              :class="[stepIndex + 1 === currentStep ? 'active current' : '', stepIndex > maxStep ? 'disabled' : '']"
+            >
+              <a
+                href="#"
+                role="menuitem"
+                @click.prevent="stepIndex <= maxStep ? goToStep(stepIndex + 1) : ''"
+                :aria-disabled="stepIndex > maxStep ? true : false"
+              >
+                {{ stepIndex + 1 }}. {{ step.headline }}
+                <span class="sidenav-icon" v-if="stepIndex + 1 < maxStep">
+                  <svg class="icon-svg" aria-hidden="true" focusable="false" tabindex="-1"><use xlink:href="#check"></use></svg>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
     <form @submit.prevent="handleSubmit">
       <div class="row">
         <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
@@ -100,21 +144,11 @@
           <template v-if="currentSection === section.id">
             <div class="row">
               <div class="col-lg-9 mb-0">
-                <div v-if="Object.keys(errors).length > 0" role="alert" aria-atomic="true" class="alert alert-error mt-0 mb-8">
-                  <div class="alert-body">
-                    <p class="alert-heading">Svar på alle udsagn, for at gå videre</p>
-                    <ul v-for="(error, errorIndex) of errors" :key="errorIndex" class="alert-text nobullet-list">
-                      <li>
-                        <a class="function-link" :href="error.errorAnchorHref">{{ error.errorSummary }}</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
                 <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                 <h2 class="h1">{{ section.headline }}</h2>
                 <p v-if="(section.description || section.descriptionAlternative) && currentStep === 0" class="font-lead">
-                  {{ currentSection === 'test2' && values.industry !== '' ? section.descriptionAlternative : section.description }}
+                  {{ currentSection === 'test2' && values.industry !== '' && maxStep > 0 ? section.descriptionAlternative : section.description }}
                 </p>
                 <p v-if="(section.description || section.resultIntro) && currentStep === section.steps.length" class="font-lead">
                   {{ section.resultIntro }}
@@ -132,39 +166,6 @@
                 >
                   Tag testen: Få forbedringer til din forretningsmodel
                 </button>
-
-                <div v-if="currentStep > 0 && currentStep < section.steps.length" class="overflow-menu overflow-menu--open-right">
-                  <button
-                    id="overflow-button"
-                    class="button-overflow-menu js-dropdown"
-                    data-js-target="overflow5"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Trin {{ currentStep }} af {{ section.steps.length - 1 }}
-                    <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
-                  </button>
-                  <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
-                    <nav>
-                      <ul class="overflow-list sidenav-list" role="menu">
-                        <li role="none">
-                          <a href="#" role="menuitem">
-                            1. Trin 1 <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
-                            <span class="sidenav-icon">
-                              <svg class="icon-svg" aria-hidden="true" focusable="false" tabindex="-1"><use xlink:href="#done"></use></svg>
-                            </span>
-                          </a>
-                        </li>
-                        <li role="none" class="active current">
-                          <a href="#" role="menuitem" aria-current="page"> 2. Trin 2 (valgt) </a>
-                        </li>
-                        <li role="none">
-                          <a href="#" role="menuitem"> 3. Trin 3 </a>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </div>
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
                   <fieldset v-if="stepIndex === currentStep">
@@ -258,7 +259,7 @@
                     <div class="row">
                       <div class="col-12">
                         <h2>Dit resultat</h2>
-                        <button class="button button-secondary">
+                        <button class="button button-secondary" @click.prevent="generateReport()">
                           <svg class="icon-svg" focusable="false" aria-hidden="true">
                             <use xlink:href="#download"></use></svg
                           >Download resultatet som PDF
@@ -335,6 +336,100 @@
           </template>
         </div>
       </div>
+
+      <!-- Hidden PDF template start -->
+      <!-- TODO: Remember to turn off preview and enable download on launch -->
+      <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="false"
+        :preview-modal="false"
+        :paginate-elements-by-height="1100"
+        :pdf-quality="2"
+        :manual-pagination="true"
+        pdf-format="a4"
+        pdf-orientation="portrait"
+        pdf-content-width="800px"
+        ref="html2Pdf"
+        :filename="`diagnose_${dateTimeString()}.pdf`"
+        @beforeDownload="beforeDownload($event)"
+        :html-to-pdf-options="{
+          margin: 20,
+          enableLinks: true,
+          filename: `diagnose_${dateTimeString()}.pdf`
+        }"
+      >
+        <section slot="pdf-content">
+          <section class="pdf-item">
+            <p class="h6">Rapport</p>
+            <h1 class="h3 mt-0">Resultat af test af forretningsmodellen</h1>
+            <p>Opdateret d. {{ dateString() }}</p>
+            <table class="table">
+              <tr>
+                <th>Virksomhedsnavn</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>CVR-nummer</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Kommune</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Antal ansatte</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Etableringsår</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Branche</th>
+                <td></td>
+              </tr>
+            </table>
+            <p>Denne rapport indeholder resultat for følgende tests</p>
+            <ul>
+              <li>Hvordan er presset på din forretningsmodel</li>
+              <li>Hvor kan din forretningsmodel forbedres?</li>
+            </ul>
+            <p>
+              Resultaterne baserer sig på besvarelser fra en undersøgelse blandt mindre og mellemstore virksomheder, der succesfuldt har forandret
+              eller styrket deres forretningsmodel. Undersøgelsen er udarbejdet i foråret 2021, i forbindelse med Industriens Fonds projekt,
+              genstartNU.
+            </p>
+          </section>
+          <div class="html2pdf__page-break" />
+          <section class="pdf-item">
+            <p class="h6">Resultat del 1</p>
+            <h2 class="h4 mt-0">Hvordan er presset på din forretningsmodel?</h2>
+            <p>
+              Nedenfor finder du et overblik over hvordan presset på din virksomhed er, sammen med et gennemsnit af hvordan andre virksomheder inden
+              for samme branche klarer sig.
+            </p>
+            <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
+            <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
+            <apexchart v-if="response[currentSection]" type="radar" :options="radarOptions" height="360" :series="radarData()"></apexchart>
+            <h3 class="h6">{{ sections[0].resultSecondaryHeadline }}</h3>
+            <apexchart
+              v-if="response['test1']"
+              type="bar"
+              height="140px"
+              :options="columnOptions()"
+              :series="[
+                {
+                  name: 'Presset på forretningsmodellen',
+                  data: columnData()
+                }
+              ]"
+            ></apexchart>
+          </section>
+          <!-- PDF Content Here -->
+        </section>
+      </vue-html2pdf>
+      <!-- Hidden PDF template end -->
     </form>
   </div>
 </template>
@@ -343,20 +438,24 @@
 import { Component, Watch, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import VueApexCharts from 'vue-apexcharts';
+import VueHtml2pdf from 'vue-html2pdf';
+import moment from 'moment';
 import * as DKFDS from 'dkfds';
 
 @Component({
   name: 'Applikation',
   components: {
-    apexchart: VueApexCharts
+    apexchart: VueApexCharts,
+    VueHtml2pdf
   }
 })
 export default class Applikation extends Vue {
   response = {} as any;
-  private error = {};
+  error = '';
   errors = {} as any;
   isLoading = false;
   currentStep = 0; // initial value 0
+  maxStep = 0;
   currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
@@ -824,6 +923,15 @@ export default class Applikation extends Vue {
     ];
   }
 
+  dateTimeString() {
+    return moment().format('DDMMYYYY_hhmm');
+  }
+
+  dateString() {
+    return new Date().toLocaleDateString('da-DK', { year: 'numeric', month: 'long', day: 'numeric' });
+    return moment().format('DD. MMMM YYYY');
+  }
+
   get radarOptions() {
     if (!this.response) {
       return null;
@@ -960,6 +1068,7 @@ export default class Applikation extends Vue {
   onStepChanged(value: string, oldValue: string) {
     window.scrollTo(0, 0);
     // DKFDS.init();
+    this.maxStep = this.currentStep > this.maxStep ? this.currentStep : this.maxStep;
   }
 
   generateId(length: number) {
@@ -989,6 +1098,7 @@ export default class Applikation extends Vue {
         }
       });
     }
+    DKFDS.init();
   }
 
   private async getImages() {
@@ -1008,6 +1118,16 @@ export default class Applikation extends Vue {
   goToNextStep() {
     if (this.validate()) {
       this.currentStep++;
+    }
+  }
+
+  goToStep(step: number) {
+    if (step < this.currentStep) {
+      this.currentStep = step;
+    } else {
+      if (this.validate()) {
+        this.currentStep = step;
+      }
     }
   }
 
@@ -1068,6 +1188,45 @@ export default class Applikation extends Vue {
       });
   }
 
+  generateReport() {
+    const html2pdfComponent: any = this.$refs.html2Pdf;
+    html2pdfComponent.generatePdf();
+  }
+
+  async beforeDownload({ html2pdf, options, pdfContent }) {
+    await html2pdf()
+      .set(options)
+      .from(pdfContent)
+      .toPdf()
+      .get('pdf')
+      .then((pdf: any) => {
+        console.log(pdf);
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          pdf.setPage(i);
+          pdf.setFontSize(10);
+          pdf.setTextColor(150);
+          pdf.text(i + ' / ' + totalPages, pageWidth - 5, 5);
+
+          pdf.setFillColor('#F5F5F5');
+          pdf.rect(0, pageHeight - 32, pageWidth, 32, 'F');
+          // pdf.rect(15, 15, 15, 15, 'F');
+
+          pdf.setFontSize(8);
+          pdf.setTextColor('#454545');
+          pdf.text(
+            'Resultaterne er fra forretningsmodeltesten, der er udarbejdet i et samarbejde mellem IRIS Group, Syddansk Universitet, PHA Consult og AMind i forbindelse med Industriens Fonds projekt, genstartNU.',
+            20,
+            pageHeight - 20,
+            { maxWidth: pageWidth * 0.55 }
+          );
+        }
+      })
+      .save();
+  }
+
   validate() {
     this.errors = {};
 
@@ -1098,6 +1257,10 @@ export default class Applikation extends Vue {
 <style lang="scss" scoped>
 html {
   scroll-behavior: smooth;
+}
+
+.applikation-container {
+  position: relative;
 }
 
 .back-link {
@@ -1289,6 +1452,57 @@ img {
     height: auto;
     margin: 0 auto;
     display: block;
+  }
+}
+
+.table {
+  border-collapse: collapse;
+  table-layout: auto;
+  border-spacing: 0;
+  width: 95%;
+
+  td {
+    background-color: white !important;
+  }
+
+  td,
+  th {
+    border: 1px solid #999999 !important;
+  }
+
+  th {
+    text-align: left;
+    background-color: #27576e !important;
+    width: 15ch;
+    font-size: 8px;
+    line-height: 10px;
+    padding: 8px 12px;
+  }
+}
+
+.pdf-item {
+  position: relative;
+  font-size: 10px;
+  line-height: 13px;
+  p {
+    line-height: 13px;
+    font-size: 10px;
+  }
+}
+
+// .overflow-menu {
+//   position: absolute;
+//   top: 110px;
+//   z-index: 1000;
+// }
+
+.overflow-list {
+  .disabled {
+    pointer-events: none;
+
+    a {
+      color: #999999;
+    }
   }
 }
 </style>
