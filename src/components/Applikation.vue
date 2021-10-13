@@ -12,7 +12,7 @@
     </div>
 
     <div
-      v-if="currentStep > 0 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
+      v-if="!isLoading && currentStep > 0 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
       class="overflow-menu overflow-menu--open-right"
     >
       <button id="overflow-button" class="button-overflow-menu js-dropdown" data-js-target="overflow5" aria-haspopup="true" aria-expanded="false">
@@ -154,7 +154,7 @@
                   {{ section.resultIntro }}
                 </p>
               </div>
-              <div class="col-lg-7 mb-7">
+              <div :class="['mb-7', currentStep === 0 ? 'col-lg-7' : 'col-lg-9']">
                 <button
                   v-if="currentStep === section.steps.length && currentSection === 'test1'"
                   class="button button-primary"
@@ -233,7 +233,7 @@
                     </div>
                     <button
                       id="primaryButton"
-                      class="button button-primary d-block mt-7"
+                      :class="['button mt-7', currentSection === 'test1' ? 'button-secondary' : 'button-primary']"
                       @click.prevent="handleSubmit()"
                       v-if="currentStep + 1 === section.steps.length"
                     >
@@ -242,6 +242,15 @@
                     <button id="primaryButton" class="button button-primary d-block mt-7" @click.prevent="goToNextStep()" v-else>
                       {{ currentStep > 0 ? 'Næste' : skipIndustrySelect ? 'Fortsæt' : 'Start testen' }}
                     </button>
+                    <button
+                      id="primaryButton"
+                      class="button button-primary mt-7"
+                      @click.prevent="handleSubmit(false)"
+                      v-if="currentSection === 'test1' && currentStep + 1 === section.steps.length"
+                    >
+                      Fortsæt: Få forbedringer til din forretningsmodel
+                    </button>
+
                     <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
                       {{ currentStep > 0 ? 'Forrige' : 'Tilbage' }}
                     </button>
@@ -270,7 +279,7 @@
                         <apexchart
                           v-if="response[currentSection]"
                           type="radar"
-                          :options="radarOptions"
+                          :options="radarOptions()"
                           height="400"
                           :series="radarData()"
                         ></apexchart>
@@ -338,10 +347,9 @@
       </div>
 
       <!-- Hidden PDF template start -->
-      <!-- TODO: Remember to turn off preview and enable download on launch -->
       <vue-html2pdf
-        :show-layout="false"
-        :float-layout="true"
+        :show-layout="true"
+        :float-layout="false"
         :enable-download="false"
         :preview-modal="false"
         :paginate-elements-by-height="1100"
@@ -353,8 +361,10 @@
         ref="html2Pdf"
         :filename="`diagnose_${dateTimeString()}.pdf`"
         @beforeDownload="beforeDownload($event)"
+        @hasDownloaded="hasDownloaded($event)"
         :html-to-pdf-options="{
           margin: 20,
+          image: { type: 'png' },
           enableLinks: true,
           filename: `diagnose_${dateTimeString()}.pdf`
         }"
@@ -366,31 +376,15 @@
             <p>Opdateret d. {{ dateString() }}</p>
             <table class="table">
               <tr>
-                <th>Virksomhedsnavn</th>
+                <th>Virksomhedsnavn:</th>
                 <td></td>
               </tr>
               <tr>
-                <th>CVR-nummer</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Kommune</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Antal ansatte</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Etableringsår</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Branche</th>
-                <td></td>
+                <th>Branche:</th>
+                <td>{{ values.industry }}</td>
               </tr>
             </table>
-            <p>Denne rapport indeholder resultat for følgende tests</p>
+            <!-- <p>Denne rapport indeholder resultat for følgende tests</p>
             <ul>
               <li>Hvordan er presset på din forretningsmodel</li>
               <li>Hvor kan din forretningsmodel forbedres?</li>
@@ -399,25 +393,53 @@
               Resultaterne baserer sig på besvarelser fra en undersøgelse blandt mindre og mellemstore virksomheder, der succesfuldt har forandret
               eller styrket deres forretningsmodel. Undersøgelsen er udarbejdet i foråret 2021, i forbindelse med Industriens Fonds projekt,
               genstartNU.
-            </p>
+            </p> -->
           </section>
           <div class="html2pdf__page-break" />
           <section class="pdf-item">
-            <p class="h6">Resultat del 1</p>
+            <p class="h6">Resultat - del 1</p>
             <h2 class="h4 mt-0">Hvordan er presset på din forretningsmodel?</h2>
             <p>
               Nedenfor finder du et overblik over hvordan presset på din virksomhed er, sammen med et gennemsnit af hvordan andre virksomheder inden
               for samme branche klarer sig.
             </p>
+            <hr />
             <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
             <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
-            <apexchart v-if="response[currentSection]" type="radar" :options="radarOptions" height="360" :series="radarData()"></apexchart>
+            <apexchart v-if="response[currentSection]" type="radar" :options="radarOptions(true)" width="600px" :series="radarData()"></apexchart>
+            <hr />
             <h3 class="h6">{{ sections[0].resultSecondaryHeadline }}</h3>
             <apexchart
               v-if="response['test1']"
               type="bar"
-              height="140px"
-              :options="columnOptions()"
+              width="400px"
+              :options="columnOptions(true)"
+              :series="[
+                {
+                  name: 'Presset på forretningsmodellen',
+                  data: columnData()
+                }
+              ]"
+            ></apexchart>
+          </section>
+          <div class="html2pdf__page-break" />
+          <section class="pdf-item">
+            <p class="h6">Resultat - del 1 - fortsat</p>
+            <h2 class="h4 mt-0">Dine svar</h2>
+            <p>
+             Dine svar på 18 udsagn om presset på jeres forretningsmodel, hvor 1 er meget uenig og 10 er meget enig.
+            </p>
+            <hr />
+            <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
+            <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
+            <apexchart v-if="response[currentSection]" type="radar" :options="radarOptions(true)" width="600px" :series="radarData()"></apexchart>
+            <hr />
+            <h3 class="h6">{{ sections[0].resultSecondaryHeadline }}</h3>
+            <apexchart
+              v-if="response['test1']"
+              type="bar"
+              width="400px"
+              :options="columnOptions(true)"
               :series="[
                 {
                   name: 'Presset på forretningsmodellen',
@@ -454,9 +476,9 @@ export default class Applikation extends Vue {
   error = '';
   errors = {} as any;
   isLoading = false;
-  currentStep = 0; // initial value 0
+  currentStep = 6; // initial value 0
   maxStep = 0;
-  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
   skipIndustrySelect = false;
@@ -486,7 +508,8 @@ export default class Applikation extends Vue {
     { label: 'Oplevelseserhverv', value: 'Oplevelseserhverv' },
     { label: 'Andet', value: 'Andet' }
   ];
-  defaultDescription = 'Angiv hvor enig du er i de enkelte udsagn, hvor 10= meget enig og 1= meget uenig.';
+  defaultDescription =
+    'Angiv hvor enig du er i de enkelte udsagn, hvor 1= meget uenig og 10= meget enig. Vælg 1, hvis spørsmålet ikke er relevant for din virksomhed.';
   sections = [
     {
       id: 'test1',
@@ -899,32 +922,32 @@ export default class Applikation extends Vue {
       return [
         {
           name: 'Din virksomhed',
-          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers)
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers.toFixed(2))
         },
         {
           name: 'Branchen',
-          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_industry)
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_industry.toFixed(2))
         },
         {
           name: 'Alle virksomheder',
-          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all)
+          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all.toFixed(2))
         }
       ];
     }
     return [
       {
         name: 'Din virksomhed',
-        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers)
+        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers.toFixed(2))
       },
       {
         name: 'Alle virksomheder',
-        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all)
+        data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all.toFixed(2))
       }
     ];
   }
 
   dateTimeString() {
-    return moment().format('DDMMYYYY_hhmm');
+    return moment().format('DDMMYYYY_HHmm');
   }
 
   dateString() {
@@ -932,7 +955,7 @@ export default class Applikation extends Vue {
     return moment().format('DD. MMMM YYYY');
   }
 
-  get radarOptions() {
+  radarOptions(pdf = false) {
     if (!this.response) {
       return null;
     }
@@ -947,17 +970,20 @@ export default class Applikation extends Vue {
     return {
       chart: {
         id: 'radar',
-        fontFamily: 'IBMPlexSans, system',
+        fontFamily: pdf ? 'IBMPlexSans, sans-serif' : 'IBMPlexSans, system',
         toolbar: {
           show: false
         }
+      },
+      dataLabels: {
+        enabled: pdf ? true : false
       },
       stroke: {
         width: 1
       },
       plotOptions: {
         radar: {
-          size: 150,
+          size: pdf ? 100 : 150,
           polygons: {
             strokeColor: '#e8e8e8',
             fill: {
@@ -973,7 +999,7 @@ export default class Applikation extends Vue {
           show: true,
           style: {
             colors: Array(categories.length).fill(chartColors.textColor),
-            fontSize: 12
+            fontSize: pdf ? 10 : 12
           }
         }
       },
@@ -985,7 +1011,7 @@ export default class Applikation extends Vue {
           offsetX: 8,
           style: {
             colors: Array(categories.length).fill(chartColors.textColor),
-            fontSize: 12
+            fontSize: pdf ? 10 : 12
           }
         }
       },
@@ -996,7 +1022,7 @@ export default class Applikation extends Vue {
         }
       },
       legend: {
-        fontSize: '14px',
+        fontSize: pdf ? 12 : 14,
         itemMargin: {
           horizontal: 8,
           vertical: 8
@@ -1005,14 +1031,10 @@ export default class Applikation extends Vue {
     };
   }
 
-  columnOptions() {
+  columnOptions(pdf = false) {
     if (!this.response) {
       return null;
     }
-
-    const chartColors = {
-      textColor: '#1A1A1A'
-    };
 
     const categories = this.response[this.currentSection].scores[0].mean_score_industry
       ? ['Din virksomhed', 'Branchen', 'Alle virksomheder']
@@ -1021,7 +1043,7 @@ export default class Applikation extends Vue {
     return {
       chart: {
         id: 'bar',
-        fontFamily: 'IBMPlexSans, system',
+        fontFamily: pdf ? 'IBMPlexSans, sans-serif' : 'IBMPlexSans, system',
         toolbar: {
           show: false
         }
@@ -1035,13 +1057,13 @@ export default class Applikation extends Vue {
         }
       },
       dataLabels: {
-        enabled: false
+        enabled: pdf ? true : false
       },
       xaxis: {
         categories: categories,
         labels: {
           style: {
-            fontSize: 13
+            fontSize: pdf ? 11 : 13
           }
         }
       },
@@ -1052,7 +1074,7 @@ export default class Applikation extends Vue {
         labels: {
           offsetX: 8,
           style: {
-            fontSize: 12
+            fontSize: pdf ? 10 : 12
           }
         }
       },
@@ -1131,7 +1153,7 @@ export default class Applikation extends Vue {
     }
   }
 
-  handleSubmit() {
+  handleSubmit(showResults = true) {
     if (!this.validate()) {
       return;
     }
@@ -1168,7 +1190,6 @@ export default class Applikation extends Vue {
     }
     Promise.all([...requests])
       .then((rsp: any) => {
-        this.currentStep++;
         this.isLoading = false;
         if (!rsp[0].data.error) {
           this.isLoading = false;
@@ -1180,12 +1201,20 @@ export default class Applikation extends Vue {
           console.log(this.response[this.currentSection]);
           // this.response = rsp.data;
         }
+        console.log(showResults);
       })
       .catch((error: any) => {
         console.log(error);
         this.isLoading = false;
         this.error = 'Noget gik galt. Prøv venligst igen.';
       });
+    if (showResults) {
+      this.currentStep++;
+    } else {
+      console.log('HEJ!');
+      this.currentStep = 1;
+      this.currentSection = 'test2';
+    }
   }
 
   generateReport() {
@@ -1193,14 +1222,13 @@ export default class Applikation extends Vue {
     html2pdfComponent.generatePdf();
   }
 
-  async beforeDownload({ html2pdf, options, pdfContent }) {
+  async beforeDownload({ html2pdf, options, pdfContent }: any) {
     await html2pdf()
       .set(options)
       .from(pdfContent)
       .toPdf()
       .get('pdf')
       .then((pdf: any) => {
-        console.log(pdf);
         const totalPages = pdf.internal.getNumberOfPages();
         for (let i = 1; i <= totalPages; i++) {
           const pageWidth = pdf.internal.pageSize.getWidth();
@@ -1223,8 +1251,19 @@ export default class Applikation extends Vue {
             { maxWidth: pageWidth * 0.55 }
           );
         }
+        console.log(pdf);
       })
-      .save();
+      .save()
+      .output('datauristring')
+      .then(function (pdfAsString: any) {
+        // The PDF has been converted to a Data URI string and passed to this function.
+        // Use pdfAsString however you like (send as email, etc)! For instance:
+        console.log(pdfAsString);
+      });
+  }
+
+  async hasDownloaded(event: any) {
+    console.log(event);
   }
 
   validate() {
@@ -1459,24 +1498,27 @@ img {
   border-collapse: collapse;
   table-layout: auto;
   border-spacing: 0;
-  width: 95%;
+  width: 30%;
 
   td {
-    background-color: white !important;
+    border-bottom: 0.5px dotted #525252 !important;
+    padding: 5px 12px;
   }
 
   td,
   th {
-    border: 1px solid #999999 !important;
+    background-color: white !important;
+    color: black !important;
   }
 
   th {
     text-align: left;
-    background-color: #27576e !important;
     width: 15ch;
     font-size: 8px;
+    border: none !important;
     line-height: 10px;
-    padding: 8px 12px;
+    padding: 5px 12px 5px 0;
+    font-weight: 600;
   }
 }
 
@@ -1504,5 +1546,9 @@ img {
       color: #999999;
     }
   }
+}
+
+hr {
+  border-top: 0.5px dotted #8c8c8c;
 }
 </style>
