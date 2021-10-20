@@ -348,8 +348,9 @@
 
       <!-- Hidden PDF template start -->
       <vue-html2pdf
-        :show-layout="true"
-        :float-layout="false"
+        ref="html2Pdf"
+        :show-layout="false"
+        :float-layout="true"
         :enable-download="false"
         :preview-modal="false"
         :paginate-elements-by-height="1100"
@@ -358,16 +359,15 @@
         pdf-format="a4"
         pdf-orientation="portrait"
         pdf-content-width="800px"
-        ref="html2Pdf"
         :filename="`diagnose_${dateTimeString()}.pdf`"
-        @beforeDownload="beforeDownload($event)"
-        @hasDownloaded="hasDownloaded($event)"
         :html-to-pdf-options="{
           margin: 20,
           image: { type: 'png' },
           enableLinks: true,
           filename: `diagnose_${dateTimeString()}.pdf`
         }"
+        @beforeDownload="beforeDownload($event)"
+        @hasDownloaded="hasDownloaded($event)"
       >
         <section slot="pdf-content">
           <section class="pdf-item">
@@ -426,9 +426,7 @@
           <section class="pdf-item">
             <p class="h6">Resultat - del 1 - fortsat</p>
             <h2 class="h4 mt-0">Dine svar</h2>
-            <p>
-             Dine svar på 18 udsagn om presset på jeres forretningsmodel, hvor 1 er meget uenig og 10 er meget enig.
-            </p>
+            <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel, hvor 1 er meget uenig og 10 er meget enig.</p>
             <hr />
             <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
             <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
@@ -476,9 +474,9 @@ export default class Applikation extends Vue {
   error = '';
   errors = {} as any;
   isLoading = false;
-  currentStep = 6; // initial value 0
+  currentStep = 0; // initial value 0
   maxStep = 0;
-  currentSection = 'test1'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+  currentSection = 'frontpage'; // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
   imgs = [] as any;
   sessionId = this.generateId(32);
   skipIndustrySelect = false;
