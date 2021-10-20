@@ -481,7 +481,7 @@ export default class Applikation extends Vue {
   sessionId = this.generateId(32);
   skipIndustrySelect = false;
 
-  apiBaseUrl = 'https://vg-api.irisgroup.dk/api/';
+  apiBaseUrl = 'https://vg-api.irisgroup.dk/api';
   defaultOptions = [
     { label: '0' },
     { label: '1' },
@@ -1103,10 +1103,8 @@ export default class Applikation extends Vue {
   }
 
   mounted() {
-    // this.isLoading = true;
-    // new DKFDS.Dropdown(document.getElementById('overflow-button'));
     DKFDS.init();
-    this.getImages();
+    // this.getImages();
   }
 
   updated() {
@@ -1127,6 +1125,7 @@ export default class Applikation extends Vue {
     Promise.all([axios.get(this.apiBaseUrl + '/img/part1'), axios.get(this.apiBaseUrl + '/img/part2')]).then(responses => {
       const [url1rest, url2resp] = responses;
       this.imgs = [url1rest.data, url2resp.data];
+      console.log(this.imgs);
       this.isLoading = false;
     });
   }
