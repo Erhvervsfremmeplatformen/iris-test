@@ -645,8 +645,6 @@ import Image2 from './Image2.vue';
 import Logo from './Logo.vue';
 import VueApexCharts from 'vue-apexcharts';
 import VueHtml2pdf from 'vue-html2pdf';
-import CustomMultiselect from './CustomMultiselect.vue';
-import StateComponent from './StateComponent.vue';
 import * as DKFDS from 'dkfds';
 import * as DataEvent from '@erst-vg/piwik-event-wrapper';
 import { store } from '../store/';
