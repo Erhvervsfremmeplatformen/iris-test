@@ -275,7 +275,7 @@
 
               <!-- Results start -->
               <div v-if="currentStep === section.steps.length" class="col-12">
-                <div class="bg-normal full-width mt-3 p-md-7">
+                <div :class="`${currentSection === 'test1' ? 'bg-normal' : ''} full-width mt-3 p-md-7`">
                   <div v-if="currentSection === 'test1'" class="container">
                     <div class="row">
                       <div class="col-12">
