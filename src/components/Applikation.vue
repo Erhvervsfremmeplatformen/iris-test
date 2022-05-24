@@ -933,7 +933,7 @@ export default {
       isLoading: false,
       currentStep: 0, // initial value 0
       maxStep: 0,
-      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
 
       apiBaseUrl: 'https://vg-api.irisgroup.dk/api',
