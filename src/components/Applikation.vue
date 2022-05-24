@@ -933,7 +933,7 @@ export default {
       isLoading: false,
       currentStep: 0, // initial value 0
       maxStep: 0,
-      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
 
       apiBaseUrl: 'https://vg-api.irisgroup.dk/api',
@@ -1499,9 +1499,11 @@ export default {
       Object.entries(this.values)
         .filter(([key, value]) => key !== 'industry')
         .forEach(([key, value]) => {
+          if (value === 0) {
+            return;
+          }
           answers[key] = value;
         });
-      console.log('log_answers', answers);
       const data = JSON.stringify({
         answers: answers,
         industry: this.values.industry,
@@ -1528,7 +1530,6 @@ export default {
       Promise.all([...requests])
         .then((rsp: any) => {
           this.isLoading = false;
-          console.log(rsp);
           if (!rsp[0].data.error) {
             this.isLoading = false;
             if (rsp.length > 1) {
