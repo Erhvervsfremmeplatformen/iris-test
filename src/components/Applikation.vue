@@ -304,9 +304,9 @@
                       <div class="col-xl-7">
                         <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
                         <apexchart
-                          v-if="response[currentSection]"
+                          v-if="response['test1']"
                           type="radar"
-                          :options="radarOptions(currentSection)"
+                          :options="radarOptions('test1')"
                           height="400"
                           :series="radarData()"
                         ></apexchart>
@@ -984,9 +984,9 @@ export default {
       errors: {},
       isLoading: false,
       isDownloading: false,
-      currentStep: 0, // initial value 0
-      maxStep: 0,
-      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentStep: 9, // initial value 0
+      maxStep: 9,
+      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
 
       apiBaseUrl: 'https://vg-api.irisgroup.dk/api',
