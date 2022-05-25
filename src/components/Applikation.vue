@@ -244,7 +244,7 @@
                       v-if="currentStep + 1 === section.steps.length"
                       id="primaryButton"
                       :class="['button mt-7', currentSection === 'test1' ? 'button-secondary' : 'button-primary']"
-                      @click.prevent="handleSubmit()"
+                      @click.prevent="handleSubmit(true)"
                     >
                       Se resultat
                     </button>
@@ -520,9 +520,10 @@
           enableLinks: true,
           filename: `diagnose_${getDateTimeString()}.pdf`,
           image: { type: 'jpeg', quality: 1 },
+
           html2canvas: {
             dpi: 192,
-            scale: 2,
+            scale: 1.5,
             letterRendering: true,
             useCORS: true
           },
@@ -748,15 +749,10 @@
                       <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
                         <div class="valueContainer ml-4">
                           <p class="h5 mt-0 mb-2">
-                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry') }}
+                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', true) }}
                           </p>
                           <GradientLine
-                            :percentage="
-                              (response[sectionGroup.section] &&
-                                response[sectionGroup.section].question_means.find(questionItem => {
-                                  return question.name == questionItem.question;
-                                }).mean_industry / 10) * 100
-                            "
+                            :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', false) / 10) * 100"
                             :width="30"
                           />
                         </div>
@@ -764,15 +760,10 @@
                       <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
                         <div class="valueContainer ml-4">
                           <p class="h5 mt-0 mb-2">
-                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all') }}
+                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', true) }}
                           </p>
                           <GradientLine
-                            :percentage="
-                              (response[sectionGroup.section] &&
-                                response[sectionGroup.section].question_means.find(questionItem => {
-                                  return question.name == questionItem.question;
-                                }).mean_all / 10) * 100
-                            "
+                            :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', false) / 10) * 100"
                             :width="30"
                           />
                         </div>
@@ -1477,7 +1468,7 @@ export default {
     window.addEventListener('hashchange', this.updateStepFromHash);
   },
   methods: {
-    getMeansValueFromResponse(step: any, questionName: string, meansKey: string) {
+    getMeansValueFromResponse(step: any, questionName: string, meansKey: string, format: boolean) {
       if (!this.response[step] || !this.response[step].question_means) {
         return 'N/A';
       }
@@ -1485,7 +1476,9 @@ export default {
       const currentQuestion = this.response[step].question_means.find((questionItem: any) => questionName == questionItem.question);
 
       if (currentQuestion && currentQuestion[meansKey]) {
-        return currentQuestion[meansKey].toLocaleString('da-DK', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        return format
+          ? currentQuestion[meansKey].toLocaleString('da-DK', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+          : currentQuestion[meansKey];
       } else {
         return 'N/A';
       }
@@ -1599,18 +1592,20 @@ export default {
               this.response[this.currentSection] = rsp[0].data;
             }
           }
+          console.log(this.response);
+
+          if (showResults) {
+            this.currentStep++;
+          } else {
+            this.currentStep = 1;
+            this.currentSection = 'test2';
+          }
         })
         .catch((error: any) => {
           console.log(error);
           this.isLoading = false;
           this.error = 'Noget gik galt. Prøv venligst igen.';
         });
-      if (showResults) {
-        this.currentStep++;
-      } else {
-        this.currentStep = 1;
-        this.currentSection = 'test2';
-      }
     },
 
     generateId(length: number) {

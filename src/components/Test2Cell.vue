@@ -20,7 +20,7 @@
     >
       <p class="my-3">{{ question.label }}</p>
       <div class="valueContainer ml-4">
-        <p class="h5 mt-0 mb-2">{{ values[question.name] }}</p>
+        <p class="h5 mt-0 mb-2 align-text-center">{{ values[question.name] }}</p>
         <GradientLine :percentage="(values[question.name] / 10) * 100" :width="20" style="flex-shrink: 0" />
       </div>
     </div>
