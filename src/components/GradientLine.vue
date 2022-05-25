@@ -8,7 +8,10 @@
 <script lang="ts">
 export default {
   name: 'GradientLine',
-  props: ['percentage', 'width'],
+  props: {
+    width: { type: [Number, String], required: true },
+    percentage: { type: Number, required: true }
+  },
   computed: {
     color() {
       if (this.percentage <= 49) {
