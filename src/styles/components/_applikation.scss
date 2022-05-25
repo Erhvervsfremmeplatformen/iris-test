@@ -18,7 +18,7 @@ html {
   &-blue {
     border: none;
 
-    & >>> *:not(.button, .icon-svg) {
+    & >>> *:not(.button):not(.icon-svg) {
       background-color: #e7efff;
     }
   }
