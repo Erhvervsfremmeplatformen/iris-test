@@ -984,9 +984,9 @@ export default {
       errors: {},
       isLoading: false,
       isDownloading: false,
-      currentStep: 9, // initial value 0
-      maxStep: 9,
-      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentStep: 0, // initial value 0
+      maxStep: 0,
+      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
 
       apiBaseUrl: 'https://vg-api.irisgroup.dk/api',
