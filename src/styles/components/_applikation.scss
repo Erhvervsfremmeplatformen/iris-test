@@ -394,3 +394,9 @@ td.diagonal {
     }
   }
 }
+
+>>> .form-input,
+>>> select,
+>>> textarea {
+  max-width: none;
+}
