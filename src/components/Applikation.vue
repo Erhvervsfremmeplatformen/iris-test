@@ -529,7 +529,6 @@
                                 <option value="option4">Erhvervshus Fyn</option>
                                 <option value="option5">Erhvervshus Sjælland</option>
                                 <option value="option6">Erhvervshus Hovedstaden</option>
-                                <option value="option7">Erhvervshus Bornholm</option>
                               </select>
                             </div>
                             <div class="form-group">
@@ -1089,7 +1088,6 @@ export default {
       contactFormValues: {} as any,
       mailgunBaseUrl: 'https://api.mailgun.net/v3',
       mailgunDomain: 'sandboxa1bb9b9f7814455ca35a3de03f099d01.mailgun.org',
-      mailgunApiKey: '***REMOVED***',
       pdfBlob: ''
     };
   },
@@ -1676,7 +1674,7 @@ export default {
           },
           auth: {
             username: 'api',
-            password: this.mailgunApiKey
+            password: process.env.VUE_APP_MAILGUN_API_KEY
           }
         })
         .then(
