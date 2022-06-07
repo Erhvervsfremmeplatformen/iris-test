@@ -15,7 +15,7 @@
 
     <div
       v-if="!isLoading && currentStep > 0 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
-      class="overflow-menu overflow-menu--open-right"
+      class="overflow-menu overflow-menu--open-right px-lg-7 px-xl-0"
     >
       <button id="overflow-button" class="button-overflow-menu js-dropdown" data-js-target="overflow5" aria-haspopup="true" aria-expanded="false">
         Trin {{ currentStep }} af {{ sections[currentSection.replace('test', '') - 1].steps.length - 1 }}
@@ -178,7 +178,7 @@
         <div v-for="(section, sectionIndex) of sections" v-else :key="sectionIndex" class="col-lg-12">
           <template v-if="currentSection === section.id">
             <div class="row">
-              <div class="col-lg-9 p-lg-4 px-lg-9 mb-0">
+              <div class="testclass2 col-lg-9 p-lg-4 px-lg-9 mb-0 px-xl-4">
                 <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
 
                 <h1 class="h1">{{ section.headline }}</h1>
@@ -189,7 +189,10 @@
                   {{ section.resultIntro }}
                 </p>
               </div>
-              <div v-if="currentStep !== section.steps.length" :class="['testclass mb-7', currentStep === 0 ? 'col-lg-7' : 'col-lg-9 p-lg-7']">
+              <div
+                v-if="currentStep !== section.steps.length"
+                :class="['testclass mb-7 p-lg-7 px-lg-9 px-xl-4', currentStep === 0 ? 'col-lg-7' : 'col-lg-9']"
+              >
                 <button
                   v-if="currentStep === section.steps.length && currentSection === 'test1'"
                   class="button button-primary"
@@ -508,7 +511,7 @@
                               <svg class="icon-svg" focusable="false" aria-hidden="true"><use xlink:href="#close"></use></svg>Luk
                             </button>
                           </div>
-                          <div class="modal-body">
+                          <div v-if="!emailIsSent" class="modal-body">
                             <p>
                               Her kan du skrive til jeres regionale erhvervshus, hvor dit testresultat automatisk sendes med. Derefter vil en
                               forretningsudvikler fra erhvervshuset kontakte dig og tilbyde gratis, uvildig sparring, der relaterer sig til
@@ -520,15 +523,13 @@
                                 id="businessHouse"
                                 class="form-select"
                                 name="businessHouse"
+                                required
                                 @input="updateModalValue('businessHouse', $event.target.value)"
                               >
-                                <option value="0">Vælg dit regionale erhvervshus...</option>
-                                <option value="option1">Erhvervshus Nordjylland</option>
-                                <option value="option2">Erhvervshus Midtjylland</option>
-                                <option value="option3">Erhvervshus Sydjylland</option>
-                                <option value="option4">Erhvervshus Fyn</option>
-                                <option value="option5">Erhvervshus Sjælland</option>
-                                <option value="option6">Erhvervshus Hovedstaden</option>
+                                <option value="0" :disabled="contactFormValues.businessHouse">Vælg dit regionale erhvervshus...</option>
+                                <option v-for="(businessHouse, index) of businessHouses" :key="index + 1" :value="`option${index + 1}`">
+                                  {{ businessHouse.name }}
+                                </option>
                               </select>
                             </div>
                             <div class="form-group">
@@ -597,18 +598,49 @@
                           </div>
 
                           <div class="modal-footer">
-                            <div class="row align-items-center">
-                              <div class="col-auto">
-                                <button class="button button-primary">Indsend resultater til erhvervshuset</button>
+                            <div class="row">
+                              <div v-if="emailIsSent" class="col-12 mt-6">
+                                <div role="alert" aria-atomic="true" class="alert mt-0 mb-8 alert-success">
+                                  <div class="alert-body">
+                                    <ul class="alert-text nobullet-list">
+                                      <li>
+                                        Tak for din indsendelse. Vi har sendt en e-mail til jeres regionale erhvervshus.
+                                        {{ businessHouses[contactFormValues.businessHouse.replace('option', '') - 1].name }} vil kontakte dig og
+                                        tilbyde gratis, uvildig sparring.
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
                               </div>
-                              <div class="col-auto">
-                                <div
-                                  v-if="isSending"
-                                  class="spinner"
-                                  aria-label="Sender e-mail"
-                                  :aria-busy="isSending"
-                                  style="margin: 16px auto; font-size: 6px"
-                                />
+
+                              <div class="col-12">
+                                <div class="row align-items-center">
+                                  <div class="col-auto">
+                                    <button v-if="!emailIsSent" class="button button-primary">Indsend resultater til erhvervshuset</button>
+                                    <button v-else class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
+                                  </div>
+                                  <div class="col-auto">
+                                    <div
+                                      v-if="isSending"
+                                      class="spinner"
+                                      aria-label="Sender e-mail"
+                                      :aria-busy="isSending"
+                                      style="margin: 16px auto; font-size: 6px"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div v-if="emailError" class="col-12 mt-6">
+                                <div role="alert" aria-atomic="true" class="alert mt-0 mb-8 alert-error">
+                                  <div class="alert-body">
+                                    <ul class="alert-text nobullet-list">
+                                      <li>
+                                        {{ emailError || 'Tak for din indsending' }}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1001,6 +1033,7 @@ export default {
     return {
       response: {},
       error: '',
+      emailError: '',
       errors: {},
       isLoading: false,
       isDownloading: false,
@@ -1011,6 +1044,7 @@ export default {
       skipIndustrySelect: false,
       pdfIsReady: false,
       sendEmail: false,
+      emailIsSent: false,
 
       apiBaseUrl: 'https://vg-api.irisgroup.dk/api',
       defaultOptions: [
@@ -1088,7 +1122,14 @@ export default {
       contactFormValues: {} as any,
       mailgunBaseUrl: 'https://api.mailgun.net/v3',
       mailgunDomain: 'sandboxa1bb9b9f7814455ca35a3de03f099d01.mailgun.org',
-      pdfBlob: ''
+      pdfBlob: '',
+      businessHouses: [
+        { name: 'Erhvervshus Nordjylland', email: '' },
+        { name: 'Erhvervshus Midtjylland', email: '' },
+        { name: 'Erhvervshus Fyn', email: '' },
+        { name: 'Erhvervshus Sjælland', email: '' },
+        { name: 'Erhvervshus Hovedstaden', email: '' }
+      ]
     };
   },
 
@@ -1681,12 +1722,14 @@ export default {
           response => {
             console.log('succes', response);
             this.isSending = false;
+            this.emailIsSent = true;
             this.$refs.contactForm[0].reset();
+            this.emailError = '';
           },
           reject => {
             console.log('fejl', reject);
             this.isSending = false;
-            this.error = 'Noget gik galt. Prøv venligst igen.';
+            this.emailError = 'Noget gik galt. Prøv venligst igen.';
           }
         );
     },
