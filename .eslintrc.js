@@ -24,7 +24,6 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
     'plugin:vue/recommended',
-    'plugin:jest/recommended',
     'prettier/@typescript-eslint',
     'prettier/vue'
   ],
@@ -35,8 +34,10 @@ module.exports = {
     sourceType: 'module',
     extraFileExtensions: ['.vue']
   },
-  plugins: ['vue', 'jest', '@typescript-eslint/eslint-plugin', '@typescript-eslint/tslint'],
+  plugins: ['vue', '@typescript-eslint/eslint-plugin', '@typescript-eslint/tslint'],
+  ignorePatterns: ['build/**'],
   rules: {
+    '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
@@ -47,10 +48,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-    'jest/no-disabled-tests': 'off',
     'vue/one-component-per-file': 'off',
-    'jest/no-jasmine-globals': 'off',
-    'jest/no-test-callback': 'off',
     'vue/no-v-html': 'off',
     '@typescript-eslint/no-misused-promises': 'off',
     'import/no-unresolved': 'off',
@@ -174,10 +172,5 @@ module.exports = {
         }
       }
     ]
-  },
-  settings: {
-    jest: {
-      version: 26,
-    },
-  },
+  }
 };

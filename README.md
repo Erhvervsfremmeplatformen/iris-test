@@ -1,20 +1,21 @@
-# Application development
+# Leverandør-applikation sandkasse
 
-Install node modules
+## Initial
+Installér NPM afhængigheder
 ```
 npm install
 ```
+## Udvikling
 
-Compile and hot-reload for development
+Byg og serve til udvikling
 ```
 npm run serve
 ```
 
-Access localhost (complete url is written after npm run serve)
+Start udvikling/test af applikation i _src/components/Applikation.vue_
 
-Start developing/testing your application in src/components/Applikation.vue
+## Code clean
 
-Lint and prettierfix your application
 ```
 npm run lint
 ```
@@ -23,13 +24,7 @@ npm run lint
 npm run prettierfix
 ```
 
-Transpile applikation
+## Transpile applikation
 ```
 npm run transpile-test
 ```
-
-When development is finished:
-1. Make sure the transpile applikation step is successful i.e. no errors
-2. Commit and push Applikation.vue to own Git repository
-3. Create new applikation in Virksomhedsguiden backoffice
-4. Send it to review when ready.
