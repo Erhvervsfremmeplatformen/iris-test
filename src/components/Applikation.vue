@@ -1713,7 +1713,8 @@ export default {
           },
           params: {
             from: 'Iris Group <mail@irisgroup.dk>',
-            to: 'xenia.j@adviceas.dk',
+            // to: 'xenia.j@adviceas.dk',
+            to: 'cd@irisgroup.dk',
             subject: 'Testresultater fra Udviklingskompasset',
             html: content
           },
