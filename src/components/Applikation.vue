@@ -136,38 +136,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="col-md-6 mb-7">
-                  <div class="d-flex flex-column">
-                    <div class="card card-align-height w-percent-100">
-                      <figure class="figure p-5 bg-alternative">
-                        <Image1 />
-                      </figure>
-                      <div class="card-text card-border">
-                        <button class="card-link h3" @click.prevent="currentSection = 'test1'">Vurder presset på din forretningsmodel</button>
-                        <p>
-                          Der er flere ting der spiller ind, når en forretningsmodel kommer under pres. Tag testen og få en indikation af, om der kan
-                          være behov for at efterse hele eller dele af din forretningsmodel.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div> -->
-                <!-- <div class="col-md-6 mb-7">
-                  <div class="d-flex flex-column">
-                    <div class="card card-align-height w-percent-100">
-                      <figure class="figure p-5 bg-alternative">
-                        <Image2 />
-                      </figure>
-                      <div class="card-text card-border">
-                        <button class="card-link h3" @click.prevent="currentSection = 'test2'">Juster din forretningsmodel</button>
-                        <p>
-                          For at udvikle en god forretningsmodel kræver det balance i modellens fire elementer, samt samspillet mellem dem. Tag testen
-                          og få inspiration til hvordan din forretningsmodel kan justeres eller forbedres.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div> -->
               </div>
             </div>
           </div>
@@ -191,7 +159,7 @@
               </div>
               <div
                 v-if="currentStep !== section.steps.length"
-                :class="['testclass mb-7 pb-lg-7 px-lg-9 px-xl-4 pt-0 pt-lg-0', currentStep === 0 ? 'col-lg-7' : 'col-lg-9']"
+                :class="['testclass mb-7 pb-lg-7 px-lg-9 px-xl-4 pt-0 pt-lg-0', currentStep === 0 || currentStep === 1 ? 'col-lg-7' : 'col-lg-9']"
               >
                 <button
                   v-if="currentStep === section.steps.length && currentSection === 'test1'"
@@ -302,7 +270,7 @@
                   </fieldset>
                 </div>
               </div>
-              <div v-if="currentStep === 0" :class="currentSection === 'test1' ? 'col-lg-5' : 'col-lg-4'">
+              <div v-if="currentStep === 0 || currentStep === 1" :class="currentSection === 'test1' ? 'col-lg-5' : 'col-lg-4'">
                 <figure class="figure">
                   <Image1 v-if="currentSection === 'test1'" />
                   <Image2 v-else />
@@ -702,11 +670,9 @@
         :manual-pagination="true"
         pdf-format="a4"
         pdf-orientation="portrait"
-        :filename="`udviklingskompasset_resultat.pdf`"
         :html-to-pdf-options="{
           margin: 20,
           enableLinks: true,
-          filename: `udviklingskompasset_resultat.pdf`,
           image: { type: 'jpeg', quality: 1 },
 
           html2canvas: {
@@ -997,6 +963,7 @@ import * as DataEvent from '@erst-vg/piwik-event-wrapper';
 import { store } from '../store/';
 
 export interface Variant {
+  mailgunApiKey: string;
   navn: string;
   aktiv: boolean;
   parametre: {
@@ -1526,6 +1493,10 @@ export default {
           ]
         }
       ];
+    },
+
+    mailgunApiKey: function () {
+      return this.variant?.mailgunApiKey ?? process.env.VUE_APP_MAILGUN_API_KEY;
     }
   },
   watch: {
@@ -1540,6 +1511,7 @@ export default {
   },
   mounted() {
     DKFDS.init();
+    console.log(this.mailgunApiKey);
   },
   created() {
     /**
@@ -1607,7 +1579,7 @@ export default {
       }
       // });
       if (!this.sendEmail) {
-        pdf.save();
+        pdf.save('udviklingskompasset_resultat.pdf');
       } else {
         const pdfBlob = await pdf.output('blob');
         // .then(function (pdfBlob: any) {
@@ -1747,7 +1719,7 @@ export default {
           },
           auth: {
             username: 'api',
-            password: process.env.VUE_APP_MAILGUN_API_KEY
+            password: this.mailgunApiKey
           }
         })
         .then(
