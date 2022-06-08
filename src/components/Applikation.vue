@@ -14,21 +14,21 @@
     </div>
 
     <div
-      v-if="!isLoading && currentStep > 0 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
+      v-if="!isLoading && currentStep > 1 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
       class="overflow-menu overflow-menu--open-right px-lg-7 px-xl-0"
     >
       <button id="overflow-button" class="button-overflow-menu js-dropdown" data-js-target="overflow5" aria-haspopup="true" aria-expanded="false">
-        Trin {{ currentStep }} af {{ sections[currentSection.replace('test', '') - 1].steps.length - 1 }}
+        Trin {{ currentStep - 1 }} af {{ sections[currentSection.replace('test', '') - 1].steps.length - 2 }}
         <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
       </button>
       <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
         <nav>
           <ul class="overflow-list sidenav-list" role="menu">
             <li
-              v-for="(step, stepIndex) of sections[currentSection.replace('test', '') - 1].steps.slice(1)"
+              v-for="(step, stepIndex) of sections[currentSection.replace('test', '') - 1].steps.slice(2)"
               :key="`nav_step_${stepIndex}`"
               role="none"
-              :class="[stepIndex + 1 === currentStep ? 'active current' : '', stepIndex > maxStep ? 'disabled' : '']"
+              :class="[stepIndex + 2 === currentStep ? 'active current' : '', stepIndex > maxStep ? 'disabled' : '']"
             >
               <a
                 href="#"
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-6 mb-7">
+                <!-- <div class="col-md-6 mb-7">
                   <div class="d-flex flex-column">
                     <div class="card card-align-height w-percent-100">
                       <figure class="figure p-5 bg-alternative">
@@ -151,8 +151,8 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-6 mb-7">
+                </div> -->
+                <!-- <div class="col-md-6 mb-7">
                   <div class="d-flex flex-column">
                     <div class="card card-align-height w-percent-100">
                       <figure class="figure p-5 bg-alternative">
@@ -167,7 +167,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -191,7 +191,7 @@
               </div>
               <div
                 v-if="currentStep !== section.steps.length"
-                :class="['testclass mb-7 p-lg-7 px-lg-9 px-xl-4', currentStep === 0 ? 'col-lg-7' : 'col-lg-9']"
+                :class="['testclass mb-7 pb-lg-7 px-lg-9 px-xl-4 pt-0 pt-lg-0', currentStep === 0 ? 'col-lg-7' : 'col-lg-9']"
               >
                 <button
                   v-if="currentStep === section.steps.length && currentSection === 'test1'"
@@ -206,9 +206,16 @@
                 </button>
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
+                  <!-- <div v-if="currentStep == 0 && stepIndex == 0">
+                    <div v-html="section.introText"></div>
+                    <button class="button button-primary d-block mt-7" @click.prevent="goToNextStep()">Start testen</button>
+                    <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
+                      {{ currentStep > 0 ? 'Forrige' : 'Tilbage' }}
+                    </button>
+                  </div> -->
                   <fieldset v-if="stepIndex === currentStep">
                     <h2 v-if="step.headline" class="h2 mt-0">{{ step.headline }}</h2>
-                    <p>{{ step.description }}</p>
+                    <p v-html="step.description"></p>
                     <div
                       v-for="(question, questionIndex) of step.questions"
                       :id="`form-group-${stepIndex}-${questionIndex}`"
@@ -286,7 +293,7 @@
                       class="button button-primary mt-7"
                       @click.prevent="handleSubmit(false)"
                     >
-                      Fortsæt: Få forbedringer til din forretningsmodel
+                      Gå videre til del 2 om styrker og svagheder i jeres forretningsmodel
                     </button>
 
                     <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
@@ -791,8 +798,8 @@
             <div v-if="response['test1']">
               <div
                 v-for="(sectionGroup, sectionGroupIndex) of [
-                  { sections: sections[0].steps.slice(1, 4) },
-                  { sections: sections[0].steps.slice(4, 6) }
+                  { sections: sections[0].steps.slice(2, 5) },
+                  { sections: sections[0].steps.slice(5, 7) }
                 ]"
                 :key="sectionGroupIndex"
               >
@@ -871,10 +878,10 @@
           <section class="pdf-item">
             <div
               v-for="(sectionGroup, sectionGroupIndex) of [
-                { sections: sections[0].steps.slice(1, 4), headline: 'Del 1 - ' + sections[0].headline, section: 'test1' },
-                { sections: sections[0].steps.slice(4, 6), headline: 'Del 1 - ' + sections[0].headline + ' - fortsat', section: 'test1' },
-                { sections: sections[1].steps.slice(1, 5), headline: 'Del 2 - ' + sections[1].headline, section: 'test2' },
-                { sections: sections[1].steps.slice(5, 9), headline: 'Del 2 - ' + sections[1].headline + ' - fortsat', section: 'test2' }
+                { sections: sections[0].steps.slice(2, 5), headline: 'Del 1 - ' + sections[0].headline, section: 'test1' },
+                { sections: sections[0].steps.slice(5, 7), headline: 'Del 1 - ' + sections[0].headline + ' - fortsat', section: 'test1' },
+                { sections: sections[1].steps.slice(2, 6), headline: 'Del 2 - ' + sections[1].headline, section: 'test2' },
+                { sections: sections[1].steps.slice(6, 10), headline: 'Del 2 - ' + sections[1].headline + ' - fortsat', section: 'test2' }
               ]"
               :key="sectionGroupIndex"
             >
@@ -1146,10 +1153,24 @@ export default {
           resultIntro:
             'Nedenfor finder du et overblik over hvordan presset på din virksomhed er, sammen med et gennemsnit af hvordan andre virksomheder inden for sammen branche klarer sig. Vi anbefaler at du også tager testens anden del, der viser dig, hvor din forretningsmodel potentielt kan styrkes. ',
           resultPrimaryHeadline: 'Pres for forretningsmodellen fordelt på områder',
-          description:
-            'Svar på en række udsagn om din virksomhed inden for 6 områder og få en indikation af, hvordan presset er på din forretningsmodel.',
           resultSecondaryHeadline: 'Samlet billede af presset på forretningsmodellen',
+          description:
+            'Svar på en række udsagn om din virksomhed inden for fem områder og få en indikation af, hvordan presset er på din forretningsmodel.',
+          introText: `<p>Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder, der gør det relevant at justere forretningsmodellen.</p>
+          <p>Formålet med denne test er at give jer en indikation af, om der kan være behov for at efterse forretningsmodellen.</p>
+
+          <p>Testen baserer sig på en stor undersøgelse blandt virksomheder, der succesfuldt har styrket forretningsmodellen. Den viser, at drivkræfter bag forretningsmodeludvikling typisk falder inden for fem hovedområder.</p>
+
+          <p>I testen beder vi dig derfor tage stilling til en række udsagn knyttet til hvert af de fem områder.</p>`,
           steps: [
+            {
+              description: `<p>Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder, der gør det relevant at justere forretningsmodellen.</p>
+          <p>Formålet med denne test er at give jer en indikation af, om der kan være behov for at efterse forretningsmodellen.</p>
+
+          <p>Testen baserer sig på en stor undersøgelse blandt virksomheder, der succesfuldt har styrket forretningsmodellen. Den viser, at drivkræfter bag forretningsmodeludvikling typisk falder inden for fem hovedområder.</p>
+
+          <p>I testen beder vi dig derfor tage stilling til en række udsagn knyttet til hvert af de fem områder.</p>`
+            },
             {
               questions: [
                 {
@@ -1281,10 +1302,21 @@ export default {
           descriptionAlternative:
             'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer. Til sidst får du et samlet resultat, der både viser dig hvordan presset er på din virksomhed, samt giver dig inspiration til, hvordan din forretningsmodel kan styrkes.',
           resultIntro:
-            'Nedenfor finder du et overblik over, hvor der kan være potentiale for at styrke jeres virksomheds forretningsmodel, samt inspiration til, hvordan I kan arbejde videre med udvikling af forretningsmodellen.',
+            'Nedenfor finder du bud på, hvor jeres forretningsmodel kan forbedres, samt inspiration til, hvordan I kan arbejde videre med udvikling af forretningsmodellen.',
           resultPrimaryHeadline: 'Dit resultat: Forslag til, hvor I kan styrke forretningsmodellen',
           resultSecondaryHeadline: 'Ud fra dine svar ser der især ud til at være potentiale for at styrke din forretningsmodel på følgende områder',
           steps: [
+            {
+              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer – 1) værditilbuddet, 2) kunder, 3) salg og kommunikation, 4) ressourcer og processer.</p>
+
+              <p>Men at udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i modellen fungerer godt og understøtter jeres mål.</p>
+
+              <p>Det er også vigtigt, at der en god samklang og balance mellem elementerne – fx at jeres værditilbud matcher behovene hos vigtige kunder. Det sidste er illustreret ved hjørnerne i figuren.</p>
+
+              <p>I testen beder vi dig derfor tage stilling til en række udsagn knyttet til både hovedelementerne og de fire hjørner i figuren.</p>
+
+              <p>Testen baserer sig på en stor undersøgelse af, hvor små og mellemstore virksomheder ofte har udfordringer i forretningsmodellen.</p>`
+            },
             {
               questions: [
                 {
@@ -1499,11 +1531,11 @@ export default {
   watch: {
     currentStep() {
       window.scrollTo(0, 0);
-      this.maxStep = this.currentStep > this.maxStep ? this.currentStep : this.maxStep;
+      this.maxStep = this.currentStep > this.maxStep ? this.currentStep - 1 : this.maxStep;
     },
     currentSection() {
       window.scrollTo(0, 0);
-      this.maxStep = this.currentStep > this.maxStep ? this.currentStep : this.maxStep;
+      this.maxStep = this.currentStep > this.maxStep ? this.currentStep - 1 : this.maxStep;
     }
   },
   mounted() {
@@ -1723,12 +1755,14 @@ export default {
             console.log('succes', response);
             this.isSending = false;
             this.emailIsSent = true;
+            this.sendEmail = false;
             this.$refs.contactForm[0].reset();
             this.emailError = '';
           },
           reject => {
             console.log('fejl', reject);
             this.isSending = false;
+            this.sendEmail = false;
             this.emailError = 'Noget gik galt. Prøv venligst igen.';
           }
         );
@@ -1876,6 +1910,11 @@ export default {
 
     validate() {
       this.errors = {};
+
+      console.log(this.sections.find((section: any) => section.id === this.currentSection).steps[this.currentStep].questions);
+      if (!this.sections.find((section: any) => section.id === this.currentSection).steps[this.currentStep].questions) {
+        return true;
+      }
 
       this.sections
         .find((section: any) => section.id === this.currentSection)
