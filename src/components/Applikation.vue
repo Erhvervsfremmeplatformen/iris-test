@@ -869,7 +869,8 @@
                       <td></td>
                       <td class="diagonal"><strong>Dine svar</strong></td>
                       <td class="diagonal">
-                        Din branche <span v-if="response['test1'] && !response['test1'].scores[0].mean_score_industry">*</span>
+                        Din branche
+                        <span v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry">*</span>
                       </td>
                       <td class="diagonal">Alle svar</td>
                     </tr>
@@ -934,9 +935,8 @@
                   </tbody>
                 </table>
                 <p
-                  v-if="response['test1'] && !response['test1'].scores[0].mean_score_industry"
-                  style="font-style: italic; max-width: none"
-                  class="mt-6"
+                  v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry"
+                  style="font-style: italic; max-width: none; margin-bottom: -10px"
                 >
                   * Din valgte branche har desværre på dette tidspunkt endnu for få besvarelser til at vise branchegennemsnittet
                 </p>
@@ -1679,6 +1679,7 @@ export default {
               this.response[this.currentSection] = rsp[0].data;
             }
           }
+          console.log(this.response);
 
           if (showResults) {
             this.currentStep++;
