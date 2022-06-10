@@ -329,6 +329,13 @@
                             }
                           ]"
                         ></apexchart>
+                        <p
+                          v-if="!response['test1'].scores[0].mean_score_industry"
+                          class="align-text-center"
+                          style="font-size: 14px; font-style: italic; margin-top: 0"
+                        >
+                          Din valgte branche har desværre på dette tidspunkt endnu for få besvarelser til at vise branchegennemsnittet
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -862,7 +869,7 @@
                       <td></td>
                       <td></td>
                       <td class="diagonal"><strong>Dine svar</strong></td>
-                      <td class="diagonal">Din branche</td>
+                      <td class="diagonal">Din branche <span v-if="!response['test1'].scores[0].mean_score_industry">*</span></td>
                       <td class="diagonal">Alle svar</td>
                     </tr>
                     <tr v-if="section.headline" class="">
@@ -925,6 +932,9 @@
                     </tr>
                   </tbody>
                 </table>
+                <p v-if="!response['test1'].scores[0].mean_score_industry" style="font-style: italic; max-width: none" class="mt-6">
+                  * Din valgte branche har desværre på dette tidspunkt endnu for få besvarelser til at vise branchegennemsnittet
+                </p>
                 <div class="html2pdf__page-break" />
               </div>
             </div>
