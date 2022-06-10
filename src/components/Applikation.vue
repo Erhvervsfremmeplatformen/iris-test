@@ -174,13 +174,6 @@
                 </button>
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
-                  <!-- <div v-if="currentStep == 0 && stepIndex == 0">
-                    <div v-html="section.introText"></div>
-                    <button class="button button-primary d-block mt-7" @click.prevent="goToNextStep()">Start testen</button>
-                    <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
-                      {{ currentStep > 0 ? 'Forrige' : 'Tilbage' }}
-                    </button>
-                  </div> -->
                   <fieldset v-if="stepIndex === currentStep">
                     <h2 v-if="step.headline" class="h2 mt-0">{{ step.headline }}</h2>
                     <p v-html="step.description"></p>
@@ -1139,12 +1132,6 @@ export default {
           resultSecondaryHeadline: 'Samlet billede af presset på forretningsmodellen',
           description:
             'Svar på en række udsagn om din virksomhed inden for fem områder og få en indikation af, hvordan presset er på din forretningsmodel.',
-          introText: `<p>Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder, der gør det relevant at justere forretningsmodellen.</p>
-          <p>Formålet med denne test er at give jer en indikation af, om der kan være behov for at efterse forretningsmodellen.</p>
-
-          <p>Testen baserer sig på en stor undersøgelse blandt virksomheder, der succesfuldt har styrket forretningsmodellen. Den viser, at drivkræfter bag forretningsmodeludvikling typisk falder inden for fem hovedområder.</p>
-
-          <p>I testen beder vi dig derfor tage stilling til en række udsagn knyttet til hvert af de fem områder.</p>`,
           steps: [
             {
               description: `<p>Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder, der gør det relevant at justere forretningsmodellen.</p>
@@ -1290,7 +1277,13 @@ export default {
           resultSecondaryHeadline: 'Ud fra dine svar ser der især ud til at være potentiale for at styrke din forretningsmodel på følgende områder',
           steps: [
             {
-              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer – 1) værditilbuddet, 2) kunder, 3) salg og kommunikation, 4) ressourcer og processer.</p>
+              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer:</p> 
+              <ol>
+              <li>værditilbuddet</li>
+              <li>kunder</li>
+              <li>salg og kommunikation</li>
+              <li>ressourcer og processer</li>
+              </ol>
 
               <p>Men at udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i modellen fungerer godt og understøtter jeres mål.</p>
 
