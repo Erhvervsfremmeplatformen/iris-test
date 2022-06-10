@@ -253,7 +253,7 @@
                       Se resultat
                     </button>
                     <button v-else id="primaryButton" class="button button-primary d-block mt-7" @click.prevent="goToNextStep()">
-                      {{ currentStep > 0 ? 'Næste' : skipIndustrySelect ? 'Fortsæt' : 'Start testen' }}
+                      {{ currentStep > 0 ? 'Næste' : skipIndustrySelect ? 'Fortsæt' : 'Næste' }}
                     </button>
                     <button
                       v-if="currentSection === 'test1' && currentStep + 1 === section.steps.length"
@@ -312,13 +312,13 @@
                           type="radar"
                           :options="radarOptions('test1')"
                           height="400"
-                          :series="radarData()"
+                          :series="radarData('test1')"
                         ></apexchart>
                       </div>
                       <div class="col-xl-5">
                         <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
                         <apexchart
-                          v-if="response[currentSection] && currentSection === 'test1'"
+                          v-if="response['test1'] && currentSection === 'test1'"
                           type="bar"
                           height="300"
                           :options="columnOptions()"
@@ -740,7 +740,13 @@
               <h2 class="h4 mt-2">Del 1: Hvordan er presset på jeres forretningsmodel?</h2>
               <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
               <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
-              <apexchart v-if="response['test1']" type="radar" :options="radarOptions('test1', true)" width="400px" :series="radarData()"></apexchart>
+              <apexchart
+                v-if="response['test1']"
+                type="radar"
+                :options="radarOptions('test1', true)"
+                width="400px"
+                :series="radarData('test1')"
+              ></apexchart>
               <p v-else class="align-text-center mt-12 h2">Del 1 er ikke gennemført</p>
             </div>
 
@@ -1521,7 +1527,6 @@ export default {
   },
   mounted() {
     DKFDS.init();
-    console.log(this.mailgunApiKey);
   },
   created() {
     /**
@@ -1593,22 +1598,12 @@ export default {
       } else {
         const pdfBlob = await pdf.output('blob');
         // .then(function (pdfBlob: any) {
-        console.log(pdfBlob);
         this.pdfBlob = pdfBlob;
         this.contactBusinessHouse();
-        // console.log(this.sendEmail);
-        // The PDF has been converted to a Data URI string and passed to this function.
-        // Use pdfBlob however you like (send as   email, etc)! For instance:
-        // });
       }
       this.isDownloading = false;
       this.pdfIsReady = true;
     },
-
-    // async hasDownloaded(event: any) {
-    //   console.log(event);
-    //   this.isDownloading = false;
-    // },
 
     updateValue(key: string, value: any) {
       this.$emit('input', (this.values[key] = value));
@@ -1620,7 +1615,11 @@ export default {
 
     goToNextStep() {
       if (this.validate()) {
-        this.currentStep++;
+        if (this.currentSection === 'test2' && this.currentStep === 0 && this.response.test1) {
+          this.currentStep = 2;
+        } else {
+          this.currentStep++;
+        }
       }
     },
 
@@ -1681,12 +1680,11 @@ export default {
               this.response[this.currentSection] = rsp[0].data;
             }
           }
-          console.log(this.response);
 
           if (showResults) {
             this.currentStep++;
           } else {
-            this.currentStep = 1;
+            this.currentStep = 0;
             this.currentSection = 'test2';
           }
         })
@@ -1700,7 +1698,6 @@ export default {
     contactBusinessHouse() {
       this.sendEmail = true;
       this.isSending = true;
-      console.log(this.contactFormValues);
 
       if (this.pdfBlob.length === 0) {
         this.generateReport();
@@ -1735,7 +1732,6 @@ export default {
         })
         .then(
           response => {
-            console.log('succes', response);
             this.isSending = false;
             this.emailIsSent = true;
             this.sendEmail = false;
@@ -1743,7 +1739,6 @@ export default {
             this.emailError = '';
           },
           reject => {
-            console.log('fejl', reject);
             this.isSending = false;
             this.sendEmail = false;
             this.emailError = 'Noget gik galt. Prøv venligst igen.';
@@ -1894,7 +1889,6 @@ export default {
     validate() {
       this.errors = {};
 
-      console.log(this.sections.find((section: any) => section.id === this.currentSection).steps[this.currentStep].questions);
       if (!this.sections.find((section: any) => section.id === this.currentSection).steps[this.currentStep].questions) {
         return true;
       }
@@ -1953,12 +1947,12 @@ export default {
       ];
     },
 
-    radarData() {
-      if (!this.response[this.currentSection]) {
+    radarData(section: string) {
+      if (!this.response[section]) {
         return [];
       }
-      const categoryMeans = this.response[this.currentSection].category_means.filter((dataPoint: any) => dataPoint.category);
-      if (this.response[this.currentSection].category_means[0].mean_industry) {
+      const categoryMeans = this.response[section].category_means.filter((dataPoint: any) => dataPoint.category);
+      if (this.response[section].category_means[0].mean_industry) {
         return [
           {
             name: 'Din virksomhed',
