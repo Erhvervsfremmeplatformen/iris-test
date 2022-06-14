@@ -365,7 +365,7 @@
                             <div>
                               <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
                               <p class="mt-2">{{ link.description ? link.description : '' }}</p>
-                              <a :href="link.linkUrl ? link.linkUrl : index"
+                              <a :href="link.linkUrl ? link.linkUrl : index" target="_blank"
                                 >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
                                 <svg class="icon-svg" focusable="false" aria-hidden="true">
                                   <use xlink:href="#open-in-new"></use>
@@ -651,7 +651,9 @@
                   </div>
                 </div>
 
-                <button v-if="currentStep > 0" class="back-link d-block mt-5" @click.prevent="currentStep = 0">Tag testen igen</button>
+                <button v-if="currentStep > 0" class="mx-lg-7 mx-xl-0 back-link d-block mt-5" @click.prevent="currentStep = 0">
+                  Tag testen igen
+                </button>
               </div>
             </div>
           </template>
@@ -1181,12 +1183,12 @@ export default {
       mailgunDomain: 'sandboxa1bb9b9f7814455ca35a3de03f099d01.mailgun.org',
       pdfBlob: '',
       businessHouses: [
-        { name: 'Erhvervshus Nordjylland', email: '' },
-        { name: 'Erhvervshus Midtjylland', email: '' },
-        { name: 'Erhvervshus Sydjylland', email: '' },
-        { name: 'Erhvervshus Fyn', email: '' },
-        { name: 'Erhvervshus Sjælland', email: '' },
-        { name: 'Erhvervshus Hovedstaden', email: '' }
+        { name: 'Erhvervshus Hovedstaden', email: 'ftr@ehhs.dk' },
+        { name: 'Erhvervshus Nordjylland', email: 'mdr@ehnj.dk' },
+        { name: 'Erhvervshus Midtjylland', email: 'pe@erhvervshusmidtjylland.dk' },
+        { name: 'Erhvervshus Sydjylland', email: 'kho@ehsyd.dk' },
+        { name: 'Erhvervshus Fyn', email: 'larsb@erhvervshusfyn.dk' },
+        { name: 'Erhvervshus Sjælland', email: 'kko@ehsj.dk' }
       ]
     };
   },
@@ -1788,6 +1790,7 @@ export default {
           params: {
             from: 'Iris Group <mail@irisgroup.dk>',
             // to: 'xenia.j@adviceas.dk',
+            // to: this.businessHouses[this.contactFormValues.businessHouse.replace('option', '') - 1].email,
             to: 'cd@irisgroup.dk',
             subject: 'Testresultater fra Udviklingskompasset',
             html: content
