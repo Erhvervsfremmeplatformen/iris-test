@@ -1179,8 +1179,8 @@ export default {
         resourcesvalue3: 0
       },
       contactFormValues: {},
-      mailgunBaseUrl: 'https://api.mailgun.net/v3',
-      mailgunDomain: 'sandboxa1bb9b9f7814455ca35a3de03f099d01.mailgun.org',
+      mailgunBaseUrl: 'https://api.eu.mailgun.net/v3',
+      mailgunDomain: 'mailgun.irisgroup.dk',
       pdfBlob: '',
       businessHouses: [
         { name: 'Erhvervshus Hovedstaden', email: 'ftr@ehhs.dk' },
@@ -1597,6 +1597,7 @@ export default {
   },
   mounted() {
     DKFDS.init();
+    console.log(this.mailgunApiKey);
   },
   created() {
     /**
@@ -1788,7 +1789,7 @@ export default {
             'Content-Type': 'multipart/form-data'
           },
           params: {
-            from: 'Iris Group <mail@irisgroup.dk>',
+            from: 'Iris Group <mail@mailgun.irisgroup.dk>',
             // to: 'xenia.j@adviceas.dk',
             // to: this.businessHouses[this.contactFormValues.businessHouse.replace('option', '') - 1].email,
             to: 'cd@irisgroup.dk',
