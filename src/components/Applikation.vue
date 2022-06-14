@@ -276,7 +276,7 @@
                   <div v-if="currentSection === 'test1'" class="container">
                     <div class="row">
                       <div class="col-12">
-                        <h2>Dit resultat</h2>
+                        <h2 class="mt-0">Dit resultat</h2>
                       </div>
                       <div class="col-12">
                         <div class="row align-items-center">
@@ -298,7 +298,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-7">
+                      <div class="col-12 col-xl-7">
                         <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
                         <apexchart
                           v-if="response['test1']"
@@ -465,8 +465,8 @@
                                 </button>
                               </div>
                               <div>
-                                <a href="" class=""
-                                  >Læs mere om de regionale erhvervshuse
+                                <a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse" class="" target="_blank">
+                                  Læs mere om de regionale erhvervshuse
                                   <svg class="icon-svg" focusable="false" aria-hidden="true">
                                     <use xlink:href="#open-in-new"></use></svg
                                 ></a>
@@ -677,7 +677,7 @@
 
           html2canvas: {
             dpi: 192,
-            scale: 1.5,
+            scale: 4,
             letterRendering: true,
             useCORS: true
           },
@@ -737,31 +737,25 @@
                 v-if="response['test1']"
                 type="radar"
                 :options="radarOptions('test1', true)"
-                width="400px"
+                width="600px"
                 :series="radarData('test1')"
+                style="margin-bottom: -30px !important; margin-top: -30px !important"
               ></apexchart>
-              <p v-else class="align-text-center mt-12 h2">Del 1 er ikke gennemført</p>
+              <p v-else class="mt-12 h2">Del 1 er ikke gennemført</p>
             </div>
 
             <div>
               <h2 class="h4 mt-0">Del 2: Hvor kan jeres forretningsmodel forbedres?</h2>
               <p>Ud fra dine svar ser der ud til at være et potentiale for at styrke jeres forretningsmodel på nedenstående områder.</p>
-              <!-- <ol v-if="response['test2']" class="suggestion-list"> -->
               <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
                 <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                   <div>
                     <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
                     <p class="mt-2 mb-2">{{ link.description ? link.description : '' }}</p>
-                    <a :href="link.linkUrl ? link.linkUrl : index"
-                      >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
-                      <svg class="icon-svg" focusable="false" aria-hidden="true">
-                        <use xlink:href="#open-in-new"></use>
-                      </svg>
-                    </a>
                   </div>
                 </li>
               </ol>
-              <p v-else class="align-text-center mt-12 h2">Del 2 er ikke gennemført</p>
+              <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
             </div>
           </section>
           <div class="html2pdf__page-break" />
@@ -797,8 +791,8 @@
                       </td>
                       <td class="h6 align-text-center">
                         <CircledAverage
-                          :percentage="(calculateSectionAverage(section, values, false) / 10) * 100"
-                          :value="calculateSectionAverage(section, values, true)"
+                          :percentage="(calculateSectionAverage(section, false) / 10) * 100"
+                          :value="calculateSectionAverage(section, true)"
                         />
                       </td>
                     </tr>
@@ -821,7 +815,7 @@
               <p class="h6">Resultat - del 1</p>
               <h2 class="h4 mt-2">Dine svar</h2>
               <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
-              <p class="align-text-center mt-12 h2">Del 1 er ikke gennemført</p>
+              <p class="mt-12 h2">Del 1 er ikke gennemført</p>
               <div class="html2pdf__page-break" />
             </div>
           </section>
@@ -837,7 +831,51 @@
                 </td>
               </tr>
             </table>
-            <p v-else class="align-text-center mt-12 h2">Del 2 er ikke gennemført</p>
+            <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
+          </section>
+          <div class="html2pdf__page-break" />
+          <section class="pdf-item">
+            <p class="h6">Resultat</p>
+            <h2 class="h4 mt-2">Sådan kan du arbejde videre med forretningsmodellen</h2>
+            <p>
+              Der findes en række muligheder for at hente inspiration og sparring inden for forretningsmodeludvikling. Her finder du et overblik over,
+              hvordan I kan arbejde videre med jeres forretningsmodel.
+            </p>
+            <h3 class="h5">Få gratis og uvildig sparring hos et regionalt erhvervshus</h3>
+            <p>
+              I kan hente gratis, uvildig sparring i jeres regionale erhvervshus. Lad en forretningsudvikler fra Erhvervshuset hjælpe med at gå jeres
+              testsvar igennem, konkretisere jeres udfordringer og udvikle en handlingsplan.
+            </p>
+            <p>
+              Du kan finde dit regionale erhvervshus samt kontaktoplysninger her:
+              <a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse"
+                >https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse</a
+              >
+            </p>
+            <h3 class="h5">Bliv inspireret af cases med relevans for jer</h3>
+            <p>
+              Ud fra dine svar, fik du foreslået fire områder, hvor der kan være potentiale for at styrke forretningsmodellen. På Virksomhedsguiden.dk
+              kan du læse om virksomheder, der på succesfuld vis har arbejdet med at styrke disse områder:
+            </p>
+            <ol v-if="response['test2'] && response['test2'].suggestions">
+              <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
+                <a :href="link.linkUrl ? link.linkUrl : index"
+                  >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
+                </a>
+              </li>
+            </ol>
+            <p v-else class="mt-4 h2">Del 2 er ikke gennemført</p>
+
+            <h3 class="h5">Drøft resultatet internt</h3>
+            <p>
+              I kan også bruge testen til at drøfte internt, hvordan I kan udvikle virksomheden. Prøv fx at lade alle i ledelsen eller bestyrelsen
+              besvare testen. Drøft derefter forskelle og ligheder i jeres besvarelser.
+            </p>
+            <h3 class="h5">Ræk ud til private rådgivere</h3>
+            <p>
+              I kan forsøge at række ud til private rådgivere. Der findes både rådgivere med fokus på generel forretnings- og strategiudvikling samt
+              specialiserede rådgivere, der er eksperter inden for de forskellige dele af forretningsmodellen.
+            </p>
           </section>
           <div class="html2pdf__page-break" />
           <section class="pdf-item">
@@ -864,7 +902,7 @@
                 <hr />
                 <table class="table--invisible">
                   <tbody v-for="(section, sectionIndex) of sectionGroup.sections" :key="sectionIndex">
-                    <tr style="transform: translateY(20px) translateX(20px)">
+                    <tr style="transform: translateY(10px) translateX(20px)">
                       <td></td>
                       <td></td>
                       <td class="diagonal"><strong>Dine svar</strong></td>
@@ -952,7 +990,37 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
+export interface DataPoint {
+  category: string;
+  mean_all: number;
+  mean_answers: number;
+  mean_industry: number;
+  question: string;
+  text: string;
+  value: number;
+}
+
+export interface Question {
+  label: string;
+  name: string;
+  options: string[];
+}
+export interface Section {
+  description: string;
+  headline: string;
+  id: string;
+  questions: Question[];
+}
+
+export interface PDFOptions {
+  enableLinks: boolean;
+  html2canvas: { dpi: number; scale: number; letterRendering: boolean; useCORS: boolean };
+  image: { type: string; quality: number };
+  jsPDF: { unit: string; format: string; orientation: string };
+  margin: number;
+}
+
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import moment from 'moment';
 import Image1 from './Image1.vue';
 import Image2 from './Image2.vue';
@@ -1107,14 +1175,15 @@ export default {
         resourcesvalue1: 0,
         resourcesvalue2: 0,
         resourcesvalue3: 0
-      } as any,
-      contactFormValues: {} as any,
+      },
+      contactFormValues: {},
       mailgunBaseUrl: 'https://api.mailgun.net/v3',
       mailgunDomain: 'sandboxa1bb9b9f7814455ca35a3de03f099d01.mailgun.org',
       pdfBlob: '',
       businessHouses: [
         { name: 'Erhvervshus Nordjylland', email: '' },
         { name: 'Erhvervshus Midtjylland', email: '' },
+        { name: 'Erhvervshus Sydjylland', email: '' },
         { name: 'Erhvervshus Fyn', email: '' },
         { name: 'Erhvervshus Sjælland', email: '' },
         { name: 'Erhvervshus Hovedstaden', email: '' }
@@ -1283,7 +1352,7 @@ export default {
           resultSecondaryHeadline: 'Ud fra dine svar ser der især ud til at være potentiale for at styrke din forretningsmodel på følgende områder',
           steps: [
             {
-              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer:</p> 
+              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer:</p>
               <ol>
               <li>værditilbuddet</li>
               <li>kunder</li>
@@ -1554,12 +1623,12 @@ export default {
     window.addEventListener('hashchange', this.updateStepFromHash);
   },
   methods: {
-    getMeansValueFromResponse(step: any, questionName: string, meansKey: string, format: boolean) {
+    getMeansValueFromResponse(step: string, questionName: string, meansKey: string, format: boolean) {
       if (!this.response[step] || !this.response[step].question_means) {
         return 'N/A';
       }
 
-      const currentQuestion = this.response[step].question_means.find((questionItem: any) => questionName == questionItem.question);
+      const currentQuestion = this.response[step].question_means.find((questionItem: DataPoint) => questionName === questionItem.question);
 
       if (currentQuestion && currentQuestion[meansKey]) {
         return format
@@ -1571,13 +1640,13 @@ export default {
     },
     async generateReport() {
       this.isDownloading = true;
-      const html2pdfComponent: any = this.$refs.html2Pdf;
+      const html2pdfComponent = this.$refs.html2Pdf;
       html2pdfComponent.generatePdf();
+      this.emitDownloadEvent();
     },
-    async beforeDownload({ html2pdf, options, pdfContent }: any) {
+    async beforeDownload({ html2pdf, options, pdfContent }: { html2pdf: any; options: PDFOptions; pdfContent: HTMLElement }) {
       const pdf = await html2pdf().set(options).from(pdfContent).toPdf().get('pdf');
       const totalPages = pdf.internal.getNumberOfPages();
-      // .then((pdf: any) => {
       for (let i = 1; i <= totalPages; i++) {
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
@@ -1596,7 +1665,6 @@ export default {
         pdf.save('udviklingskompasset_resultat.pdf');
       } else {
         const pdfBlob = await pdf.output('blob');
-        // .then(function (pdfBlob: any) {
         this.pdfBlob = pdfBlob;
         this.contactBusinessHouse();
       }
@@ -1604,11 +1672,11 @@ export default {
       this.pdfIsReady = true;
     },
 
-    updateValue(key: string, value: any) {
+    updateValue(key: string, value: number | string) {
       this.$emit('input', (this.values[key] = value));
     },
 
-    updateModalValue(key: string, value: any) {
+    updateModalValue(key: string, value: number | string) {
       this.contactFormValues[key] = value;
     },
 
@@ -1636,7 +1704,7 @@ export default {
         return;
       }
       this.isLoading = true;
-      const answers = {} as any;
+      const answers = {} as Record<string, unknown>;
       Object.entries(this.values)
         .filter(([key, value]) => key !== 'industry')
         .forEach(([key, value]) => {
@@ -1645,6 +1713,7 @@ export default {
           }
           answers[key] = value;
         });
+
       const data = JSON.stringify({
         answers: answers,
         industry: this.values.industry,
@@ -1669,7 +1738,7 @@ export default {
         );
       }
       Promise.all([...requests])
-        .then((rsp: any) => {
+        .then((rsp: AxiosResponse[]) => {
           this.isLoading = false;
           if (!rsp[0].data.error) {
             this.isLoading = false;
@@ -1679,7 +1748,6 @@ export default {
               this.response[this.currentSection] = rsp[0].data;
             }
           }
-          console.log(this.response);
 
           if (showResults) {
             this.currentStep++;
@@ -1688,8 +1756,7 @@ export default {
             this.currentSection = 'test2';
           }
         })
-        .catch((error: any) => {
-          console.log(error);
+        .catch((error: AxiosError) => {
           this.isLoading = false;
           this.error = 'Noget gik galt. Prøv venligst igen.';
         });
@@ -1744,6 +1811,7 @@ export default {
             this.emailError = 'Noget gik galt. Prøv venligst igen.';
           }
         );
+      this.emitCTAClickEvent();
     },
 
     generateId(length: number) {
@@ -1767,8 +1835,8 @@ export default {
       };
 
       const categories = this.response[section].category_means
-        .filter((dataPoint: any) => dataPoint.category)
-        .map((dataPoint: any) => dataPoint.category);
+        .filter((dataPoint: DataPoint) => dataPoint.category)
+        .map((dataPoint: DataPoint) => dataPoint.category);
       return {
         chart: {
           id: 'radar',
@@ -1824,11 +1892,12 @@ export default {
           }
         },
         legend: {
-          fontSize: pdf ? 12 : 14,
+          fontSize: pdf ? 10 : 14,
           itemMargin: {
             horizontal: 8,
             vertical: 8
-          }
+          },
+          offsetY: pdf ? -50 : 0
         }
       };
     },
@@ -1889,13 +1958,13 @@ export default {
     validate() {
       this.errors = {};
 
-      if (!this.sections.find((section: any) => section.id === this.currentSection).steps[this.currentStep].questions) {
+      if (!this.sections.find((section: Section) => section.id === this.currentSection).steps[this.currentStep].questions) {
         return true;
       }
 
       this.sections
-        .find((section: any) => section.id === this.currentSection)
-        .steps[this.currentStep].questions.forEach((question: any, index: any) => {
+        .find((section: Section) => section.id === this.currentSection)
+        .steps[this.currentStep].questions.forEach((question: Question, index: number) => {
           if (this.values[question.name] === 0) {
             this.errors[question.name] = {
               errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
@@ -1917,10 +1986,10 @@ export default {
     },
     // Data opsamlingsmetoder
     emitDownloadEvent() {
-      DataEvent.emitDownloadEvent(this, 'doc.pfd', 'download data');
+      DataEvent.emitDownloadEvent(this, 'udviklingskompasset_resultat.pdf', 'download diagnose results');
     },
     emitCTAClickEvent() {
-      DataEvent.emitCTAClickEvent(this, 'eventType', 'CTA data');
+      DataEvent.emitCTAClickEvent(this, 'contactBusinessHouse', 'CTA data');
     },
     emitFritekstEvent() {
       const data = {
@@ -1951,38 +2020,38 @@ export default {
       if (!this.response[section]) {
         return [];
       }
-      const categoryMeans = this.response[section].category_means.filter((dataPoint: any) => dataPoint.category);
+      const categoryMeans = this.response[section].category_means.filter((dataPoint: DataPoint) => dataPoint.category);
       if (this.response[section].category_means[0].mean_industry) {
         return [
           {
             name: 'Din virksomhed',
-            data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers.toFixed(2))
+            data: categoryMeans.map((dataPoint: DataPoint) => dataPoint.mean_answers.toFixed(2))
           },
           {
             name: 'Branchen',
-            data: categoryMeans.map((dataPoint: any) => dataPoint.mean_industry.toFixed(2))
+            data: categoryMeans.map((dataPoint: DataPoint) => dataPoint.mean_industry.toFixed(2))
           },
           {
             name: 'Alle virksomheder',
-            data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all.toFixed(2))
+            data: categoryMeans.map((dataPoint: DataPoint) => dataPoint.mean_all.toFixed(2))
           }
         ];
       }
       return [
         {
           name: 'Din virksomhed',
-          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_answers.toFixed(2))
+          data: categoryMeans.map((dataPoint: DataPoint) => dataPoint.mean_answers.toFixed(2))
         },
         {
           name: 'Alle virksomheder',
-          data: categoryMeans.map((dataPoint: any) => dataPoint.mean_all.toFixed(2))
+          data: categoryMeans.map((dataPoint: DataPoint) => dataPoint.mean_all.toFixed(2))
         }
       ];
     },
-    calculateSectionAverage(section: any, values: any, format: boolean) {
+    calculateSectionAverage(section: Section, format: boolean) {
       let sum = 0 as number;
       let average = 0 as number;
-      section.questions.forEach((question: any) => {
+      section.questions.forEach((question: Question) => {
         sum += this.values[question.name];
       });
       average = sum / section.questions.length;
