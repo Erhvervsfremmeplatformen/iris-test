@@ -53,7 +53,7 @@
         <!-- Frontpage start -->
         <template v-else-if="currentSection === 'frontpage'">
           <div class="col-12 align-text-center pt-7">
-            <h1>Test og styrk jeres virksomheds forretningsmodel</h1>
+            <h1>Test og styrk virksomhedens forretningsmodel</h1>
             <div class="h2 m-4">med diagnoseværktøj i to dele</div>
             <figure class="figure alternative mb-6">
               <Logo style="max-width: 200px" />
@@ -90,12 +90,13 @@
                   </p>
                   <p>
                     Testen er baseret på en stor analyse af erfaringer fra ca. 200 små og mellemstore virksomheder, der succesfuldt har omstillet
-                    forretningsmodellen. [Læs mere her (link til metode-pop-up)]. Ved at gennemføre testen kommer I dermed til at forholde jer til de
-                    udfordringer, andre virksomheder har stået over for på deres vej til bedre forretning.
+                    forretningsmodellen.
+                    <a data-module="modal" href="#" data-target="modal-method" @click.prevent>Læs mere her</a>. Ved at gennemføre testen kommer I
+                    dermed til at forholde jer til de udfordringer, andre virksomheder har stået over for på deres vej til bedre forretning.
                   </p>
                   <p>
-                    Testen er initieret og støttet af Industriens Fond. Testens indhold er udviklet af IRIS Group i samarbejde med professor Poul
-                    Houman Andersen, Aalborg Universitet.
+                    Testen er udviklet af IRIS Group og professor Poul Houman Andersen, Aalborg Universitet, i et tæt samarbejde med erhvervshusene.
+                    Udviklingen af testen er finansieret af Industriens Fond.
                   </p>
                 </div>
                 <div class="col-md-6 mb-7">
@@ -139,6 +140,45 @@
               </div>
             </div>
           </div>
+
+          <div id="modal-method" class="fds-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-id-1-title">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2 id="modal-method-title" class="modal-title">Metode bag Udviklingskompasset</h2>
+                <button class="modal-close function-link" data-modal-close>
+                  <svg class="icon-svg" focusable="false" aria-hidden="true"><use xlink:href="#close"></use></svg>Luk
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  Testen er empirisk baseret. Den bygger på en samlet kortlægning af drivkræfter for forretningsudvikling og typiske udfordringer i
+                  forretningsmodellen blandt ca. 200 SMV'er.
+                </p>
+                <p>
+                  Kortlægningen fandt sted i forbindelse med erfaringsopsamlingen på Industriens Fonds genstartNU-program, som blev søsat i marts 2020
+                  for at udvikle dansk erhvervsliv under corona-krisen. Erfaringsopsamlingen blev gennemført af IRIS Group i samarbejde med forskere
+                  fra tre danske universiteter.
+                </p>
+                <p>
+                  Udviklingskompasset tager afsæt i Alignment Squared-modellen, der er udviklet af professor Thomas Ritter fra CBS. Modellen er valgt,
+                  fordi den er enkel og overskuelig, og fordi den har særlig fokus på sammenhænge og ubalancer mellem elementerne i
+                  forretningsmodellen (hvor vores forskning har kortlagt, at SMV’er ofte har udfordringer).
+                </p>
+              </div>
+
+              <div class="modal-footer">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <button class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </template>
         <!-- Frontpage end -->
 
@@ -170,7 +210,7 @@
                     skipIndustrySelect = true;
                   "
                 >
-                  Tag testen: Få forbedringer til din forretningsmodel
+                  Gå til del 2: Hvor kan jeres forretningsmodel forbedres?
                 </button>
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
@@ -254,7 +294,7 @@
                       class="button button-primary mt-7"
                       @click.prevent="handleSubmit(false)"
                     >
-                      Gå videre til del 2 om styrker og svagheder i jeres forretningsmodel
+                      Gå videre til del 2: Hvor kan jeres forretningsmodel forbedres?
                     </button>
 
                     <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
@@ -1150,9 +1190,6 @@ export default {
         sustainability1: 0,
         sustainability2: 0,
         sustainability3: 0,
-        unsecurity1: 0,
-        unsecurity2: 0,
-        unsecurity3: 0,
         value1: 0,
         value2: 0,
         value3: 0,
@@ -1183,12 +1220,12 @@ export default {
       mailgunDomain: 'mailgun.irisgroup.dk',
       pdfBlob: '',
       businessHouses: [
-        { name: 'Erhvervshus Hovedstaden', email: 'ftr@ehhs.dk' },
-        { name: 'Erhvervshus Nordjylland', email: 'mdr@ehnj.dk' },
-        { name: 'Erhvervshus Midtjylland', email: 'pe@erhvervshusmidtjylland.dk' },
-        { name: 'Erhvervshus Sydjylland', email: 'kho@ehsyd.dk' },
-        { name: 'Erhvervshus Fyn', email: 'larsb@erhvervshusfyn.dk' },
-        { name: 'Erhvervshus Sjælland', email: 'kko@ehsj.dk' }
+        { name: 'Erhvervshus Hovedstaden', emails: 'ftr@ehhs.dk' },
+        { name: 'Erhvervshus Nordjylland', emails: 'mdr@ehnj.dk' },
+        { name: 'Erhvervshus Midtjylland', emails: 'pe@erhvervshusmidtjylland.dk' },
+        { name: 'Erhvervshus Sydjylland', emails: 'kho@ehsyd.dk' },
+        { name: 'Erhvervshus Fyn', emails: 'larsb@erhvervshusfyn.dk, stna@erhvervshusfyn.dk' },
+        { name: 'Erhvervshus Sjælland', emails: 'kko@ehsj.dk' }
       ]
     };
   },
@@ -1204,7 +1241,7 @@ export default {
           id: 'test1',
           headline: 'Hvordan er presset på din forretningsmodel?',
           resultIntro:
-            'Nedenfor finder du et overblik over hvordan presset på din virksomhed er, sammen med et gennemsnit af hvordan andre virksomheder inden for sammen branche klarer sig. Vi anbefaler at du også tager testens anden del, der viser dig, hvor din forretningsmodel potentielt kan styrkes. ',
+            'Nedenfor finder du et overblik over presset på din virksomheds forretningsmodel. Du kan også se, hvordan andre virksomheder inden for samme branche gennemsnitligt oplever presset. Vi anbefaler, at du også tager testens anden del, der viser dig, hvor din forretningsmodel potentielt kan styrkes.',
           resultPrimaryHeadline: 'Pres for forretningsmodellen fordelt på områder',
           resultSecondaryHeadline: 'Samlet billede af presset på forretningsmodellen',
           description:
@@ -1212,7 +1249,7 @@ export default {
           steps: [
             {
               description: `<p>Der kan være mange årsager til, at en forretningsmodel kommer under pres, eller at der opstår nye muligheder, der gør det relevant at justere forretningsmodellen.</p>
-          <p>Formålet med denne test er at give jer en indikation af, om der kan være behov for at efterse forretningsmodellen.</p>
+          <p>Formålet med denne del af testen er at give jer en indikation af, om der kan være behov for at efterse forretningsmodellen.</p>
 
           <p>Testen baserer sig på en stor undersøgelse blandt virksomheder, der succesfuldt har styrket forretningsmodellen. Den viser, at drivkræfter bag forretningsmodeludvikling typisk falder inden for fem hovedområder.</p>
 
@@ -1347,7 +1384,7 @@ export default {
           description:
             'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer.',
           descriptionAlternative:
-            'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer. Til sidst får du et samlet resultat, der både viser dig hvordan presset er på din virksomhed, samt giver dig inspiration til, hvordan din forretningsmodel kan styrkes.',
+            'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer og processer. Til sidst får du et samlet resultat, der både viser dig, hvordan presset er på din virksomhed, samt giver dig inspiration til, hvordan din forretningsmodel kan styrkes.',
           resultIntro:
             'Nedenfor finder du bud på, hvor jeres forretningsmodel kan forbedres, samt inspiration til, hvordan I kan arbejde videre med udvikling af forretningsmodellen.',
           resultPrimaryHeadline: 'Dit resultat: Forslag til, hvor I kan styrke forretningsmodellen',
@@ -1455,7 +1492,7 @@ export default {
               ]
             },
             {
-              headline: 'Ressourcer, partnere og processer',
+              headline: 'Ressourcer og processer',
               pdfRowIndex: 2, // out of 3
               pdfColIndex: 1, // out of 3
               id: 'resources',
@@ -1597,7 +1634,6 @@ export default {
   },
   mounted() {
     DKFDS.init();
-    console.log(this.mailgunApiKey);
   },
   created() {
     /**
@@ -1708,14 +1744,27 @@ export default {
       }
       this.isLoading = true;
       const answers = {} as Record<string, unknown>;
-      Object.entries(this.values)
-        .filter(([key, value]) => key !== 'industry')
-        .forEach(([key, value]) => {
-          if (value === 0) {
+      this.sections
+        .find((section: Section) => section.id === this.currentSection)
+        .steps.map((step: Section) => {
+          if (!step.questions) {
             return;
           }
-          answers[key] = value;
+          step.questions.forEach((question: Question) => {
+            if (question.name === 'industry') {
+              return;
+            }
+            answers[question.name] = this.values[question.name];
+          });
         });
+      // Object.entries(this.values)
+      //   .filter(([key, value]) => key !== 'industry')
+      //   .forEach(([key, value]) => {
+      //     if (value === 0) {
+      //       return;
+      //     }
+      //     answers[key] = value;
+      //   });
 
       const data = JSON.stringify({
         answers: answers,
@@ -1792,7 +1841,8 @@ export default {
             from: 'Iris Group <mail@mailgun.irisgroup.dk>',
             // to: 'xenia.j@adviceas.dk',
             // to: this.businessHouses[this.contactFormValues.businessHouse.replace('option', '') - 1].email,
-            to: 'cd@irisgroup.dk',
+            // to: ['cd@irisgroup.dk', 'xenia.j@adviceas.dk'],
+            to: 'xenia.j@adviceas.dk, xenia@franet.dk',
             subject: 'Testresultater fra Udviklingskompasset',
             html: content
           },
