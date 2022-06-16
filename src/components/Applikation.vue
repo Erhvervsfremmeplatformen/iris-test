@@ -619,9 +619,8 @@
                                   <div class="alert-body">
                                     <ul class="alert-text nobullet-list">
                                       <li>
-                                        Tak for din indsendelse. Vi har sendt en e-mail til jeres regionale erhvervshus.
-                                        {{ businessHouses[contactFormValues.businessHouse.replace('option', '') - 1].name }} vil kontakte dig og
-                                        tilbyde gratis, uvildig sparring.
+                                        Tak for din indsendelse. Vi har sendt dit resultat videre til
+                                        {{ businessHouses[contactFormValues.businessHouse.replace('option', '') - 1].name }}.
                                       </li>
                                     </ul>
                                   </div>
@@ -684,7 +683,7 @@
                             skipIndustrySelect = true;
                           "
                         >
-                          Tag testen: Få forbedringer til din forretningsmodel
+                          Gå videre til del 2: Hvor kan jeres forretningsmodel forbedres?
                         </button>
                       </div>
                     </div>
@@ -779,7 +778,7 @@
                 v-if="response['test1']"
                 type="radar"
                 :options="radarOptions('test1', true)"
-                width="600px"
+                width="650px"
                 :series="radarData('test1')"
                 style="margin-bottom: -30px !important; margin-top: -30px !important"
               ></apexchart>
@@ -890,7 +889,7 @@
             </p>
             <p>
               Du kan finde dit regionale erhvervshus samt kontaktoplysninger her:
-              <a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse"
+              <br /><a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse"
                 >https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse</a
               >
             </p>
@@ -1220,12 +1219,12 @@ export default {
       mailgunDomain: 'mailgun.irisgroup.dk',
       pdfBlob: '',
       businessHouses: [
-        { name: 'Erhvervshus Hovedstaden', emails: 'ftr@ehhs.dk' },
-        { name: 'Erhvervshus Nordjylland', emails: 'mdr@ehnj.dk' },
-        { name: 'Erhvervshus Midtjylland', emails: 'pe@erhvervshusmidtjylland.dk' },
-        { name: 'Erhvervshus Sydjylland', emails: 'kho@ehsyd.dk' },
-        { name: 'Erhvervshus Fyn', emails: 'larsb@erhvervshusfyn.dk, stna@erhvervshusfyn.dk' },
-        { name: 'Erhvervshus Sjælland', emails: 'kko@ehsj.dk' }
+        { name: 'Erhvervshus Hovedstaden', email: 'ftr@ehhs.dk' },
+        { name: 'Erhvervshus Nordjylland', email: 'mdr@ehnj.dk' },
+        { name: 'Erhvervshus Midtjylland', email: 'pe@erhvervshusmidtjylland.dk' },
+        { name: 'Erhvervshus Sydjylland', email: 'kho@ehsyd.dk' },
+        { name: 'Erhvervshus Fyn', email: 'larsb@erhvervshusfyn.dk, stna@erhvervshusfyn.dk' },
+        { name: 'Erhvervshus Sjælland', email: 'kko@ehsj.dk' }
       ]
     };
   },
@@ -1757,14 +1756,6 @@ export default {
             answers[question.name] = this.values[question.name];
           });
         });
-      // Object.entries(this.values)
-      //   .filter(([key, value]) => key !== 'industry')
-      //   .forEach(([key, value]) => {
-      //     if (value === 0) {
-      //       return;
-      //     }
-      //     answers[key] = value;
-      //   });
 
       const data = JSON.stringify({
         answers: answers,
@@ -1839,10 +1830,9 @@ export default {
           },
           params: {
             from: 'Iris Group <mail@mailgun.irisgroup.dk>',
-            // to: 'xenia.j@adviceas.dk',
-            // to: this.businessHouses[this.contactFormValues.businessHouse.replace('option', '') - 1].email,
+            to: this.businessHouses[this.contactFormValues.businessHouse.replace('option', '') - 1].email,
             // to: ['cd@irisgroup.dk', 'xenia.j@adviceas.dk'],
-            to: 'xenia.j@adviceas.dk, xenia@franet.dk',
+            // to: 'xenia.j@adviceas.dk, xenia@franet.dk',
             subject: 'Testresultater fra Udviklingskompasset',
             html: content
           },
@@ -1900,14 +1890,14 @@ export default {
           }
         },
         dataLabels: {
-          enabled: pdf ? true : false
+          enabled: false
         },
         stroke: {
           width: 1
         },
         plotOptions: {
           radar: {
-            size: pdf ? 100 : 150,
+            size: pdf ? 130 : 150,
             polygons: {
               strokeColor: '#e8e8e8',
               fill: {
@@ -1982,7 +1972,7 @@ export default {
           }
         },
         dataLabels: {
-          enabled: pdf ? true : false
+          enabled: false
         },
         xaxis: {
           categories: categories,

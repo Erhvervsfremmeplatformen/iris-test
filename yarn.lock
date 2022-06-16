@@ -5179,11 +5179,6 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
   integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
-flatulence@^0.2.13:
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/flatulence/-/flatulence-0.2.13.tgz#411e370abaf185a31995b34fade42e0dd08a7e76"
-  integrity sha1-QR43CrrxhaMZlbNPreQuDdCKfnY=
-
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"
@@ -10844,11 +10839,6 @@ vue-cli-plugin-style-resources-loader@^0.1.4:
   resolved "https://registry.yarnpkg.com/vue-cli-plugin-style-resources-loader/-/vue-cli-plugin-style-resources-loader-0.1.5.tgz#3e95f4df41f5408e1255664690698c0533648109"
   integrity sha512-LluhjWTZmpGl3tiXg51EciF+T70IN/9t6UvfmgluJBqxbrb6OV9i7L5lTd+OKtcTeghDkhcBmYhtTxxU4w/8sQ==
 
-vue-deepset@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/vue-deepset/-/vue-deepset-0.6.3.tgz#fdc644c496803bbaf8864bb3b6f639dad7e9a9dd"
-  integrity sha512-Qyj40hwEAWb8LqeiayfEd9mOQWO9npCNrgQJlFwzx5sxE4+UKrc3F+dnqpgPD4T8HrBayVT3L0tyoKB1FUwtgg==
-
 vue-eslint-parser@^7.1.0, vue-eslint-parser@^7.10.0:
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.11.0.tgz#214b5dea961007fcffb2ee65b8912307628d0daf"
@@ -10903,15 +10893,6 @@ vue-property-decorator@^9.1.2:
   version "9.1.2"
   resolved "https://registry.yarnpkg.com/vue-property-decorator/-/vue-property-decorator-9.1.2.tgz#266a2eac61ba6527e2e68a6933cfb98fddab5457"
   integrity sha512-xYA8MkZynPBGd/w5QFJ2d/NM0z/YeegMqYTphy7NJQXbZcuU6FC6AOdUAcy4SXP+YnkerC6AfH+ldg7PDk9ESQ==
-
-vue-simpleform@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/vue-simpleform/-/vue-simpleform-1.0.5.tgz#19158a6d1b9f53bcb19552c173749f89da8614aa"
-  integrity sha512-/8LkFGoUYBQSPWSRR9UbduxarUSfVvmuoHKNk7PhC9t/8OkcwSyXxqbTAz7MXmRtBA/SdfYe9Y93JzxZ4OCvVw==
-  dependencies:
-    flatulence "^0.2.13"
-    lodash "^4.17.11"
-    vue-deepset "^0.6.3"
 
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
   version "4.1.3"
