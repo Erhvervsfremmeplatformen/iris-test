@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@erst-vg/piwik-event-wrapper": "1.0.1",
-    "@sanity/block-content-to-html": "2.0.0",
-    "@sanity/client": "2.23.2",
     "apexcharts": "3.33.2",
     "axios": "0.21.4",
     "contentful-rich-text-vue-renderer": "1.1.5",
@@ -20,7 +18,6 @@
     "humps": "2.0.1",
     "ol": "6.13.0",
     "runtime": "0.14.1",
-    "sanity-blocks-vue-component": "1.0.1",
     "tippy.js": "6.3.7",
     "vue": "2.6.11",
     "vue-apexcharts": "1.6.2",
