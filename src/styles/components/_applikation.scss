@@ -3,6 +3,13 @@
 }
 
 >>> {
+  .button {
+    color: #454545;
+
+    &-primary {
+      color: white;
+    }
+  }
   .back-link {
     border: none;
     background: none;
