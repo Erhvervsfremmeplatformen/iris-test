@@ -34,7 +34,7 @@
                 href="#"
                 role="menuitem"
                 :aria-disabled="stepIndex > maxStep ? true : false"
-                @click.prevent="stepIndex <= maxStep ? goToStep(stepIndex + 1) : ''"
+                @click.prevent="stepIndex <= maxStep ? goToStep(stepIndex + 2) : ''"
               >
                 {{ stepIndex + 1 }}. {{ step.headline }}
                 <span v-if="stepIndex + 1 < maxStep" class="sidenav-icon">
@@ -171,7 +171,7 @@
                   <div class="col-12">
                     <div class="row align-items-center">
                       <div class="col-auto">
-                        <button class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
+                        <button class="button" data-modal-close @click.prevent>Luk vindue</button>
                       </div>
                     </div>
                   </div>
@@ -278,23 +278,23 @@
                       </div>
                     </div>
                     <button
+                      v-if="currentSection === 'test1' && currentStep + 1 === section.steps.length"
+                      id="primaryButton"
+                      class="button button-primary mt-7"
+                      @click.prevent="handleSubmit(false)"
+                    >
+                      Fortsæt til del 2
+                    </button>
+                    <button
                       v-if="currentStep + 1 === section.steps.length"
                       id="primaryButton"
-                      :class="['button mt-7', currentSection === 'test1' ? 'button-secondary' : 'button-primary']"
+                      :class="['button mt-7', currentSection === 'test1' ? '' : 'button-primary']"
                       @click.prevent="handleSubmit(true)"
                     >
                       Se resultat
                     </button>
                     <button v-else id="primaryButton" class="button button-primary d-block mt-7" @click.prevent="goToNextStep()">
                       {{ currentStep > 0 ? 'Næste' : skipIndustrySelect ? 'Fortsæt' : 'Næste' }}
-                    </button>
-                    <button
-                      v-if="currentSection === 'test1' && currentStep + 1 === section.steps.length"
-                      id="primaryButton"
-                      class="button button-primary mt-7"
-                      @click.prevent="handleSubmit(false)"
-                    >
-                      Gå videre til del 2: Hvor kan jeres forretningsmodel forbedres?
                     </button>
 
                     <button class="back-link d-block mt-3" @click.prevent="currentStep > 0 ? currentStep-- : (currentSection = 'frontpage')">
@@ -321,7 +321,7 @@
                       <div class="col-12">
                         <div class="row align-items-center">
                           <div class="col-auto">
-                            <button class="button button-secondary" @click.prevent="generateReport()">
+                            <button class="button" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
                                 <use xlink:href="#file-download"></use></svg
                               >Download resultatet som PDF
@@ -377,7 +377,7 @@
                       <div class="col-12">
                         <div class="row align-items-center">
                           <div class="col-auto">
-                            <button class="button button-secondary" @click.prevent="generateReport()">
+                            <button class="button" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
                                 <use xlink:href="#file-download"></use></svg
                               >Download resultatet som PDF
@@ -473,7 +473,7 @@
                           <div class="card-footer pb-4 px-4 pb-md-7 px-md-7">
                             <div class="row align-items-center">
                               <div class="col-auto">
-                                <button class="button button-secondary" @click.prevent="generateReport()">
+                                <button class="button" @click.prevent="generateReport()">
                                   <svg class="icon-svg" focusable="false" aria-hidden="true">
                                     <use xlink:href="#file-download"></use></svg
                                   >Download resultatet som PDF
@@ -500,7 +500,7 @@
                           <div class="card-footer card-action">
                             <div class="action-buttons">
                               <div>
-                                <button class="mb-4 button button-secondary" data-module="modal" data-target="modal-contact" @click.prevent>
+                                <button class="mb-4 button button-primary" data-module="modal" data-target="modal-contact" @click.prevent>
                                   Kontakt dit regionale erhvervshus
                                 </button>
                               </div>
@@ -643,7 +643,7 @@
                                 <div class="row align-items-center">
                                   <div class="col-auto">
                                     <button v-if="!emailIsSent" class="button button-primary">Indsend resultater til erhvervshuset</button>
-                                    <button v-else class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
+                                    <button v-else class="button" data-modal-close @click.prevent>Luk vindue</button>
                                   </div>
                                   <div class="col-auto">
                                     <div
@@ -695,14 +695,21 @@
                             skipIndustrySelect = true;
                           "
                         >
-                          Gå videre til del 2: Hvor kan jeres forretningsmodel forbedres?
+                          Fortsæt til del 2
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <button v-if="currentStep > 0" class="mx-lg-7 mx-xl-0 back-link d-block mt-5" @click.prevent="currentStep = 0">
+                <button
+                  v-if="currentStep > 0"
+                  class="mx-lg-7 mx-xl-0 back-link d-block mt-5"
+                  @click.prevent="
+                    currentStep = 0;
+                    currentSection = 'frontpage';
+                  "
+                >
                   Tag testen igen
                 </button>
               </div>
@@ -1901,7 +1908,20 @@ export default {
 
       const categories = this.response[section].category_means
         .filter((dataPoint: DataPoint) => dataPoint.category)
-        .map((dataPoint: DataPoint) => dataPoint.category);
+        .map((dataPoint: DataPoint) => {
+          if (dataPoint.category.length > 15) {
+            const wordList = dataPoint.category.split(' ');
+            const half = Math.ceil(wordList.length / 2);
+            const firstHalf = wordList.slice(0, half);
+            const secondHalf = wordList.slice(half, wordList.length);
+            console.log(wordList);
+            console.log(firstHalf);
+            console.log(secondHalf);
+            return [firstHalf.join(' '), secondHalf.join(' ')];
+          } else {
+            return dataPoint.category;
+          }
+        });
       return {
         chart: {
           id: 'radar',
