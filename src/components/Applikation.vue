@@ -732,7 +732,13 @@
         pdf-orientation="portrait"
         :html-to-pdf-options="{
           margin: 20,
-          enableLinks: true
+          enableLinks: true,
+          html2canvas: {
+            dpi: 192,
+            scale: 2,
+            letterRendering: true,
+            useCORS: true
+          }
         }"
         @beforeDownload="beforeDownload($event)"
       >
