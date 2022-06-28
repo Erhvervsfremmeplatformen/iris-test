@@ -733,12 +733,14 @@
         :html-to-pdf-options="{
           margin: 20,
           enableLinks: true,
+          image: { type: 'jpeg', quality: 0.75 },
           html2canvas: {
             dpi: 192,
-            scale: 2,
+            scale: 4,
             letterRendering: true,
             useCORS: true
-          }
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }"
         @beforeDownload="beforeDownload($event)"
       >
