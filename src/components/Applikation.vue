@@ -1913,9 +1913,6 @@ export default {
             const half = Math.ceil(wordList.length / 2);
             const firstHalf = wordList.slice(0, half);
             const secondHalf = wordList.slice(half, wordList.length);
-            console.log(wordList);
-            console.log(firstHalf);
-            console.log(secondHalf);
             return [firstHalf.join(' '), secondHalf.join(' ')];
           } else {
             return dataPoint.category;
