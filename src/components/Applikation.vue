@@ -539,7 +539,10 @@
                                 class="form-select"
                                 name="businessHouse"
                                 required
-                                @input="updateModalValue('businessHouse', $event.target.value)"
+                                @input="
+                                  updateModalValue('businessHouse', $event.target.value);
+                                  selectedBusinessHouse = $event.target.value;
+                                "
                               >
                                 <option value="0" :disabled="contactFormValues.businessHouse">Vælg dit regionale erhvervshus...</option>
                                 <option v-for="(businessHouse, index) of businessHouses" :key="index + 1" :value="`option${index + 1}`">
@@ -641,6 +644,48 @@
 
                               <div class="col-12">
                                 <div class="row align-items-center">
+                                  <!-- <div class="col-auto">
+                                    <p>
+                                      <a href="" target="_blank"
+                                        >Når du anvender kontaktformularen samtykker du til behandling af dine personoplysninger. Læs om vores
+                                        privatlivspolitik og dine rettigheder
+                                        <svg class="icon-svg" focusable="false" aria-hidden="true">
+                                          <use xlink:href="#open-in-new"></use></svg
+                                      ></a>
+                                    </p>
+                                  </div> -->
+                                  <div class="col-auto">
+                                    <div class="form-group">
+                                      <ul class="nobullet-list">
+                                        <li>
+                                          <input id="consent" type="checkbox" name="consent" value="true" class="form-checkbox" required />
+                                          <label for="consent"
+                                            >Klik for at samtykke til
+                                            {{
+                                              selectedBusinessHouse
+                                                ? businessHouses[selectedBusinessHouse.replace('option', '') - 1].name + 's'
+                                                : 'Erhvervshusets'
+                                            }}
+                                            behandling af dine personoplysninger.
+                                            <a
+                                              v-if="selectedBusinessHouse"
+                                              :href="
+                                                selectedBusinessHouse
+                                                  ? businessHouses[selectedBusinessHouse.replace('option', '') - 1].cookielink
+                                                  : ''
+                                              "
+                                              target="_blank"
+                                              >Læs om erhvervshusets privatlivspolitik og dine rettigheder.<svg
+                                                class="icon-svg"
+                                                focusable="false"
+                                                aria-hidden="true"
+                                              >
+                                                <use xlink:href="#open-in-new"></use></svg></a
+                                          ></label>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
                                   <div class="col-auto">
                                     <button v-if="!emailIsSent" class="button button-primary">Indsend resultater til erhvervshuset</button>
                                     <button v-else class="button" data-modal-close @click.prevent>Luk vindue</button>
@@ -1153,9 +1198,9 @@ export default {
       isLoading: false,
       isDownloading: false,
       isSending: false,
-      currentStep: 0, // initial value 0
+      currentStep: 9, // initial value 0
       maxStep: 0,
-      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
       pdfIsReady: false,
       sendEmail: false,
@@ -1186,8 +1231,7 @@ export default {
         { label: 'Oplevelseserhverv', value: 'Oplevelseserhverv' },
         { label: 'Andet', value: 'Andet' }
       ],
-      defaultDescription:
-        'Angiv hvor enig du er i de enkelte udsagn, hvor 1= meget uenig og 10= meget enig. Vælg 1, hvis spørsmålet ikke er relevant for din virksomhed.',
+      defaultDescription: 'Angiv hvor enig du er i de enkelte udsagn, hvor 1= meget uenig og 10= meget enig.',
       values: {
         industry: '',
         internal1: 0,
@@ -1232,16 +1276,41 @@ export default {
         resourcesvalue3: 0
       },
       contactFormValues: {},
+      selectedBusinessHouse: '',
       mailgunBaseUrl: 'https://api.eu.mailgun.net/v3',
       mailgunDomain: 'mailgun.irisgroup.dk',
       pdfBlob: '',
       businessHouses: [
-        { name: 'Erhvervshus Hovedstaden', email: 'ftr@ehhs.dk' },
-        { name: 'Erhvervshus Nordjylland', email: 'mdr@ehnj.dk' },
-        { name: 'Erhvervshus Midtjylland', email: 'pe@erhvervshusmidtjylland.dk' },
-        { name: 'Erhvervshus Sydjylland', email: 'kho@ehsyd.dk' },
-        { name: 'Erhvervshus Fyn', email: 'larsb@erhvervshusfyn.dk, stna@erhvervshusfyn.dk' },
-        { name: 'Erhvervshus Sjælland', email: 'kko@ehsj.dk' }
+        {
+          name: 'Erhvervshus Hovedstaden',
+          email: 'ftr@ehhs.dk',
+          cookielink: 'https://ehhs.dk/content/ydelser/erhvervshusets-politikker/ab931645-7084-4d15-97ae-8f7f5d4865a7/#button-07770'
+        },
+        {
+          name: 'Erhvervshus Nordjylland',
+          email: 'mdr@ehnj.dk',
+          cookielink: 'https://ehnj.dk/content/ydelser/persondatapolitik/9cfc69b1-7462-4ce7-89a4-bb33ed217129/'
+        },
+        {
+          name: 'Erhvervshus Midtjylland',
+          email: 'pe@erhvervshusmidtjylland.dk',
+          cookielink: 'https://erhvervshusmidtjylland.dk/content/ydelser/privatlivspolitik/a594090a-ef39-429e-b3e4-c9db8c9f8107/'
+        },
+        {
+          name: 'Erhvervshus Sydjylland',
+          email: 'kho@ehsyd.dk',
+          cookielink: 'https://ehsyd.dk/content/ydelser/persondatapolitik/f6920b7f-e231-4a59-9ca8-f713eda2de26/'
+        },
+        {
+          name: 'Erhvervshus Fyn',
+          email: 'larsb@erhvervshusfyn.dk, stna@erhvervshusfyn.dk',
+          cookielink: 'https://ehfyn.dk/content/ydelser/persondata/dfa1816b-12e1-4657-b4d1-cddcbc492fcd/'
+        },
+        {
+          name: 'Erhvervshus Sjælland',
+          email: 'kko@ehsj.dk',
+          cookielink: 'https://ehsj.dk/content/ydelser/privatlivspolitik/4522de1e-cd30-449d-a568-c676b1b6b885/'
+        }
       ]
     };
   },
@@ -2049,7 +2118,7 @@ export default {
           if (this.values[question.name] === 0) {
             this.errors[question.name] = {
               errorSummary: 'Angiv hvor enig du er i dette udsagn på en skala fra 1-10',
-              errorMessage: 'Angiv hvor enig du er i dette udsagn. Vælg 1, hvis spørsmålet ikke er relevant for din virksomhed. ',
+              errorMessage: 'Angiv hvor enig du er i dette udsagn.',
               errorAnchorHref: `#form-group-${this.currentStep}-${index}`
             };
           }
