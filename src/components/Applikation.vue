@@ -1198,9 +1198,9 @@ export default {
       isLoading: false,
       isDownloading: false,
       isSending: false,
-      currentStep: 9, // initial value 0
+      currentStep: 0, // initial value 0
       maxStep: 0,
-      currentSection: 'test2', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
+      currentSection: 'frontpage', // initial value frontpage - possible values 'frontpage', 'test1', 'test2'
       skipIndustrySelect: false,
       pdfIsReady: false,
       sendEmail: false,
