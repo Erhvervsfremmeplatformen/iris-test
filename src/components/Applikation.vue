@@ -215,6 +215,7 @@
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
                   <fieldset v-if="stepIndex === currentStep">
+                    <div v-if="step.questionIntro" class="mb-8" v-html="step.questionIntro"></div>
                     <h2 v-if="step.headline" class="h2 mt-0">{{ step.headline }}</h2>
                     <p v-html="step.description"></p>
                     <div
@@ -1467,7 +1468,7 @@ export default {
           id: 'test2',
           headline: 'Hvor kan jeres forretningsmodel forbedres?',
           description:
-            'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer, parnere og processer.',
+            'Svar på en række udsagn om din virksomhed inden for forretningsmodellens fire hovedelementer. Til sidst får du et samlet resultat, der kan give dig inspiration til, hvor og hvordan din forretningsmodel kan styrkes.',
           descriptionAlternative:
             'Svar på en række udsagn om din virksomhed inden for forretningsmodellens hovedområder – værditilbud, kunder, salg og kommunikation samt ressourcer og processer. Til sidst får du et samlet resultat, der både viser dig, hvordan presset er på din virksomhed, samt giver dig inspiration til, hvordan din forretningsmodel kan styrkes.',
           resultIntro:
@@ -1476,21 +1477,15 @@ export default {
           resultSecondaryHeadline: 'Ud fra dine svar ser der især ud til at være potentiale for at styrke din forretningsmodel på følgende områder',
           steps: [
             {
-              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer:</p>
+              description: `<p>Jeres forretningsmodel kan inddeles i fire hovedelementer, som vist i figuren til højre::</p>
               <ol>
-              <li>værditilbuddet</li>
+              <li>værditilbud</li>
               <li>kunder</li>
               <li>salg og kommunikation</li>
               <li>ressourcer og processer</li>
               </ol>
 
-              <p>Men at udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i modellen fungerer godt og understøtter jeres mål.</p>
-
-              <p>Det er også vigtigt, at der en god samklang og balance mellem elementerne – fx at jeres værditilbud matcher behovene hos vigtige kunder. Det sidste er illustreret ved hjørnerne i figuren.</p>
-
-              <p>I testen beder vi dig derfor tage stilling til en række udsagn knyttet til både hovedelementerne og de fire hjørner i figuren.</p>
-
-              <p>Testen baserer sig på en stor undersøgelse af, hvor små og mellemstore virksomheder ofte har udfordringer i forretningsmodellen.</p>`
+              <p>På de næste fire sider beder vi dig tage stilling til en række udsagn knyttet til hvert af de fire hovedelementer. Derefter bedes du forholde dig til udsagn om, hvordan sammenhængen er mellem forretningsmodellens elementer (illustreret ved hjørnerne i figuren til højre).</p>`
             },
             {
               questions: [
@@ -1602,10 +1597,12 @@ export default {
               ]
             },
             {
-              headline: 'Værditilbud/Kunder',
+              headline: 'Samspil mellem værditilbud og kunder',
               pdfHeadline: 'Samspil ml. værditilbud og kunder',
               pdfRowIndex: 1, // out of 3
               pdfColIndex: 3, // out of 3
+              questionIntro: `<p class="font-lead mt-0">At udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i forretningsmodellen fungerer godt og understøtter jeres mål. Det er også vigtigt, at der er god sammenhæng mellem elementerne – fx at jeres værditilbud matcher behovet hos vigtige kunder.</p>
+<p class="font-lead mt-0">I den resterende del af testen bedes du tage stilling til en række udsagn om samspillet mellem de fire elementer i forretningsmodellen.</p>`,
               description: this.defaultDescription,
               questions: [
                 {
@@ -1626,7 +1623,7 @@ export default {
               ]
             },
             {
-              headline: 'Kunder/Salg og kommunikation',
+              headline: 'Samspil mellem kunder og salg og kommunikation',
               pdfHeadline: 'Samspil ml. kunder og salg/kommunikation',
               pdfRowIndex: 3, // out of 3
               pdfColIndex: 3, // out of 3
@@ -1651,7 +1648,7 @@ export default {
               ]
             },
             {
-              headline: 'Salg og kommunikation/Ressourcer',
+              headline: 'Samspil mellem salg og kommunikation og ressourcer',
               pdfHeadline: 'Samspil ml. ressourcer mv. og salg/kommunikation',
               pdfRowIndex: 3, // out of 3
               pdfColIndex: 1, // out of 3
@@ -1675,7 +1672,7 @@ export default {
               ]
             },
             {
-              headline: 'Ressourcer/værditilbud',
+              headline: 'Samspil mellem ressourcer og værditilbud',
               pdfHeadline: 'Samspil ml. ressourcer mv. og værditilbud',
               pdfRowIndex: 1, // out of 3
               pdfColIndex: 1, // out of 3
