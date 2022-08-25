@@ -1150,7 +1150,7 @@ import * as DKFDS from 'dkfds';
 import * as DataEvent from '@erst-vg/piwik-event-wrapper';
 
 export interface Variant {
-  mailgunApiKey: string;
+  // mailgunApiKey: string;
   navn: string;
   aktiv: boolean;
   parametre: {
@@ -1701,7 +1701,7 @@ export default {
     },
 
     mailgunApiKey: function () {
-      return this.variant?.mailgunApiKey ?? process.env.VUE_APP_MAILGUN_API_KEY;
+      return this.variant?.parametre[0].parametervaerdi ?? process.env.VUE_APP_MAILGUN_API_KEY;
     }
   },
   watch: {
