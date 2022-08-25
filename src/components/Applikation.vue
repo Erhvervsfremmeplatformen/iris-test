@@ -1701,6 +1701,8 @@ export default {
     },
 
     mailgunApiKey: function () {
+      console.log(this.variant);
+      console.log(this.variant?.parametre[0].parametervaerdi);
       return this.variant?.parametre[0].parametervaerdi ?? process.env.VUE_APP_MAILGUN_API_KEY;
     }
   },
