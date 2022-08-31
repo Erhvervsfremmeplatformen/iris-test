@@ -6,11 +6,11 @@
     "lint": "eslint \"**/*.{ts,js,vue}\" --fix --format=pretty",
     "prettierfix": "prettier --write \"**/*.{vue,ts}\" ",
     "prettiercheck": "prettier --check \"**/*.{vue,ts}\" ",
-    "transpile-test": "cross-env VG_VUE_TRANSPILE=true vue-cli-service build --inline-vue --target lib --formats umd-min --dest build/transpiled --name=f957085aeab09f8d18000e98508c85b95655da84 src/components/Applikation.vue"
+    "transpile-test": "cross-env VG_VUE_TRANSPILE=true vue-cli-service build --target lib --formats umd-min --dest build/transpiled --name=f957085aeab09f8d18000e98508c85b95655da84 src/components/Applikation.vue"
   },
   "dependencies": {
     "@erst-vg/piwik-event-wrapper": "1.0.1",
-    "apexcharts": "3.33.2",
+    "apexcharts": "^3.33.2",
     "axios": "0.21.4",
     "contentful-rich-text-vue-renderer": "1.1.5",
     "dkfds": "7.4.0",
@@ -19,12 +19,13 @@
     "ol": "6.13.0",
     "runtime": "0.14.1",
     "tippy.js": "6.3.7",
-    "vue": "2.6.11",
+    "vue": "3.2.37",
     "vue-apexcharts": "1.6.2",
     "vue-axios": "2.1.5",
-    "vue-html2pdf": "1.8.0",
     "vue-multiselect": "2.1.6",
     "vue-property-decorator": "^9.1.2",
+    "vue3-apexcharts": "^1.4.1",
+    "vue3-html2pdf": "1.1.2",
     "vuex": "3.6.2"
   },
   "devDependencies": {
