@@ -782,7 +782,7 @@
           image: { type: 'jpeg', quality: 0.75 },
           html2canvas: {
             dpi: 192,
-            scale: 4,
+            scale: 3,
             letterRendering: true,
             useCORS: true
           },
