@@ -1133,7 +1133,6 @@ export interface PDFOptions {
 }
 
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import moment from 'moment';
 import Image1 from './Image1.vue';
 import Image2 from './Image2.vue';
 import SvgIcons from './SvgIcons.vue';
