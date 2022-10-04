@@ -95,8 +95,9 @@
                     dermed til at forholde jer til de udfordringer, andre virksomheder har stået over for på deres vej til bedre forretning.
                   </p>
                   <p>
-                    Testen er udviklet af IRIS Group og professor Poul Houman Andersen, Aalborg Universitet, i et tæt samarbejde med erhvervshusene.
-                    Udviklingen af testen er finansieret af Industriens Fond.
+                    Testen er udviklet af IRIS Group og professor Poul Houman Andersen i tæt samarbejde med erhvervshusene og Syddansk Universitet.
+                    Den baserer sig på professor Thomas Ritters (CBS) forskning i forretningsmodeller. Udviklingen af testen er finansieret af
+                    Industriens Fond.
                   </p>
                 </div>
                 <div class="col-md-6 mb-7">
@@ -782,7 +783,7 @@
           image: { type: 'jpeg', quality: 0.75 },
           html2canvas: {
             dpi: 192,
-            scale: 4,
+            scale: 3,
             letterRendering: true,
             useCORS: true
           },
