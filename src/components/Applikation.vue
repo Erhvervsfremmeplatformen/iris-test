@@ -1151,15 +1151,13 @@ import GradientLine from './GradientLine.vue';
 import CircledAverage from './CircledAverage.vue';
 import Test2Cell from './Test2Cell.vue';
 import VueApexCharts from 'vue3-apexcharts';
-import Vue3Html2pdf from 'vue3-html2pdf';
+import Vue3Html2pdf from '@erst-vg/vue3-html2pdf';
 import { getCurrentInstance } from 'vue';
 
 import * as DKFDS from 'dkfds';
 import * as DataEvent from '@erst-vg/piwik-event-wrapper';
 
 const app = getCurrentInstance();
-
-console.log('# APP ', app);
 
 export interface Variant {
   // mailgunApiKey: string;
