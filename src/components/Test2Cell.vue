@@ -54,7 +54,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
->>> {
+:deep {
   p {
     font-size: 10px;
     line-height: 13px;

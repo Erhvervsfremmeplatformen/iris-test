@@ -2,7 +2,29 @@
   position: relative;
 }
 
->>> {
+.modal-content {
+  padding: 72px;
+}
+
+.modal-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.modal-footer {
+  margin-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.modal-header {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+:deep {
   .button {
     color: #454545;
 
@@ -187,7 +209,7 @@
 
   .figure {
     margin: 0;
-    & >>> svg {
+    & :deep svg {
       width: auto;
       max-height: 400px;
       max-width: 100%;

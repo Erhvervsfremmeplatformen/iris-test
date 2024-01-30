@@ -767,7 +767,7 @@
 
       <!-- {{response}} -->
       <!-- to preview in browser: show-layout true and float-layout false -->
-      <vue-html2pdf
+      <vue3-html2pdf
         ref="html2Pdf"
         :show-layout="false"
         :float-layout="true"
@@ -791,306 +791,312 @@
         }"
         @beforeDownload="beforeDownload($event)"
       >
-        <section slot="pdf-content">
-          <section class="pdf-item">
-            <!-- PAGE 1 -->
-            <p class="h6">Rapport</p>
-            <h1 class="h3 mt-0">Resultat af test af forretningsmodellen</h1>
-            <p>Udskrevet d. {{ getDateString() }}</p>
-            <table class="table table--dotted table--borderless mt-9">
-              <tr>
-                <th>Virksomhedsnavn:</th>
-                <td style="vertical-align: middle; white-space: nowrap">{{ contactFormValues.companyName }}</td>
-              </tr>
-              <tr class="pt-4">
-                <th style="vertical-align: middle">Branche:</th>
-                <td>{{ values.industry }}</td>
-              </tr>
-            </table>
-            <table class="table table--borderless table--blue" style="margin-top: 100px">
-              <tr>
-                <td>
-                  <p class="h6">Del 1</p>
-                  <h1 class="h4 mt-0">Hvordan er presset på jeres forretningsmodel?</h1>
-                  <p>
-                    Testen viser, hvor I oplever forandringer i jeres forretningsbetingelser, der kan indebære et behov for at styrke eller retænke
-                    forretningsmodellen.
-                  </p>
-                  <figure class="figure p-5">
-                    <Image1 />
-                  </figure>
-                </td>
-                <td>
-                  <p class="h6">Del 2</p>
-                  <h2 class="h4 mt-0">Hvor kan jeres forretningsmodel forbedres?</h2>
-                  <p>Testen viser, hvor I selv vurderer, at der er forbedringsmuligheder i jeres nuværende forretningsmodel.</p>
-                  <figure class="figure p-5">
-                    <Image2 />
-                  </figure>
-                </td>
-              </tr>
-            </table>
-          </section>
-          <div class="html2pdf__page-break" />
-          <section class="pdf-item">
-            <!-- PAGE 2 -->
-            <p class="h6">Opsummering af resultater</p>
-            <div>
-              <h2 class="h4 mt-2">Del 1: Hvordan er presset på jeres forretningsmodel?</h2>
-              <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
-              <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
-              <apexchart
-                v-if="response['test1']"
-                type="radar"
-                :options="radarOptions('test1', true)"
-                width="650px"
-                :series="radarData('test1')"
-                style="margin-bottom: -30px !important; margin-top: -30px !important"
-              ></apexchart>
-              <p v-else class="mt-12 h2">Del 1 er ikke gennemført</p>
-            </div>
+        <template #pdf-content>
+          <section>
+            <section class="pdf-item">
+              <!-- PAGE 1 -->
+              <p class="h6">Rapport</p>
+              <h1 class="h3 mt-0">Resultat af test af forretningsmodellen</h1>
+              <p>Udskrevet d. {{ getDateString() }}</p>
+              <table class="table table--dotted table--borderless mt-9">
+                <tr>
+                  <th>Virksomhedsnavn:</th>
+                  <td style="vertical-align: middle; white-space: nowrap">{{ contactFormValues.companyName }}</td>
+                </tr>
+                <tr class="pt-4">
+                  <th style="vertical-align: middle">Branche:</th>
+                  <td>{{ values.industry }}</td>
+                </tr>
+              </table>
+              <table class="table table--borderless table--blue" style="margin-top: 100px">
+                <tr>
+                  <td>
+                    <p class="h6">Del 1</p>
+                    <h1 class="h4 mt-0">Hvordan er presset på jeres forretningsmodel?</h1>
+                    <p>
+                      Testen viser, hvor I oplever forandringer i jeres forretningsbetingelser, der kan indebære et behov for at styrke eller retænke
+                      forretningsmodellen.
+                    </p>
+                    <figure class="figure p-5">
+                      <Image1 />
+                    </figure>
+                  </td>
+                  <td>
+                    <p class="h6">Del 2</p>
+                    <h2 class="h4 mt-0">Hvor kan jeres forretningsmodel forbedres?</h2>
+                    <p>Testen viser, hvor I selv vurderer, at der er forbedringsmuligheder i jeres nuværende forretningsmodel.</p>
+                    <figure class="figure p-5">
+                      <Image2 />
+                    </figure>
+                  </td>
+                </tr>
+              </table>
+            </section>
+            <div class="html2pdf__page-break" />
+            <section class="pdf-item">
+              <!-- PAGE 2 -->
+              <p class="h6">Opsummering af resultater</p>
+              <div>
+                <h2 class="h4 mt-2">Del 1: Hvordan er presset på jeres forretningsmodel?</h2>
+                <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
+                <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
+                <apexchart
+                  v-if="response['test1']"
+                  type="radar"
+                  :options="radarOptions('test1', true)"
+                  width="650px"
+                  :series="radarData('test1')"
+                  style="margin-bottom: -30px !important; margin-top: -30px !important"
+                ></apexchart>
+                <p v-else class="mt-12 h2">Del 1 er ikke gennemført</p>
+              </div>
 
-            <div>
-              <h2 class="h4 mt-0">Del 2: Hvor kan jeres forretningsmodel forbedres?</h2>
-              <p>Ud fra dine svar ser der ud til at være et potentiale for at styrke jeres forretningsmodel på nedenstående områder.</p>
-              <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
+              <div>
+                <h2 class="h4 mt-0">Del 2: Hvor kan jeres forretningsmodel forbedres?</h2>
+                <p>Ud fra dine svar ser der ud til at være et potentiale for at styrke jeres forretningsmodel på nedenstående områder.</p>
+                <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
+                  <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
+                    <div>
+                      <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
+                      <p class="mt-2 mb-2">{{ link.description ? link.description : '' }}</p>
+                    </div>
+                  </li>
+                </ol>
+                <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
+              </div>
+            </section>
+            <div class="html2pdf__page-break" />
+            <section class="pdf-item">
+              <!-- PAGE 3 -->
+              <div v-if="response['test1']">
+                <div
+                  v-for="(sectionGroup, sectionGroupIndex) of [
+                    { sections: sections[0].steps.slice(2, 5) },
+                    { sections: sections[0].steps.slice(5, 7) }
+                  ]"
+                  :key="sectionGroupIndex"
+                >
+                  <p class="h6">Resultat - del 1 {{ sectionGroupIndex > 0 ? ' - fortsat' : '' }}</p>
+                  <h2 class="h4 mt-2">Dine svar</h2>
+                  <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
+                  <table class="table--invisible">
+                    <tbody v-for="(section, sectionIndex) of sectionGroup.sections" :key="sectionIndex">
+                      <tr v-if="section.headline" class="">
+                        <td>
+                          <figure class="m-0 mt-3 mr-4">
+                            <IconInternal v-if="section.id == 'internal'" />
+                            <IconMarket v-if="section.id == 'market'" />
+                            <IconSupplychain v-if="section.id == 'supplychain'" />
+                            <IconSustainability v-if="section.id == 'sustainability'" />
+                            <IconTechnology v-if="section.id == 'technology'" />
+                          </figure>
+                        </td>
+                        <td colspan="2">
+                          <div class="underlined-headline-wrapper">
+                            <h3 class="h5 mt-0 underlined-headline">{{ section.headline }}</h3>
+                          </div>
+                        </td>
+                        <td class="h6 align-text-center">
+                          <CircledAverage
+                            :percentage="(calculateSectionAverage(section, false) / 10) * 100"
+                            :value="calculateSectionAverage(section, true)"
+                          />
+                        </td>
+                      </tr>
+                      <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
+                        <td></td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
+                          <p class="m-0">{{ question.label }}</p>
+                        </td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
+                          <GradientLine :percentage="(values[question.name] / 10) * 100" :width="200" />
+                        </td>
+                        <td :class="`h6 align-text-center ${questionIndex < section.questions.length - 1 && 'dotted'}`">
+                          {{ values[question.name] }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="html2pdf__page-break" />
+                </div>
+              </div>
+              <div v-else>
+                <p class="h6">Resultat - del 1</p>
+                <h2 class="h4 mt-2">Dine svar</h2>
+                <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
+                <p class="mt-12 h2">Del 1 er ikke gennemført</p>
+                <div class="html2pdf__page-break" />
+              </div>
+            </section>
+            <section class="pdf-item">
+              <p class="h6">Resultat - del 2</p>
+              <h2 class="h4 mt-2">Hvor kan jeres forretningsmodel forbedres?</h2>
+              <p>
+                Dine svar på 24 udsagn om hvor din forretningsmodel kan forbedres på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.
+              </p>
+              <table v-if="values && response['test2']" class="table--invisible table--fixed">
+                <tr v-for="i in 3" :key="i">
+                  <td v-for="j in 3" :key="j" style="vertical-align: top" class="p-4">
+                    <figure v-if="i == 2 && j == 2"><Image2 /></figure>
+                    <Test2Cell v-else :col-index="j" :row-index="i" :steps="sections[1].steps" :values="values" />
+                  </td>
+                </tr>
+              </table>
+              <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
+            </section>
+            <div class="html2pdf__page-break" />
+            <section class="pdf-item">
+              <p class="h6">Resultat</p>
+              <h2 class="h4 mt-2">Sådan kan du arbejde videre med forretningsmodellen</h2>
+              <p>
+                Der findes en række muligheder for at hente inspiration og sparring inden for forretningsmodeludvikling. Her finder du et overblik
+                over, hvordan I kan arbejde videre med jeres forretningsmodel.
+              </p>
+              <h3 class="h5">Få gratis og uvildig sparring hos et regionalt erhvervshus</h3>
+              <p>
+                I kan hente gratis, uvildig sparring i jeres regionale erhvervshus. Lad en forretningsudvikler fra Erhvervshuset hjælpe med at gå
+                jeres testsvar igennem, konkretisere jeres udfordringer og udvikle en handlingsplan.
+              </p>
+              <p>
+                Du kan finde dit regionale erhvervshus samt kontaktoplysninger her:
+                <br /><a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse" target="_blank"
+                  >https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse</a
+                >
+              </p>
+              <h3 class="h5">Bliv inspireret af cases med relevans for jer</h3>
+              <p>
+                Ud fra dine svar, fik du foreslået fire områder, hvor der kan være potentiale for at styrke forretningsmodellen. På
+                Virksomhedsguiden.dk kan du læse om virksomheder, der på succesfuld vis har arbejdet med at styrke disse områder:
+              </p>
+              <ol v-if="response['test2'] && response['test2'].suggestions">
                 <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
-                  <div>
-                    <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
-                    <p class="mt-2 mb-2">{{ link.description ? link.description : '' }}</p>
-                  </div>
+                  <a :href="link.linkUrl ? link.linkUrl : index"
+                    >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
+                  </a>
                 </li>
               </ol>
-              <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
-            </div>
-          </section>
-          <div class="html2pdf__page-break" />
-          <section class="pdf-item">
-            <!-- PAGE 3 -->
-            <div v-if="response['test1']">
+              <p v-else class="mt-4 h2">Del 2 er ikke gennemført</p>
+
+              <h3 class="h5">Drøft resultatet internt</h3>
+              <p>
+                I kan også bruge testen til at drøfte internt, hvordan I kan udvikle virksomheden. Prøv fx at lade alle i ledelsen eller bestyrelsen
+                besvare testen. Drøft derefter forskelle og ligheder i jeres besvarelser.
+              </p>
+              <h3 class="h5">Ræk ud til private rådgivere</h3>
+              <p>
+                I kan forsøge at række ud til private rådgivere. Der findes både rådgivere med fokus på generel forretnings- og strategiudvikling samt
+                specialiserede rådgivere, der er eksperter inden for de forskellige dele af forretningsmodellen.
+              </p>
+            </section>
+            <div class="html2pdf__page-break" />
+            <section class="pdf-item">
+              <h2 class="h1" style="margin-top: 200px">Bilag</h2>
+              <p style="font-size: 14px; line-height: 1.4; max-width: 37ch">
+                Sammenlign dit resultat med andre virksomheder i din branche og alle virksomheder
+              </p>
+            </section>
+            <div class="html2pdf__page-break" />
+            <section class="pdf-item">
               <div
                 v-for="(sectionGroup, sectionGroupIndex) of [
-                  { sections: sections[0].steps.slice(2, 5) },
-                  { sections: sections[0].steps.slice(5, 7) }
+                  { sections: sections[0].steps.slice(2, 5), headline: 'Del 1 - ' + sections[0].headline, section: 'test1' },
+                  { sections: sections[0].steps.slice(5, 7), headline: 'Del 1 - ' + sections[0].headline + ' - fortsat', section: 'test1' },
+                  { sections: sections[1].steps.slice(2, 6), headline: 'Del 2 - ' + sections[1].headline, section: 'test2' },
+                  { sections: sections[1].steps.slice(6, 10), headline: 'Del 2 - ' + sections[1].headline + ' - fortsat', section: 'test2' }
                 ]"
                 :key="sectionGroupIndex"
               >
-                <p class="h6">Resultat - del 1 {{ sectionGroupIndex > 0 ? ' - fortsat' : '' }}</p>
-                <h2 class="h4 mt-2">Dine svar</h2>
-                <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
-                <table class="table--invisible">
-                  <tbody v-for="(section, sectionIndex) of sectionGroup.sections" :key="sectionIndex">
-                    <tr v-if="section.headline" class="">
-                      <td>
-                        <figure class="m-0 mt-3 mr-4">
-                          <IconInternal v-if="section.id == 'internal'" />
-                          <IconMarket v-if="section.id == 'market'" />
-                          <IconSupplychain v-if="section.id == 'supplychain'" />
-                          <IconSustainability v-if="section.id == 'sustainability'" />
-                          <IconTechnology v-if="section.id == 'technology'" />
-                        </figure>
-                      </td>
-                      <td colspan="2">
-                        <div class="underlined-headline-wrapper">
-                          <h3 class="h5 mt-0 underlined-headline">{{ section.headline }}</h3>
-                        </div>
-                      </td>
-                      <td class="h6 align-text-center">
-                        <CircledAverage
-                          :percentage="(calculateSectionAverage(section, false) / 10) * 100"
-                          :value="calculateSectionAverage(section, true)"
-                        />
-                      </td>
-                    </tr>
-                    <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
-                      <td></td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
-                        <p class="m-0">{{ question.label }}</p>
-                      </td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
-                        <GradientLine :percentage="(values[question.name] / 10) * 100" :width="200" />
-                      </td>
-                      <td :class="`h6 align-text-center ${questionIndex < section.questions.length - 1 && 'dotted'}`">{{ values[question.name] }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="html2pdf__page-break" />
-              </div>
-            </div>
-            <div v-else>
-              <p class="h6">Resultat - del 1</p>
-              <h2 class="h4 mt-2">Dine svar</h2>
-              <p>Dine svar på 18 udsagn om presset på jeres forretningsmodel på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
-              <p class="mt-12 h2">Del 1 er ikke gennemført</p>
-              <div class="html2pdf__page-break" />
-            </div>
-          </section>
-          <section class="pdf-item">
-            <p class="h6">Resultat - del 2</p>
-            <h2 class="h4 mt-2">Hvor kan jeres forretningsmodel forbedres?</h2>
-            <p>Dine svar på 24 udsagn om hvor din forretningsmodel kan forbedres på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.</p>
-            <table v-if="values && response['test2']" class="table--invisible table--fixed">
-              <tr v-for="i in 3" :key="i">
-                <td v-for="j in 3" :key="j" style="vertical-align: top" class="p-4">
-                  <figure v-if="i == 2 && j == 2"><Image2 /></figure>
-                  <Test2Cell v-else :col-index="j" :row-index="i" :steps="sections[1].steps" :values="values" />
-                </td>
-              </tr>
-            </table>
-            <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
-          </section>
-          <div class="html2pdf__page-break" />
-          <section class="pdf-item">
-            <p class="h6">Resultat</p>
-            <h2 class="h4 mt-2">Sådan kan du arbejde videre med forretningsmodellen</h2>
-            <p>
-              Der findes en række muligheder for at hente inspiration og sparring inden for forretningsmodeludvikling. Her finder du et overblik over,
-              hvordan I kan arbejde videre med jeres forretningsmodel.
-            </p>
-            <h3 class="h5">Få gratis og uvildig sparring hos et regionalt erhvervshus</h3>
-            <p>
-              I kan hente gratis, uvildig sparring i jeres regionale erhvervshus. Lad en forretningsudvikler fra Erhvervshuset hjælpe med at gå jeres
-              testsvar igennem, konkretisere jeres udfordringer og udvikle en handlingsplan.
-            </p>
-            <p>
-              Du kan finde dit regionale erhvervshus samt kontaktoplysninger her:
-              <br /><a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse" target="_blank"
-                >https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse</a
-              >
-            </p>
-            <h3 class="h5">Bliv inspireret af cases med relevans for jer</h3>
-            <p>
-              Ud fra dine svar, fik du foreslået fire områder, hvor der kan være potentiale for at styrke forretningsmodellen. På Virksomhedsguiden.dk
-              kan du læse om virksomheder, der på succesfuld vis har arbejdet med at styrke disse områder:
-            </p>
-            <ol v-if="response['test2'] && response['test2'].suggestions">
-              <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
-                <a :href="link.linkUrl ? link.linkUrl : index"
-                  >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
-                </a>
-              </li>
-            </ol>
-            <p v-else class="mt-4 h2">Del 2 er ikke gennemført</p>
-
-            <h3 class="h5">Drøft resultatet internt</h3>
-            <p>
-              I kan også bruge testen til at drøfte internt, hvordan I kan udvikle virksomheden. Prøv fx at lade alle i ledelsen eller bestyrelsen
-              besvare testen. Drøft derefter forskelle og ligheder i jeres besvarelser.
-            </p>
-            <h3 class="h5">Ræk ud til private rådgivere</h3>
-            <p>
-              I kan forsøge at række ud til private rådgivere. Der findes både rådgivere med fokus på generel forretnings- og strategiudvikling samt
-              specialiserede rådgivere, der er eksperter inden for de forskellige dele af forretningsmodellen.
-            </p>
-          </section>
-          <div class="html2pdf__page-break" />
-          <section class="pdf-item">
-            <h2 class="h1" style="margin-top: 200px">Bilag</h2>
-            <p style="font-size: 14px; line-height: 1.4; max-width: 37ch">
-              Sammenlign dit resultat med andre virksomheder i din branche og alle virksomheder
-            </p>
-          </section>
-          <div class="html2pdf__page-break" />
-          <section class="pdf-item">
-            <div
-              v-for="(sectionGroup, sectionGroupIndex) of [
-                { sections: sections[0].steps.slice(2, 5), headline: 'Del 1 - ' + sections[0].headline, section: 'test1' },
-                { sections: sections[0].steps.slice(5, 7), headline: 'Del 1 - ' + sections[0].headline + ' - fortsat', section: 'test1' },
-                { sections: sections[1].steps.slice(2, 6), headline: 'Del 2 - ' + sections[1].headline, section: 'test2' },
-                { sections: sections[1].steps.slice(6, 10), headline: 'Del 2 - ' + sections[1].headline + ' - fortsat', section: 'test2' }
-              ]"
-              :key="sectionGroupIndex"
-            >
-              <div v-if="response[sectionGroup.section]">
-                <p class="h6">Bilag</p>
-                <h2 class="h4 mt-2">Gennemsnitssvar for branchen og alle virksomheder</h2>
-                <p class="h6 mb-4 mt-2">{{ sectionGroup.headline }}</p>
-                <hr />
-                <table class="table--invisible">
-                  <tbody v-for="(section, sectionIndex) of sectionGroup.sections" :key="sectionIndex">
-                    <tr style="transform: translateY(10px) translateX(20px)">
-                      <td></td>
-                      <td></td>
-                      <td class="diagonal"><strong>Dine svar</strong></td>
-                      <td class="diagonal">
-                        Din branche
-                        <span v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry">*</span>
-                      </td>
-                      <td class="diagonal">Alle svar</td>
-                    </tr>
-                    <tr v-if="section.headline" class="">
-                      <td class="pr-4">
-                        <figure class="m-0 mt-3">
-                          <IconInternal v-if="section.id == 'internal'" />
-                          <IconMarket v-else-if="section.id == 'market'" />
-                          <IconSupplychain v-else-if="section.id == 'supplychain'" />
-                          <IconSustainability v-else-if="section.id == 'sustainability'" />
-                          <IconTechnology v-else-if="section.id == 'technology'" />
-                          <IconValue v-else-if="section.id == 'value'" />
-                          <IconRessources v-else-if="section.id == 'resources'" />
-                          <IconCustomers v-else-if="section.id == 'customers'" />
-                          <IconSales v-else-if="section.id == 'sales'" />
-                          <IconScales v-else />
-                        </figure>
-                      </td>
-                      <td colspan="4">
-                        <div class="underlined-headline-wrapper mr-0">
-                          <h3 class="h5 mt-0 underlined-headline">{{ section.pdfHeadline ? section.pdfHeadline : section.headline }}</h3>
-                        </div>
-                      </td>
-                      <!-- <td class="h6 align-text-center"><strong>Dine svar</strong></td>
+                <div v-if="response[sectionGroup.section]">
+                  <p class="h6">Bilag</p>
+                  <h2 class="h4 mt-2">Gennemsnitssvar for branchen og alle virksomheder</h2>
+                  <p class="h6 mb-4 mt-2">{{ sectionGroup.headline }}</p>
+                  <hr />
+                  <table class="table--invisible">
+                    <tbody v-for="(section, sectionIndex) of sectionGroup.sections" :key="sectionIndex">
+                      <tr style="transform: translateY(10px) translateX(20px)">
+                        <td></td>
+                        <td></td>
+                        <td class="diagonal"><strong>Dine svar</strong></td>
+                        <td class="diagonal">
+                          Din branche
+                          <span v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry">*</span>
+                        </td>
+                        <td class="diagonal">Alle svar</td>
+                      </tr>
+                      <tr v-if="section.headline" class="">
+                        <td class="pr-4">
+                          <figure class="m-0 mt-3">
+                            <IconInternal v-if="section.id == 'internal'" />
+                            <IconMarket v-else-if="section.id == 'market'" />
+                            <IconSupplychain v-else-if="section.id == 'supplychain'" />
+                            <IconSustainability v-else-if="section.id == 'sustainability'" />
+                            <IconTechnology v-else-if="section.id == 'technology'" />
+                            <IconValue v-else-if="section.id == 'value'" />
+                            <IconRessources v-else-if="section.id == 'resources'" />
+                            <IconCustomers v-else-if="section.id == 'customers'" />
+                            <IconSales v-else-if="section.id == 'sales'" />
+                            <IconScales v-else />
+                          </figure>
+                        </td>
+                        <td colspan="4">
+                          <div class="underlined-headline-wrapper mr-0">
+                            <h3 class="h5 mt-0 underlined-headline">{{ section.pdfHeadline ? section.pdfHeadline : section.headline }}</h3>
+                          </div>
+                        </td>
+                        <!-- <td class="h6 align-text-center"><strong>Dine svar</strong></td>
                     <td class="h6 align-text-center">Din branche</td>
                     <td class="h6 align-text-center">Alle svar</td> -->
-                    </tr>
-                    <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
-                      <td></td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
-                        <p class="m-0">{{ question.label }}</p>
-                      </td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
-                        <div class="valueContainer ml-4">
-                          <p class="h5 mt-0 mb-2">{{ values[question.name] }}</p>
-                          <GradientLine :percentage="(values[question.name] / 10) * 100" :width="30" />
-                        </div>
-                      </td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
-                        <div class="valueContainer ml-4">
-                          <p class="h5 mt-0 mb-2">
-                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', true) }}
-                          </p>
-                          <GradientLine
-                            :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', false) / 10) * 100"
-                            :width="30"
-                          />
-                        </div>
-                      </td>
-                      <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
-                        <div class="valueContainer ml-4">
-                          <p class="h5 mt-0 mb-2">
-                            {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', true) }}
-                          </p>
-                          <GradientLine
-                            :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', false) / 10) * 100"
-                            :width="30"
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p
-                  v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry"
-                  style="font-style: italic; max-width: none; margin-bottom: -10px"
-                >
-                  * Din valgte branche har desværre på dette tidspunkt endnu for få besvarelser til at vise branchegennemsnittet
-                </p>
-                <div class="html2pdf__page-break" />
+                      </tr>
+                      <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
+                        <td></td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
+                          <p class="m-0">{{ question.label }}</p>
+                        </td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
+                          <div class="valueContainer ml-4">
+                            <p class="h5 mt-0 mb-2">{{ values[question.name] }}</p>
+                            <GradientLine :percentage="(values[question.name] / 10) * 100" :width="30" />
+                          </div>
+                        </td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
+                          <div class="valueContainer ml-4">
+                            <p class="h5 mt-0 mb-2">
+                              {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', true) }}
+                            </p>
+                            <GradientLine
+                              :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_industry', false) / 10) * 100"
+                              :width="30"
+                            />
+                          </div>
+                        </td>
+                        <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
+                          <div class="valueContainer ml-4">
+                            <p class="h5 mt-0 mb-2">
+                              {{ getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', true) }}
+                            </p>
+                            <GradientLine
+                              :percentage="(getMeansValueFromResponse(sectionGroup.section, question.name, 'mean_all', false) / 10) * 100"
+                              :width="30"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p
+                    v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry"
+                    style="font-style: italic; max-width: none; margin-bottom: -10px"
+                  >
+                    * Din valgte branche har desværre på dette tidspunkt endnu for få besvarelser til at vise branchegennemsnittet
+                  </p>
+                  <div class="html2pdf__page-break" />
+                </div>
               </div>
-            </div>
+            </section>
+            <!-- PDF Content Here -->
           </section>
-          <!-- PDF Content Here -->
-        </section>
-      </vue-html2pdf>
+        </template>
+      </vue3-html2pdf>
     </form>
   </div>
 </template>
@@ -1127,7 +1133,6 @@ export interface PDFOptions {
 }
 
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import moment from 'moment';
 import Image1 from './Image1.vue';
 import Image2 from './Image2.vue';
 import SvgIcons from './SvgIcons.vue';
@@ -1145,10 +1150,14 @@ import Logo from './Logo.vue';
 import GradientLine from './GradientLine.vue';
 import CircledAverage from './CircledAverage.vue';
 import Test2Cell from './Test2Cell.vue';
-import VueApexCharts from 'vue-apexcharts';
-import VueHtml2pdf from 'vue-html2pdf';
+import VueApexCharts from 'vue3-apexcharts';
+import Vue3Html2pdf from '@erst-vg/vue3-html2pdf';
+import { getCurrentInstance } from 'vue';
+
 import * as DKFDS from 'dkfds';
 import * as DataEvent from '@erst-vg/piwik-event-wrapper';
+
+const app = getCurrentInstance();
 
 export interface Variant {
   // mailgunApiKey: string;
@@ -1176,7 +1185,7 @@ export default {
     GradientLine,
     Test2Cell,
     CircledAverage,
-    VueHtml2pdf,
+    Vue3Html2pdf,
     IconScales,
     IconValue,
     IconRessources,
