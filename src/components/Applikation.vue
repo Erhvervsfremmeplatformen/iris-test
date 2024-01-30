@@ -58,11 +58,11 @@
             <figure class="figure alternative mb-6">
               <Logo style="max-width: 200px" />
             </figure>
-            <p class="font-lead" style="max-width: none">
+            <div class="font-lead" style="max-width: none">
               Testen består af to dele.<br />
               Del 1 handler om presset på jeres nuværende forretningsmodel. <br />Del 2 handler om at identificere de områder, hvor jeres
               forretningsmodel kan styrkes.
-            </p>
+            </div>
             <div class="row" style="justify-content: center">
               <div class="m-3 m-md-2 px-4 px-md-0">
                 <button class="button button-primary" @click.prevent="currentSection = 'test1'">Start med del 1</button>
@@ -172,7 +172,7 @@
                   <div class="col-12">
                     <div class="row align-items-center">
                       <div class="col-auto">
-                        <button class="button" data-modal-close @click.prevent>Luk vindue</button>
+                        <button class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
                       </div>
                     </div>
                   </div>
@@ -188,15 +188,15 @@
           <template v-if="currentSection === section.id">
             <div class="row">
               <div class="testclass2 col-lg-9 p-lg-4 px-lg-9 mb-0 px-xl-4">
-                <p class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</p>
+                <span class="h6">{{ currentStep === section.steps.length ? 'Resultat' : 'Test' }}</span>
 
                 <h1 class="h1">{{ section.headline }}</h1>
-                <p v-if="(section.description || section.descriptionAlternative) && currentStep === 0" class="font-lead">
+                <div v-if="(section.description || section.descriptionAlternative) && currentStep === 0" class="font-lead">
                   {{ currentSection === 'test2' && values.industry !== '' && maxStep > 0 ? section.descriptionAlternative : section.description }}
-                </p>
-                <p v-if="(section.description || section.resultIntro) && currentStep === section.steps.length" class="font-lead">
+                </div>
+                <div v-if="(section.description || section.resultIntro) && currentStep === section.steps.length" class="font-lead">
                   {{ section.resultIntro }}
-                </p>
+                </div>
               </div>
               <div
                 v-if="currentStep !== section.steps.length"
@@ -290,7 +290,7 @@
                     <button
                       v-if="currentStep + 1 === section.steps.length"
                       id="primaryButton"
-                      :class="['button mt-7', currentSection === 'test1' ? '' : 'button-primary']"
+                      :class="['button mt-7', currentSection === 'test1' ? 'button-secondary' : 'button-primary']"
                       @click.prevent="handleSubmit(true)"
                     >
                       Se resultat
@@ -323,7 +323,7 @@
                       <div class="col-12">
                         <div class="row align-items-center">
                           <div class="col-auto">
-                            <button class="button" @click.prevent="generateReport()">
+                            <button class="button button-secondary" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
                                 <use xlink:href="#file-download"></use></svg
                               >Download resultatet som PDF
@@ -379,7 +379,7 @@
                       <div class="col-12">
                         <div class="row align-items-center">
                           <div class="col-auto">
-                            <button class="button" @click.prevent="generateReport()">
+                            <button class="button button-secondary" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
                                 <use xlink:href="#file-download"></use></svg
                               >Download resultatet som PDF
@@ -405,7 +405,7 @@
                         <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
                           <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                             <div>
-                              <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
+                              <span class="h4 m-0">{{ link.title ? link.title : '' }}</span>
                               <p class="mt-2">{{ link.description ? link.description : '' }}</p>
                               <a :href="link.linkUrl ? link.linkUrl : index" target="_blank"
                                 >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
@@ -423,7 +423,7 @@
                         </p>
                         <ul class="large-dots">
                           <li>
-                            <p class="h4 mt-0">Få gratis og uvildig sparring hos et regionalt erhvervshus</p>
+                            <span class="h4 mt-0">Få gratis og uvildig sparring hos et regionalt erhvervshus</span>
                             <p>
                               I kan hente gratis, uvildig sparring i jeres regionale erhvervshus. Lad en forretningsudvikler fra Erhvervshuset hjælpe
                               med at gå jeres testsvar igennem, konkretisere jeres udfordringer og udvikle en handlingsplan. De regionale erhvervshuse
@@ -432,14 +432,14 @@
                             </p>
                           </li>
                           <li>
-                            <p class="h4 mt-0">Drøft resultatet internt</p>
+                            <span class="h4 mt-0">Drøft resultatet internt</span>
                             <p>
                               I kan også bruge testen til at drøfte internt, hvordan I kan udvikle virksomheden. Prøv fx at lade alle i ledelsen eller
                               bestyrelsen besvare testen. Drøft derefter forskelle og ligheder i jeres besvarelser.
                             </p>
                           </li>
                           <li>
-                            <p class="h4 mt-0">Ræk ud til private rådgivere</p>
+                            <span class="h4 mt-0">Ræk ud til private rådgivere</span>
                             <p>
                               I kan forsøge at række ud til private rådgivere. Der findes både rådgivere med fokus på generel forretnings- og
                               strategiudvikling samt specialiserede rådgivere, der er eksperter inden for de forskellige dele af forretningsmodellen.
@@ -475,7 +475,7 @@
                           <div class="card-footer pb-4 px-4 pb-md-7 px-md-7">
                             <div class="row align-items-center">
                               <div class="col-auto">
-                                <button class="button" @click.prevent="generateReport()">
+                                <button class="button button-secondary" @click.prevent="generateReport()">
                                   <svg class="icon-svg" focusable="false" aria-hidden="true">
                                     <use xlink:href="#file-download"></use></svg
                                   >Download resultatet som PDF
@@ -690,7 +690,7 @@
                                   </div>
                                   <div class="col-auto">
                                     <button v-if="!emailIsSent" class="button button-primary">Indsend resultater til erhvervshuset</button>
-                                    <button v-else class="button" data-modal-close @click.prevent>Luk vindue</button>
+                                    <button v-else class="button button-secondary" data-modal-close @click.prevent>Luk vindue</button>
                                   </div>
                                   <div class="col-auto">
                                     <div
@@ -857,7 +857,7 @@
                 <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
                   <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                     <div>
-                      <p class="h4 m-0">{{ link.title ? link.title : '' }}</p>
+                      <span class="h4 m-0">{{ link.title ? link.title : '' }}</span>
                       <p class="mt-2 mb-2">{{ link.description ? link.description : '' }}</p>
                     </div>
                   </li>
@@ -1611,8 +1611,8 @@ export default {
               pdfHeadline: 'Samspil ml. værditilbud og kunder',
               pdfRowIndex: 1, // out of 3
               pdfColIndex: 3, // out of 3
-              questionIntro: `<p class="font-lead mt-0">At udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i forretningsmodellen fungerer godt og understøtter jeres mål. Det er også vigtigt, at der er god sammenhæng mellem elementerne – fx at jeres værditilbud matcher behovet hos vigtige kunder.</p>
-<p class="font-lead mt-0">I den resterende del af testen bedes du tage stilling til en række udsagn om samspillet mellem de fire elementer i forretningsmodellen.</p>`,
+              questionIntro: `<div class="font-lead mt-0">At udvikle en god forretningsmodel kræver ikke blot, at de fire elementer i forretningsmodellen fungerer godt og understøtter jeres mål. Det er også vigtigt, at der er god sammenhæng mellem elementerne – fx at jeres værditilbud matcher behovet hos vigtige kunder.</div>
+<div class="font-lead mt-0">I den resterende del af testen bedes du tage stilling til en række udsagn om samspillet mellem de fire elementer i forretningsmodellen.</div>`,
               description: this.defaultDescription,
               questions: [
                 {

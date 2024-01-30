@@ -9,9 +9,9 @@
         <IconSales v-else-if="currentSection.id == 'sales'" />
         <IconScales v-else />
       </figure>
-      <p class="h4 m-0">
+      <span class="h4 m-0">
         {{ currentSection.pdfHeadline ? currentSection.pdfHeadline : currentSection.headline }}
-      </p>
+      </span>
     </div>
     <div
       v-for="(question, questionIndex) in currentSection.questions"
