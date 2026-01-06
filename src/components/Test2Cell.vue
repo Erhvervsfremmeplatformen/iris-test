@@ -55,28 +55,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-:deep(p) {
-  font-size: 10px;
-  line-height: 13px;
-}
+:deep() {
+  p {
+    font-size: 10px;
+    line-height: 13px;
+  }
 
-:deep(.h4),
-:deep(.h5) {
-  font-size: 11px;
-  line-height: 14px;
-}
+  .h4,
+  .h5 {
+    font-size: 11px;
+    line-height: 14px;
+  }
 
-:deep(.questionRow) {
-  display: flex;
-  align-items: center;
-}
+  .questionRow {
+    display: flex;
+    align-items: center;
+  }
 
-:deep(.headlineRow) {
-  display: flex;
-  align-items: center;
-}
+  .headlineRow {
+    display: flex;
+    align-items: center;
+  }
 
-:deep(.dotted) {
-  border-bottom: 1px #c8c8c8 dotted !important;
+  .dotted {
+    border-bottom: 1px #c8c8c8 dotted !important;
+  }
 }
 </style>

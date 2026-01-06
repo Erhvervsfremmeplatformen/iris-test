@@ -7,8 +7,7 @@
     "build": "vue-tsc -b && vite build",
     "lint": "eslint \"**/*.{ts,js,vue}\" --fix --format=pretty",
     "prettierfix": "prettier --write \"**/*.{vue,ts}\" ",
-    "prettiercheck": "prettier --check \"**/*.{vue,ts}\" ",
-    "transpile-test": "cross-env VG_VUE_TRANSPILE=true vue-cli-service build --target lib --formats umd-min --dest build/transpiled --name=f957085aeab09f8d18000e98508c85b95655da84 src/components/Applikation.vue"
+    "prettiercheck": "prettier --check \"**/*.{vue,ts}\" "
   },
   "dependencies": {
     "@erst-vg/piwik-event-wrapper": "1.0.1",
@@ -22,11 +21,10 @@
     "vue3-apexcharts": "1.4.1"
   },
   "devDependencies": {
+    "@types/node": "24.9.2",
     "@typescript-eslint/eslint-plugin": "8.45.0",
     "@typescript-eslint/parser": "8.45.0",
     "@vitejs/plugin-vue": "5.2.1",
-    "@vue/cli-plugin-typescript": "5.0.8",
-    "@vue/cli-service": "5.0.8",
     "cross-env": "7.0.3",
     "vite": "5.4.20",
     "vite-plugin-checker": "0.7.2",
@@ -43,11 +41,8 @@
     "eslint-plugin-vue": "9.32.0",
     "prettier": "3.6.2",
     "sass": "1.93.2",
-    "sass-loader": "10.3.1",
     "schema-dts": "1.1.0",
-    "style-resources-loader": "1.5.0",
     "typescript": "5.5.4",
-    "vue-cli-plugin-style-resources-loader": "0.1.5",
     "vue-eslint-parser": "7.11.0"
   },
   "overrides": {

@@ -57,24 +57,6 @@ export default defineConfig(({ mode }) => {
           }
         }
       }
-    },
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: ['./tests/setup.ts', './tests/helpers.js', './tests/test-silence-console.js'],
-      sequence: {
-        // Forhindrer random test fails. https://github.com/vitest-dev/vitest/issues/1293
-        setupFiles: 'list'
-      },
-      coverage: {
-        provider: 'v8',
-        reportsDirectory: 'build/reports/test/html/vitest/',
-        include: ['src/**/*.ts', 'src/**/*.vue'],
-        exclude: ['vite.config.ts', 'src/main.ts', 'src/App.vue', 'src/models/**/*', 'src/types/**/*'],
-        extension: ['.vue', '.ts'],
-        reporter: ['lcov', 'html', 'text', 'json'],
-        all: true
-      }
     }
   };
 });
