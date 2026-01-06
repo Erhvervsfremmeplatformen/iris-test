@@ -7,23 +7,28 @@
         <p class="alert-heading">Svar på alle udsagn, for at gå videre</p>
         <ul v-for="(errorItem, errorIndex) of errors" :key="errorIndex" class="alert-text nobullet-list">
           <li>
-            <a class="function-link" :href="errorItem.errorAnchorHref">{{ errorItem.errorSummary }}</a>
+            <!-- @vue-ignore -->
+            <a class="function-link" :href="errorItem.errorAnchorHref">
+              <!-- @vue-ignore -->
+              {{ errorItem.errorSummary }}</a
+            >
           </li>
         </ul>
       </div>
     </div>
-
+    <!-- @vue-ignore -->
     <div
       v-if="!isLoading && currentStep > 1 && currentStep < sections[currentSection.replace('test', '') - 1].steps.length"
       class="overflow-menu overflow-menu--open-right px-lg-7 px-xl-0"
     >
       <button id="overflow-button" class="button-overflow-menu js-dropdown" data-js-target="overflow5" aria-haspopup="true" aria-expanded="false">
-        Trin {{ currentStep - 1 }} af {{ sections[currentSection.replace('test', '') - 1].steps.length - 2 }}
+        Trin {{ currentStep - 1 }} af {{ sections[Number(currentSection.replace('test', '')) - 1].steps.length - 2 }}
         <svg class="icon-svg" aria-hidden="true" focusable="false"><use xlink:href="#arrow-drop-down"></use></svg>
       </button>
       <div id="overflow5" class="overflow-menu-inner" aria-hidden="true">
         <nav>
           <ul class="overflow-list sidenav-list" role="menu">
+            <!-- @vue-ignore -->
             <li
               v-for="(step, stepIndex) of sections[currentSection.replace('test', '') - 1].steps.slice(2)"
               :key="`nav_step_${stepIndex}`"
@@ -46,6 +51,7 @@
         </nav>
       </div>
     </div>
+    <!-- @vue-ignore -->
     <form @submit.prevent="handleSubmit">
       <div class="row">
         <div v-if="isLoading" class="spinner" aria-label="Henter indhold" />
@@ -216,9 +222,11 @@
 
                 <div v-for="(step, stepIndex) of section.steps" :key="stepIndex">
                   <fieldset v-if="stepIndex === currentStep">
+                    <!-- @vue-ignore -->
                     <div v-if="step.questionIntro" class="mb-8" v-html="step.questionIntro"></div>
                     <h2 v-if="step.headline" class="h2 mt-0">{{ step.headline }}</h2>
                     <p v-html="step.description"></p>
+                    <!-- @vue-ignore -->
                     <div
                       v-for="(question, questionIndex) of step.questions"
                       :id="`form-group-${stepIndex}-${questionIndex}`"
@@ -227,11 +235,16 @@
                     >
                       <div v-if="currentStep > 0 || currentSection === 'test1' || (currentStep === 0 && !skipIndustrySelect)">
                         <legend :id="`label-${stepIndex}-${questionIndex}`" class="h5 mb-4">{{ question.label }}</legend>
+                        <!-- @vue-ignore -->
                         <span v-if="errors[question.name]" class="form-error-message">
-                          <span class="sr-only">Fejl:</span> {{ errors[question.name].errorMessage }}
+                          <span class="sr-only">Fejl:</span>
+                          <!-- @vue-ignore -->
+                          {{ errors[question.name].errorMessage }}
                         </span>
+                        <!-- @vue-ignore -->
                         <ul v-if="question.type === 'radio'" class="nobullet-list">
                           <li v-for="(option, index) of question.options" :key="index">
+                            <!-- @vue-ignore -->
                             <input
                               :id="`radio-${questionIndex}-${index}`"
                               type="radio"
@@ -249,6 +262,7 @@
                           </li>
                         </ul>
                         <div v-else class="form-range">
+                          <!-- @vue-ignore -->
                           <input
                             :id="`range-${questionIndex}`"
                             type="range"
@@ -267,6 +281,7 @@
                             @input="updateValue(question.name, parseInt($event.target.value))"
                           />
                           <div class="sliderOptions">
+                            <!-- @vue-ignore -->
                             <div
                               v-for="(option, optionIndex) in question.options"
                               :key="option.label"
@@ -325,8 +340,9 @@
                           <div class="col-auto">
                             <button class="button button-secondary" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
-                                <use xlink:href="#file-download"></use></svg
-                              >Download resultatet som PDF
+                                <use xlink:href="#file-download"></use>
+                              </svg>
+                              Download resultatet som PDF
                             </button>
                           </div>
                           <div class="col-auto">
@@ -342,6 +358,7 @@
                       </div>
                       <div class="col-12 col-xl-7">
                         <h3 class="h4">{{ section.resultPrimaryHeadline }}</h3>
+                        <!-- @vue-ignore -->
                         <apexchart
                           v-if="response['test1']"
                           type="radar"
@@ -352,6 +369,7 @@
                       </div>
                       <div class="col-xl-5">
                         <h3 class="h4">{{ section.resultSecondaryHeadline }}</h3>
+                        <!-- @vue-ignore -->
                         <apexchart
                           v-if="response['test1'] && currentSection === 'test1'"
                           type="bar"
@@ -364,6 +382,7 @@
                             }
                           ]"
                         ></apexchart>
+                        <!-- @vue-ignore -->
                         <p
                           v-if="response['test1'] && !response['test1'].scores[0].mean_score_industry"
                           class="align-text-center"
@@ -381,8 +400,9 @@
                           <div class="col-auto">
                             <button class="button button-secondary" @click.prevent="generateReport()">
                               <svg class="icon-svg" focusable="false" aria-hidden="true">
-                                <use xlink:href="#file-download"></use></svg
-                              >Download resultatet som PDF
+                                <use xlink:href="#file-download"></use>
+                              </svg>
+                              Download resultatet som PDF
                             </button>
                           </div>
                           <div class="col-auto">
@@ -402,7 +422,9 @@
                           Ud fra dine svar kunne der være et potentiale for at styrke forretningsmodellen på følgende områder – det mest oplagte
                           område nævnt først:
                         </p>
+                        <!-- @vue-ignore -->
                         <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
+                          <!-- @vue-ignore -->
                           <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                             <div>
                               <span class="h4 m-0">{{ link.title ? link.title : '' }}</span>
@@ -477,8 +499,8 @@
                               <div class="col-auto">
                                 <button class="button button-secondary" @click.prevent="generateReport()">
                                   <svg class="icon-svg" focusable="false" aria-hidden="true">
-                                    <use xlink:href="#file-download"></use></svg
-                                  >Download resultatet som PDF
+                                    <use xlink:href="#file-download"></use></svg>
+                                    Download resultatet som PDF
                                 </button>
                               </div>
                               <div class="col-auto">
@@ -510,8 +532,9 @@
                                 <a href="https://erhvervsfremmebestyrelsen.dk/tvaerkommunale-erhvervshuse" class="" target="_blank">
                                   Læs mere om de regionale erhvervshuse
                                   <svg class="icon-svg" focusable="false" aria-hidden="true">
-                                    <use xlink:href="#open-in-new"></use></svg
-                                ></a>
+                                    <use xlink:href="#open-in-new"></use>
+                                  </svg>
+                                </a>
                               </div>
                             </div>
                           </div>
@@ -536,6 +559,7 @@
                             </p>
                             <div class="form-group">
                               <label class="form-label" for="businessHouse">Erhvervshus *:</label>
+                              <!-- @vue-ignore -->
                               <select
                                 id="businessHouse"
                                 class="form-select"
@@ -546,6 +570,7 @@
                                   selectedBusinessHouse = $event.target.value;
                                 "
                               >
+                                <!-- @vue-ignore -->
                                 <option value="0" :disabled="contactFormValues.businessHouse">Vælg dit regionale erhvervshus...</option>
                                 <option v-for="(businessHouse, index) of businessHouses" :key="index + 1" :value="`option${index + 1}`">
                                   {{ businessHouse.name }}
@@ -554,6 +579,7 @@
                             </div>
                             <div class="form-group">
                               <label class="form-label" for="navn">Din virksomheds navn *:</label>
+                              <!-- @vue-ignore -->
                               <input
                                 id="companyName"
                                 required
@@ -565,6 +591,7 @@
                             </div>
                             <div class="form-group">
                               <label class="form-label" for="cvr">Din virksomheds CVR-nummer:</label>
+                              <!-- @vue-ignore -->
                               <input
                                 id="cvr"
                                 class="form-input"
@@ -577,6 +604,7 @@
                             </div>
                             <div class="form-group">
                               <label class="form-label" for="name">Dit navn *:</label>
+                              <!-- @vue-ignore -->
                               <input
                                 id="name"
                                 class="form-input"
@@ -590,6 +618,7 @@
                               <div class="col-12 col-md-6">
                                 <div class="form-group">
                                   <label class="form-label" for="email">Din e-mailadresse *:</label>
+                                  <!-- @vue-ignore -->
                                   <input
                                     id="email"
                                     class="form-input"
@@ -604,6 +633,7 @@
                               <div class="col-12 col-md-6">
                                 <div class="form-group">
                                   <label class="form-label" for="phone">Dit telefonnummer *:</label>
+                                  <!-- @vue-ignore -->
                                   <input
                                     id="phone"
                                     class="form-input"
@@ -619,6 +649,7 @@
                             </div>
                             <div class="form-group">
                               <label class="form-label" for="comments">Eventuelle kommentarer:</label>
+                              <!-- @vue-ignore -->
                               <textarea
                                 id="comments"
                                 class="form-input"
@@ -636,6 +667,7 @@
                                   <div class="alert-body">
                                     <ul class="alert-text nobullet-list">
                                       <li>
+                                        <!-- @vue-ignore -->
                                         Tak for din indsendelse. Vi har sendt dit resultat videre til
                                         {{ businessHouses[contactFormValues.businessHouse.replace('option', '') - 1].name }}.
                                       </li>
@@ -663,12 +695,14 @@
                                           <input id="consent" type="checkbox" name="consent" value="true" class="form-checkbox" required />
                                           <label for="consent"
                                             >Klik for at samtykke til
+                                            <!-- @vue-ignore -->
                                             {{
                                               selectedBusinessHouse
                                                 ? businessHouses[selectedBusinessHouse.replace('option', '') - 1].name + 's'
                                                 : 'Erhvervshusets'
                                             }}
                                             behandling af dine personoplysninger.
+                                            <!-- @vue-ignore -->
                                             <a
                                               v-if="selectedBusinessHouse"
                                               :href="
@@ -799,37 +833,45 @@
               <h1 class="h3 mt-0">Resultat af test af forretningsmodellen</h1>
               <p>Udskrevet d. {{ getDateString() }}</p>
               <table class="table table--dotted table--borderless mt-9">
-                <tr>
-                  <th>Virksomhedsnavn:</th>
-                  <td style="vertical-align: middle; white-space: nowrap">{{ contactFormValues.companyName }}</td>
-                </tr>
-                <tr class="pt-4">
-                  <th style="vertical-align: middle">Branche:</th>
-                  <td>{{ values.industry }}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th>Virksomhedsnavn:</th>
+                    <!-- @vue-ignore -->
+                    <td style="vertical-align: middle; white-space: nowrap">
+                      <!-- @vue-ignore -->
+                      {{ contactFormValues.companyName }}
+                    </td>
+                  </tr>
+                  <tr class="pt-4">
+                    <th style="vertical-align: middle">Branche:</th>
+                    <td>{{ values.industry }}</td>
+                  </tr>
+                </tbody>
               </table>
               <table class="table table--borderless table--blue" style="margin-top: 100px">
-                <tr>
-                  <td>
-                    <p class="h6">Del 1</p>
-                    <h1 class="h4 mt-0">Hvordan er presset på jeres forretningsmodel?</h1>
-                    <p>
-                      Testen viser, hvor I oplever forandringer i jeres forretningsbetingelser, der kan indebære et behov for at styrke eller retænke
-                      forretningsmodellen.
-                    </p>
-                    <figure class="figure p-5">
-                      <Image1 />
-                    </figure>
-                  </td>
-                  <td>
-                    <p class="h6">Del 2</p>
-                    <h2 class="h4 mt-0">Hvor kan jeres forretningsmodel forbedres?</h2>
-                    <p>Testen viser, hvor I selv vurderer, at der er forbedringsmuligheder i jeres nuværende forretningsmodel.</p>
-                    <figure class="figure p-5">
-                      <Image2 />
-                    </figure>
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p class="h6">Del 1</p>
+                      <h1 class="h4 mt-0">Hvordan er presset på jeres forretningsmodel?</h1>
+                      <p>
+                        Testen viser, hvor I oplever forandringer i jeres forretningsbetingelser, der kan indebære et behov for at styrke eller
+                        retænke forretningsmodellen.
+                      </p>
+                      <figure class="figure p-5">
+                        <Image1 />
+                      </figure>
+                    </td>
+                    <td>
+                      <p class="h6">Del 2</p>
+                      <h2 class="h4 mt-0">Hvor kan jeres forretningsmodel forbedres?</h2>
+                      <p>Testen viser, hvor I selv vurderer, at der er forbedringsmuligheder i jeres nuværende forretningsmodel.</p>
+                      <figure class="figure p-5">
+                        <Image2 />
+                      </figure>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </section>
             <div class="html2pdf__page-break" />
@@ -840,6 +882,7 @@
                 <h2 class="h4 mt-2">Del 1: Hvordan er presset på jeres forretningsmodel?</h2>
                 <h3 class="h6">{{ sections[0].resultPrimaryHeadline }}</h3>
                 <p class="form-hint">Skala på 1-10, hvor 1 er lille/intet pres og 10 er stort pres</p>
+                <!-- @vue-ignore -->
                 <apexchart
                   v-if="response['test1']"
                   type="radar"
@@ -854,7 +897,9 @@
               <div>
                 <h2 class="h4 mt-0">Del 2: Hvor kan jeres forretningsmodel forbedres?</h2>
                 <p>Ud fra dine svar ser der ud til at være et potentiale for at styrke jeres forretningsmodel på nedenstående områder.</p>
+                <!-- @vue-ignore -->
                 <ol v-if="response['test2'] && response['test2'].suggestions" class="suggestion-list">
+                  <!-- @vue-ignore -->
                   <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                     <div>
                       <span class="h4 m-0">{{ link.title ? link.title : '' }}</span>
@@ -868,6 +913,7 @@
             <div class="html2pdf__page-break" />
             <section class="pdf-item">
               <!-- PAGE 3 -->
+              <!-- @vue-ignore -->
               <div v-if="response['test1']">
                 <div
                   v-for="(sectionGroup, sectionGroupIndex) of [
@@ -897,6 +943,7 @@
                           </div>
                         </td>
                         <td class="h6 align-text-center">
+                          <!-- @vue-ignore -->
                           <CircledAverage
                             :percentage="(calculateSectionAverage(section, false) / 10) * 100"
                             :value="calculateSectionAverage(section, true)"
@@ -905,13 +952,18 @@
                       </tr>
                       <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
                         <td></td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
                           <p class="m-0">{{ question.label }}</p>
                         </td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
+                          <!-- @vue-ignore -->
                           <GradientLine :percentage="(values[question.name] / 10) * 100" :width="200" />
                         </td>
+                        <!-- @vue-ignore -->
                         <td :class="`h6 align-text-center ${questionIndex < section.questions.length - 1 && 'dotted'}`">
+                          <!-- @vue-ignore -->
                           {{ values[question.name] }}
                         </td>
                       </tr>
@@ -934,13 +986,16 @@
               <p>
                 Dine svar på 24 udsagn om hvor din forretningsmodel kan forbedres på en skala fra 1-10, hvor 1 er meget uenig og 10 er meget enig.
               </p>
+              <!-- @vue-ignore -->
               <table v-if="values && response['test2']" class="table--invisible table--fixed">
-                <tr v-for="i in 3" :key="i">
-                  <td v-for="j in 3" :key="j" style="vertical-align: top" class="p-4">
-                    <figure v-if="i == 2 && j == 2"><Image2 /></figure>
-                    <Test2Cell v-else :col-index="j" :row-index="i" :steps="sections[1].steps" :values="values" />
-                  </td>
-                </tr>
+                <tbody>
+                  <tr v-for="i in 3" :key="i">
+                    <td v-for="j in 3" :key="j" style="vertical-align: top" class="p-4">
+                      <figure v-if="i == 2 && j == 2"><Image2 /></figure>
+                      <Test2Cell v-else :col-index="j" :row-index="i" :steps="sections[1].steps" :values="values" />
+                    </td>
+                  </tr>
+                </tbody>
               </table>
               <p v-else class="mt-12 h2">Del 2 er ikke gennemført</p>
             </section>
@@ -968,7 +1023,9 @@
                 Ud fra dine svar, fik du foreslået fire områder, hvor der kan være potentiale for at styrke forretningsmodellen. På
                 Virksomhedsguiden.dk kan du læse om virksomheder, der på succesfuld vis har arbejdet med at styrke disse områder:
               </p>
+              <!-- @vue-ignore -->
               <ol v-if="response['test2'] && response['test2'].suggestions">
+                <!-- @vue-ignore -->
                 <li v-for="(link, index) of response['test2'].suggestions.slice(0, 4)" :key="link.theme ? link.theme : index">
                   <a :href="link.linkUrl ? link.linkUrl : index"
                     >{{ `Få inspiration til, hvordan I kan ${link.title ? link.title.toLowerCase() : link.description.toLowerCase()}` }}
@@ -1006,6 +1063,7 @@
                 ]"
                 :key="sectionGroupIndex"
               >
+                <!-- @vue-ignore -->
                 <div v-if="response[sectionGroup.section]">
                   <p class="h6">Bilag</p>
                   <h2 class="h4 mt-2">Gennemsnitssvar for branchen og alle virksomheder</h2>
@@ -1019,6 +1077,7 @@
                         <td class="diagonal"><strong>Dine svar</strong></td>
                         <td class="diagonal">
                           Din branche
+                          <!-- @vue-ignore -->
                           <span v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry">*</span>
                         </td>
                         <td class="diagonal">Alle svar</td>
@@ -1040,7 +1099,10 @@
                         </td>
                         <td colspan="4">
                           <div class="underlined-headline-wrapper mr-0">
-                            <h3 class="h5 mt-0 underlined-headline">{{ section.pdfHeadline ? section.pdfHeadline : section.headline }}</h3>
+                            <h3 class="h5 mt-0 underlined-headline">
+                              <!-- @vue-ignore -->
+                              {{ section.pdfHeadline ? section.pdfHeadline : section.headline }}
+                            </h3>
                           </div>
                         </td>
                         <!-- <td class="h6 align-text-center"><strong>Dine svar</strong></td>
@@ -1049,15 +1111,22 @@
                       </tr>
                       <tr v-for="(question, questionIndex) of section.questions" :key="questionIndex">
                         <td></td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'}`">
                           <p class="m-0">{{ question.label }}</p>
                         </td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
                           <div class="valueContainer ml-4">
-                            <p class="h5 mt-0 mb-2">{{ values[question.name] }}</p>
+                            <p class="h5 mt-0 mb-2">
+                              <!-- @vue-ignore -->
+                              {{ values[question.name] }}
+                            </p>
+                            <!-- @vue-ignore -->
                             <GradientLine :percentage="(values[question.name] / 10) * 100" :width="30" />
                           </div>
                         </td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
                           <div class="valueContainer ml-4">
                             <p class="h5 mt-0 mb-2">
@@ -1069,6 +1138,7 @@
                             />
                           </div>
                         </td>
+                        <!-- @vue-ignore -->
                         <td :class="`${questionIndex < section.questions.length - 1 && 'dotted'} px-4`">
                           <div class="valueContainer ml-4">
                             <p class="h5 mt-0 mb-2">
@@ -1083,6 +1153,7 @@
                       </tr>
                     </tbody>
                   </table>
+                  <!-- @vue-ignore -->
                   <p
                     v-if="response[sectionGroup.section] && !response[sectionGroup.section].scores[0].mean_score_industry"
                     style="font-style: italic; max-width: none; margin-bottom: -10px"
@@ -1132,30 +1203,30 @@ export interface PDFOptions {
   margin: number;
 }
 
+import Vue3Html2pdf from '@erst-vg/vue3-html2pdf';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import Image1 from './Image1.vue';
-import Image2 from './Image2.vue';
-import SvgIcons from './SvgIcons.vue';
+import { getCurrentInstance } from 'vue';
+import VueApexCharts from 'vue3-apexcharts';
+import CircledAverage from './CircledAverage.vue';
+import GradientLine from './GradientLine.vue';
+import IconCustomers from './IconCustomers.vue';
 import IconInternal from './IconInternal.vue';
 import IconMarket from './IconMarket.vue';
-import IconSupplychain from './IconSupplychain.vue';
-import IconTechnology from './IconTechnology.vue';
-import IconSustainability from './IconSustainability.vue';
-import IconScales from './IconScales.vue';
-import IconValue from './IconValue.vue';
 import IconRessources from './IconRessources.vue';
-import IconCustomers from './IconCustomers.vue';
 import IconSales from './IconSales.vue';
+import IconScales from './IconScales.vue';
+import IconSupplychain from './IconSupplychain.vue';
+import IconSustainability from './IconSustainability.vue';
+import IconTechnology from './IconTechnology.vue';
+import IconValue from './IconValue.vue';
+import Image1 from './Image1.vue';
+import Image2 from './Image2.vue';
 import Logo from './Logo.vue';
-import GradientLine from './GradientLine.vue';
-import CircledAverage from './CircledAverage.vue';
+import SvgIcons from './SvgIcons.vue';
 import Test2Cell from './Test2Cell.vue';
-import VueApexCharts from 'vue3-apexcharts';
-import Vue3Html2pdf from '@erst-vg/vue3-html2pdf';
-import { getCurrentInstance } from 'vue';
 
-import * as DKFDS from 'dkfds';
 import * as DataEvent from '@erst-vg/piwik-event-wrapper';
+import * as DKFDS from 'dkfds';
 
 const app = getCurrentInstance();
 
@@ -2245,5 +2316,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '../styles/components/_applikation.scss';
+@use '../styles/components/_applikation.scss';
 </style>
