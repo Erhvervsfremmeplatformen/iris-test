@@ -1,7 +1,9 @@
+@use '../styles/mixins/mediaquery-helpers' as *;
+
 body {
   background-color: #f5f5f5;
 }
 
-.app-body{
+.app-body {
   min-height: 100vh;
 }

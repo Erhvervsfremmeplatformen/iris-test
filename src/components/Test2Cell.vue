@@ -13,6 +13,7 @@
         {{ currentSection.pdfHeadline ? currentSection.pdfHeadline : currentSection.headline }}
       </span>
     </div>
+    <!-- @vue-ignore -->
     <div
       v-for="(question, questionIndex) in currentSection.questions"
       :key="question.name"
@@ -29,11 +30,11 @@
 
 <script lang="ts">
 import GradientLine from './GradientLine.vue';
+import IconCustomers from './IconCustomers.vue';
+import IconRessources from './IconRessources.vue';
+import IconSales from './IconSales.vue';
 import IconScales from './IconScales.vue';
 import IconValue from './IconValue.vue';
-import IconRessources from './IconRessources.vue';
-import IconCustomers from './IconCustomers.vue';
-import IconSales from './IconSales.vue';
 
 export default {
   name: 'Test2Cell',
@@ -54,7 +55,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-:deep {
+:deep() {
   p {
     font-size: 10px;
     line-height: 13px;

@@ -15,7 +15,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "skipLibCheck": true, // TODO: skal være false - venter på ny update fra toasted
-    "types": ["webpack-env"],
+    "types": ["vite/client", "node"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
