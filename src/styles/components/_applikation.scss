@@ -26,13 +26,14 @@
   padding-top: 0;
 }
 
-.button {
-  color: #454545;
+:deep() {
+  .button {
+    color: #454545;
 
-  &-primary {
-    color: white;
+    &-primary {
+      color: white;
+    }
   }
-}
   .back-link {
     border: none;
     background: none;
@@ -214,7 +215,7 @@
 
   .figure {
     margin: 0;
-  & svg {
+    & svg {
       max-width: 100%;
       height: auto;
       margin: 0 auto;
@@ -422,8 +423,9 @@
     }
   }
 
-.form-input,
-select,
-textarea {
-  max-width: none;
+  .form-input,
+  select,
+  textarea {
+    max-width: none;
+  }
 }
